@@ -1,0 +1,14 @@
+Array of stores. Each store has:
+- store id
+- store name
+- store address
+- array of items. Each item in this array has:
+
+    - item name
+    - item id
+    - comments
+    - isReserved boolean
+    - picture (optional)
+    - price
+    - average rating
+    - list of problems
