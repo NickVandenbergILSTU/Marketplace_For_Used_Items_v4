@@ -1,0 +1,10 @@
+keep a json file for each item that exists (each item that belongs to someone or a store):
+
+    - item name
+    - item id
+    - comments array (store username of person who posted the comment, and comment itself)
+    - isReserved boolean (change this to false once the item is purchased)
+    - picture (optional)
+    - price
+    - average rating (make n/a if no ratings)
+    - array of problems (store username of who posted the problem, and the problem itself)

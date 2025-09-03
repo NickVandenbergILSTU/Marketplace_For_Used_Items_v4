@@ -4,8 +4,11 @@ Array of accounts containing:
 - email
 - password
 - account balance
+- loggedIn boolean (true if logged in)
 - order history (item ids)
 - bookmarked items (store item ids)
 - security question string (for forgot password)
 - security response string (for forgot password)
 - shopping cart (array of items)
+- profile picture (optional)
+- array of items this account owns (the array will just store item ids)

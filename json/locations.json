@@ -2,13 +2,4 @@ Array of stores. Each store has:
 - store id
 - store name
 - store address
-- array of items. Each item in this array has:
-
-    - item name
-    - item id
-    - comments
-    - isReserved boolean
-    - picture (optional)
-    - price
-    - average rating
-    - list of problems
+- array of item ids (these are the ids of the items in this store, use id because they are immutable)
