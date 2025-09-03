@@ -1,0 +1,11 @@
+Array of accounts containing:
+- account id
+- username
+- email
+- password
+- account balance
+- order history (item ids)
+- bookmarked items (store item ids)
+- security question string (for forgot password)
+- security response string (for forgot password)
+- shopping cart (array of items)
