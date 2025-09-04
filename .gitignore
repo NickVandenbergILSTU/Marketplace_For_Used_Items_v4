@@ -1,2 +1,4 @@
 .*
+
+# Json will be mutated every time our code is run, so it will not be committed to avoid merging issues on commits
 *.json
