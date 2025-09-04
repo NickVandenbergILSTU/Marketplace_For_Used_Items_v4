@@ -1,0 +1,51 @@
+NOTE:
+every group member must create
+- accounts.json, 
+- items.json, 
+- and locations.json in their json/ folder in vscode.
+Don't write any json to these files right now, json should be created dynamically
+
+====================================
+accounts.json:
+
+Array of accounts containing:
+- account id (randomly generated 20 digit number)
+- first name
+- last name
+- email
+- password
+- account balance
+- loggedIn boolean (true if logged in)
+- order history (item ids)
+- bookmarked items (store item ids)
+- security question string (for forgot password)
+- security response string (for forgot password)
+- shopping cart (array of items)
+- profile picture (optional)
+- array of items this account owns (the array will just store item ids)
+
+=====================================================================
+items.json:
+
+keep a json file for each item that exists (each item that belongs to someone or a store):
+
+    - item name
+    - item id (randomly generated 20 digit number)
+    - comments array (store id of person who posted the comment, and comment itself)
+    - isReserved boolean (change this to false once the item is purchased)
+    - string: picture path (picture is optional, set to "null" if no picture)
+    - price
+    - average rating (make n/a if no ratings)
+    - array of problems (store user id of who posted the problem, and the problem itself)
+    - hasImage boolean
+
+once an item is added, it will not be deleted from this array
+
+=======================================================
+locations.json:
+
+Array of stores. Each store has:
+- store id (randomly generated 20 digit number)
+- store name
+- store address
+- array of item ids (these are the ids of the items in this store, use id because they are immutable)
