@@ -1,6 +1,7 @@
 Array of accounts containing:
 - account id (randomly generated 20 digit number)
-- username
+- first name
+- last name
 - email
 - password
 - account balance
