@@ -1,5 +1,5 @@
 Array of stores. Each store has:
-- store id
+- store id (randomly generated 20 digit number)
 - store name
 - store address
 - array of item ids (these are the ids of the items in this store, use id because they are immutable)
