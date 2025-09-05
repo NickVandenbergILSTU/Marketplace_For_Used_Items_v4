@@ -22,13 +22,18 @@ NOTES FOR EACH USE CASE:
 
 FRONT END DISPLAY:
 - Box with title saying "Login", and box with title saying "Create Account"
-- Each box contains the text box with the script path to run to accomplish each task
-    - For now, put placeholder text in that box, since the scripts haven't been made yet
+- Each box contains the text box with the user script path to run to accomplish each task
+    - For now, put placeholder text in that box, since the user scripts haven't been made yet
 - Each box should have instructions like "Copy and paste this into your terminal to Create Account/Login", as well as explain what parameters to pass in
     - Login will have first name, last name, email, and password as parameters
     - Create account will have each of the parameters login has, AND:
         - security question
         - security answer
+- In the box for login, there should also be a text box with the user script for forgot password
+    - We can make it so that when the forgot password user script runs, the security question prints to the terminal
+    and the user has 1 chance to enter the security response (ignore case).
+        - If the user has the right response, prompt them to enter a new password in the terminal
+        - If the user responds wrong, echo that the user is wrong and exit
 - Each text box should be decently big, since we don't have that much on the screen, and there are params the user must enter
 
 ===================================================================
