@@ -5,6 +5,7 @@ every group member must create
 - and locations.json in their json/ folder in vscode.
 Don't write any json to these files right now, json should be created dynamically
 
+
 ====================================
 accounts.json:
 
@@ -16,11 +17,11 @@ Array of accounts containing:
 - password
 - account balance
 - loggedIn boolean (true if logged in)
-- order history (item ids)
-- bookmarked items (store item ids)
+- order history (array of item ids)
+- bookmarked items (array of item ids)
 - security question string (for forgot password)
-- security response string (for forgot password)
-- shopping cart (array of items)
+- security answer string (for forgot password)
+- shopping cart (array of item ids)
 - profile picture (optional)
 - array of items this account owns (the array will just store item ids)
 
