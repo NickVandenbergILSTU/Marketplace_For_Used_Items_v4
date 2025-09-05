@@ -3,7 +3,9 @@ every group member must create
 - accounts.json, 
 - items.json, 
 - and locations.json in their json/ folder in vscode.
-Don't write any json to these files right now, json should be created dynamically
+
+THERE WILL BE A TXT FILE IN THIS FOLDER FOR EACH JSON FILE (i.e. items.txt)
+COPY CONTENTS OF items.txt into a new folder items.json in your remote repo
 
 
 ====================================
