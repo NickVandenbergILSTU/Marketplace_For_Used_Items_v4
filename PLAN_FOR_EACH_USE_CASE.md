@@ -10,6 +10,14 @@ NOTES FOR EACH USE CASE:
         - if json shows no user is logged in > echo "You are not logged in, to log in enter this script: {path to start.sh}"
         - This should be echoed into the VSCode terminal
 
+===================================================================
+
+NOTES FOR WHAT TO ADD AFTER USE CASES ALL WORK:
+- add some stuff to make it so that clicking a button in html triggers user scripts
+    - maybe use json
+- add ai marketplace assistant using chat api?
+- add automated email of receipt?
+
 ==================================================================
 
 1. An html file for login/create account page (combine both):
