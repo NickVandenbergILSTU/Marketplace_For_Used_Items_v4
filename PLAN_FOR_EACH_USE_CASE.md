@@ -1,5 +1,5 @@
 NOTES FOR EACH USE CASE:
-- textboxes displayed in html containing bash script paths should be immutable, unless the script being run takes parameters, in which case the textbox should be mutable
+- textboxes displayed in html containing user scripts should be mutable
     - (mutable means the user can change the text on the front end, immutable is the opposite)
 - for simplicity sake, we will not have any input interaction in the html files
     - In other words, there won't be any button clicking, scrollers, etc. in html
