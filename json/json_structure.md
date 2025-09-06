@@ -13,8 +13,7 @@ accounts.json:
 
 Array of accounts containing:
 - account id (randomly generated 20 digit number)
-- first name
-- last name
+- username
 - email
 - password
 - account balance
@@ -24,7 +23,7 @@ Array of accounts containing:
 - security question string (for forgot password)
 - security answer string (for forgot password)
 - shopping cart (array of item ids)
-- profile picture (optional)
+- profile picture png path (optional)
 - array of items this account owns (the array will just store item ids)
 
 =====================================================================
