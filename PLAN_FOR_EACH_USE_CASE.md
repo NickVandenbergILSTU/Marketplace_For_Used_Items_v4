@@ -1,5 +1,5 @@
 NOTES FOR EACH USE CASE:
-- textboxes displayed in html containing bash script paths should be immutable, unless the script being run takes parameters, in which case the textbox should be mutable
+- textboxes displayed in html containing user scripts should be mutable
     - (mutable means the user can change the text on the front end, immutable is the opposite)
 - for simplicity sake, we will not have any input interaction in the html files
     - In other words, there won't be any button clicking, scrollers, etc. in html
@@ -9,6 +9,14 @@ NOTES FOR EACH USE CASE:
     - They will all look like this:
         - if json shows no user is logged in > echo "You are not logged in, to log in enter this script: {path to start.sh}"
         - This should be echoed into the VSCode terminal
+
+===================================================================
+
+NOTES FOR WHAT TO ADD AFTER USE CASES ALL WORK:
+- add some stuff to make it so that clicking a button in html triggers user scripts
+    - maybe use json
+- add ai marketplace assistant using chat api?
+- add automated email of receipt?
 
 ==================================================================
 
