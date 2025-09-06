@@ -3,25 +3,27 @@ every group member must create
 - accounts.json, 
 - items.json, 
 - and locations.json in their json/ folder in vscode.
-Don't write any json to these files right now, json should be created dynamically
+
+THERE WILL BE A TXT FILE IN THIS FOLDER FOR EACH JSON FILE (i.e. items.txt)
+COPY CONTENTS OF items.txt into a new folder items.json in your remote repo
+
 
 ====================================
 accounts.json:
 
 Array of accounts containing:
 - account id (randomly generated 20 digit number)
-- first name
-- last name
+- username
 - email
 - password
 - account balance
 - loggedIn boolean (true if logged in)
-- order history (item ids)
-- bookmarked items (store item ids)
+- order history (array of item ids)
+- bookmarked items (array of item ids)
 - security question string (for forgot password)
-- security response string (for forgot password)
-- shopping cart (array of items)
-- profile picture (optional)
+- security answer string (for forgot password)
+- shopping cart (array of item ids)
+- profile picture png path (optional)
 - array of items this account owns (the array will just store item ids)
 
 =====================================================================

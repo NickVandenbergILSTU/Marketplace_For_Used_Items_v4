@@ -1,0 +1,32 @@
+[
+  {
+    "accountId": "87392018475930284759",
+    "username": "johndoe",
+    "email": "johndoe@example.com",
+    "password": "password123",
+    "accountBalance": 250.75,
+    "loggedIn": true,
+    "orderHistory": ["12837498237498237498", "98237498237498237412"],
+    "bookmarkedItems": ["73648273648273648273"],
+    "securityQuestion": "What is your mother's maiden name?",
+    "securityAnswer": "Smith",
+    "shoppingCart": ["73648273648273648273"],
+    "profilePicture": "null",
+    "ownedItems": ["12837498237498237498"]
+  },
+  {
+    "accountId": "19283746556473829102",
+    "username": "janesmith",
+    "email": "janesmith@example.com",
+    "password": "securepass456",
+    "accountBalance": 1000.00,
+    "loggedIn": false,
+    "orderHistory": [],
+    "bookmarkedItems": ["12837498237498237498"],
+    "securityQuestion": "What was the name of your first pet?",
+    "securityAnswer": "Buddy",
+    "shoppingCart": ["98237498237498237412"],
+    "profilePicture": "images/profiles/janesmith.png",
+    "ownedItems": []
+  }
+]
