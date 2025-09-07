@@ -16,4 +16,4 @@ BEFORE STARTING:
 
 TO OPEN THE MARKETPLACE, COPY THE FOLLOWING PATH INTO YOUR TERMINAL IN YOUR CLONED REPO:
 
-./use_cases/login_and_create_account/start.sh
+./start.sh
