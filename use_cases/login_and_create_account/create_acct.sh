@@ -5,7 +5,8 @@
 # if so, print error and exit
 
 # take the parameters, and add an account to the array in accounts.json
-# with the data
+# with the data passed in
 
-# randomly genrate account id
+# randomly generate account id
 
+# after all this, open the main menu (use the helper script called in start.sh)
