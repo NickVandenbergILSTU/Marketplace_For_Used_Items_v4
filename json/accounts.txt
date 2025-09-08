@@ -13,6 +13,7 @@
     "shoppingCart": ["73648273648273648273"],
     "profilePicture": "null",
     "ownedItems": ["12837498237498237498"]
+    "defaultStore": -1
   },
   {
     "accountId": "19283746556473829102",
@@ -28,5 +29,6 @@
     "shoppingCart": ["98237498237498237412"],
     "profilePicture": "images/profiles/janesmith.png",
     "ownedItems": []
+    "defaultStore": -1
   }
 ]
