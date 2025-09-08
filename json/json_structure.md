@@ -25,6 +25,7 @@ Array of accounts containing:
 - shopping cart (array of item ids)
 - profile picture png path (optional)
 - array of items this account owns (the array will just store item ids)
+- default store (location id)
 
 =====================================================================
 items.json:

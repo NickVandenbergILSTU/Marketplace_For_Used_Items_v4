@@ -50,8 +50,44 @@ FRONT END DISPLAY:
 - Once the user script for logging out is done, echo a message into the VSCode terminal saying something like
     - "You are now logged out, copy and paste this user script if you want to log back in: {path to start.sh}"
 
+===========================================================
+
 3. Main menu html page:
-- From here, the 
 
+The following can be selected from main menu:
+    - Store Locations:
+        On front end, have a note saying (go here to add/remove stores, )
 
-When items are being displayed in a list of marketplace items, and in a list of a user's items, 
+        the store locations page will display all the current stores to the html, and have the following options:
+        - add stores
+        - remove stores (have store locations display the store ids, and 
+        remove stores will take in the id as a parameter and remove it)
+        - after any change is made to the json in the store locations page, a new store locations page will open in a new tab
+        - open store (takes in store id as a parameter and opens the store page)
+        -Shopping Cart
+
+    - Profile Info
+    - Open Default Store
+    - Log Out
+    - Order History (make set balance accessible here)
+    - AI Assistant?
+    - View other users (option to sell item to other users here)
+    - My Items (lists the items the logged in user owns, and displays the sell item option)
+
+==================================================
+
+4. AI Assistant
+
+- have some check for whether the user has run the ai assistant yet
+    - can create a json file called "local_data.json" that has a boolean var
+    called "hasUsedAIAssistant".
+    - script should look like this:
+    {
+        if(hasUsedAIAssistant = false){
+            pip install openai
+            pip install python-dotenv
+            change hasUsedAIAssistant in json to true
+        }
+        python main.py (run chat gpt api python file)
+    }
+    - change main.py to make it so that the query is the training data (put it in a text file) is added to the user's question, and then sent off
