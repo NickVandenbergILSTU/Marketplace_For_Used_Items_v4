@@ -76,3 +76,18 @@ The following can be selected from main menu:
 
 ==================================================
 
+4. AI Assistant
+
+- have some check for whether the user has run the ai assistant yet
+    - can create a json file called "local_data.json" that has a boolean var
+    called "hasUsedAIAssistant".
+    - script should look like this:
+    {
+        if(hasUsedAIAssistant = false){
+            pip install openai
+            pip install python-dotenv
+            change hasUsedAIAssistant in json to true
+        }
+        python main.py (run chat gpt api python file)
+    }
+    - change main.py to make it so that the query is the training data (put it in a text file) is added to the user's question, and then sent off

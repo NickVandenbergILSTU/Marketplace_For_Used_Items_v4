@@ -1,0 +1,1 @@
+python ./use_cases/use_ai_assistant/main.py
