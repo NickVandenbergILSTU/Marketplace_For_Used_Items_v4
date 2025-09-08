@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Check whether this script was called with the right num of parameters, print an error message
 # and exit if not
 

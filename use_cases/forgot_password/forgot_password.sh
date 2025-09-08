@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # open an html file with the security question printed to the screen
 # also, create a script "enter_security_answer.sh" that will be displayed
 # in the html file, that takes the security answer as a parameter
