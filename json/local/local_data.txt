@@ -1,3 +1,6 @@
+this is an untracked file, copy and paste the contents into a new file
+locally called json/local/local_data.json
+
 {
   "hasUsedAIAssistant": false
   "currentlyLoggedInUserID": -1
