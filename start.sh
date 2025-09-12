@@ -9,8 +9,8 @@
 #     ./helper_scripts/start_html_multi_platform.sh "html/login.html"
 # fi
 
-
-export VALUE="11"
+echo $1
+echo $2
 
 # node javascript/server.js
 

@@ -23,7 +23,7 @@ $script_path "${@:2}"
 # UNCOMMENT FOR PULLING AND PUSHING: f script involves writing user data > git add files; git commit -m "message"; git push {files that could have been changed}
 # if($script_path = insert scripts that write user data (i.e. json) here)
 # then
-  git add json/*.json {add other data to push here}
+  git add . # {add other data to push here}
   git commit -m "[AUTOMATED COMMIT, DATA UPDATED]"
   git push
 # fi
