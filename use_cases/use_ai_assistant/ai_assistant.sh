@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JSON_DIR="json/other_json"
+JSON_DIR="json/local"
 
 if [ "$(jq -r '.hasUsedAIAssistant' $JSON_DIR/local_data.json)" = false ]; then
   jq '.hasUsedAIAssistant = true' $JSON_DIR/local_data.json > $JSON_DIR/tmp.json && mv $JSON_DIR/tmp.json $JSON_DIR/local_data.json

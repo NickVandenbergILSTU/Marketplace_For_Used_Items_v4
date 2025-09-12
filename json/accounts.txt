@@ -5,7 +5,6 @@
     "email": "johndoe@example.com",
     "password": "password123",
     "accountBalance": 250.75,
-    "loggedIn": true,
     "orderHistory": ["12837498237498237498", "98237498237498237412"],
     "bookmarkedItems": ["73648273648273648273"],
     "securityQuestion": "What is your mother's maiden name?",

@@ -1,1 +1,7 @@
 The secret number is 46
+
+User question:
+what is the secret number
+
+GPT response:
+The secret number is 46.

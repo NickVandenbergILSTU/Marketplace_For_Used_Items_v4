@@ -13,11 +13,10 @@ accounts.json:
 
 Array of accounts containing:
 - account id (randomly generated 20 digit number)
-- username
-- email
+- username (must be unique)
+- email (must be unique)
 - password
 - account balance
-- loggedIn boolean (true if logged in)
 - order history (array of item ids)
 - bookmarked items (array of item ids)
 - security question string (for forgot password)
@@ -53,3 +52,8 @@ Array of stores. Each store has:
 - store address
 - array of item ids (these are the ids of the items in this store, use id because they are immutable)
 
+=================================
+
+local_data.json:
+- hasUsedAIAssistant: false by default
+- currentlyLoggedInUserID: -1 by default (-1 means no one logged in)

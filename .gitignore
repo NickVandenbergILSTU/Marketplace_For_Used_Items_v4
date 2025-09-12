@@ -1,4 +1,3 @@
 # Json will be mutated every time our code is run, so it will not be committed to avoid merging issues on commits
-json/*.json
-json/other_json/*.json
+json/local/*.json
 use_cases/use_ai_assistant/.env
