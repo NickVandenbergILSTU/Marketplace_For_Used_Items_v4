@@ -1,0 +1,4 @@
+{
+    "hasUsedAIAssistant": true,
+    "currentlyLoggedInUserID": -1
+}
