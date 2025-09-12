@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # have this script run from the js file
 
 # Notes:
@@ -7,12 +9,22 @@
 # =============================================
 # START SCRIPT HERE:
 
-# Security:
-# if logged in variable in local_data.json = -1 (no one logged in) > echo "no one logged in", exit 1
+script_path=$1
 
-# if the script involves reading OR writing user data (json, user images, user ai convo history, etc.) > git pull
+# UNCOMMENT FOR PULLING AND PUSHING: If the script involves reading OR writing user data (json, user images, user ai convo history, etc.) > git pull
+# if($script_path = insert scripts that read or write user data (i.e. json) here)
+# then
+  git pull
+# fi
 
-# run script from parameter here
+# runs script stored in script_path variable, with all parameters
+$script_path "${@:2}"
 
-# if script involves writing user data > git add files; git commit -m "message"; git push {files that could have been changed}
+# UNCOMMENT FOR PULLING AND PUSHING: f script involves writing user data > git add files; git commit -m "message"; git push {files that could have been changed}
+# if($script_path = insert scripts that write user data (i.e. json) here)
+# then
+  git add json/*.json {add other data to push here}
+  git commit -m "[AUTOMATED COMMIT, DATA UPDATED]"
+  git push
+# fi
 
