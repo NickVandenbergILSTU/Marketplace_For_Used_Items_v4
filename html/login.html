@@ -2,49 +2,101 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Run Script</title>
+    <title>Login - Marketplace for Used Items</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: #ffffff;
+            padding: 40px 60px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ccc;
+            color: #333;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .back-btn:hover {
+            background: #bbb;
+        }
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: #333;
+        }
+        input {
+            display: block;
+            width: 250px;
+            margin: 15px auto;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        button.login {
+            display: block;
+            width: 250px;
+            margin: 25px auto 0;
+            padding: 12px;
+            font-size: 1rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button.login:hover {
+            background: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>Run Bash Script</h1>
+    <div class="container">
+        <button class="back-btn" onclick="window.location.href='login_create_forgotpass.html'">&larr; Back</button>
+        <h1>Login</h1>
 
-    <button id="runBtn1">Run Script with Params A</button>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
 
-    <div style="margin-top: 20px;">
-        <label for="jsonString">String from JSON:</label>
-        <input type="text" id="jsonString" readonly style="margin-left: 10px; padding: 5px;">
+        <button class="login" id="loginBtn">Login</button>
     </div>
 
     <script>
-        const SCRIPT_PARAMS_A = [
-            "./js_3/nested_script.sh","paramA2","paramA3","paramA4","paramA5",
-            "paramA6","paramA7","paramA8","paramA9","paramA10"
-        ];
-
-        async function loadJsonData() {
-            try {
-                const response = await fetch('./data.json', { cache: "no-store" });
-                const data = await response.json();
-                document.getElementById('jsonString').value = data.string;
-            } catch (err) {
-                console.error('Error loading JSON:', err);
-                document.getElementById('jsonString').value = 'Error loading data';
-            }
-        }
-
-        loadJsonData();
+        const LOGIN_SCRIPT = "./use_cases/login/login.sh";
 
         async function runScript(params) {
-            const response = await fetch('/run-script', { 
+            const response = await fetch('/run-script', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ params })
             });
-            const text = await response.text();
-            alert(text);
-            window.location.reload();
+            return response.text();
         }
 
-        document.getElementById('runBtn1').addEventListener('click', () => runScript(SCRIPT_PARAMS_A));
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const user = document.getElementById('username').value || "";
+            const pass = document.getElementById('password').value || "";
+            const params = [LOGIN_SCRIPT, user, pass];
+            const text = await runScript(params);
+            alert(text);
+        });
     </script>
 </body>
 </html>
