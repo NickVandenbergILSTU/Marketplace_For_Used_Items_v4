@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Marketplace for Used Items</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: #ffffff;
+            padding: 40px 60px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 2rem;
+            color: #333;
+        }
+        h2 {
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+        button {
+            display: block;
+            width: 250px;
+            margin: 15px auto;
+            padding: 12px;
+            font-size: 1rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Marketplace for Used Items!</h1>
+        <h2>Please Choose One of the Following</h2>
+
+        <!-- Login button now redirects -->
+        <button onclick="window.location.href='login.html'">Login</button>
+
+        <!-- Keep other buttons running scripts -->
+        <button id="createBtn">Create Account</button>
+        <button id="forgotBtn">Forgot Password</button>
+    </div>
+
+    <script>
+        const CREATE_PARAMS = [
+            "./use_cases/login_and_create_account/create_acct.sh"
+        ];
+        const FORGOT_PARAMS = [
+            "./use_cases/forgot_password/forgot_password.sh"
+        ];
+
+        async function runScript(params) {
+            const response = await fetch('/run-script', {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ params })
+            });
+            return response.text();
+        }
+
+        document.getElementById('createBtn').addEventListener('click', async () => {
+            const text = await runScript(CREATE_PARAMS);
+            alert(text);
+        });
+
+        document.getElementById('forgotBtn').addEventListener('click', async () => {
+            const text = await runScript(FORGOT_PARAMS);
+            alert(text);
+        });
+    </script>
+</body>
+</html>

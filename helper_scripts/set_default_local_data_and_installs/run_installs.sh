@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Python
 python --version
 
