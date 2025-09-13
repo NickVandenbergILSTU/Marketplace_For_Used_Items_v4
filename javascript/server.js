@@ -26,7 +26,12 @@ app.post('/run-script', (req, res) => {
     if (!scriptPath) return res.status(400).send('Missing script path');
 
     const absoluteScriptPath = path.resolve(path.join(__dirname, '../', scriptPath));
-    const safeParams = params.map(p => `'${p.replace(/'/g, `'\\''`)}'`).join(' ');
+    
+    // Replace spaces with ~ and escape single quotes
+    const safeParams = params
+        .map(p => p.replace(/ /g, '~'))                     // convert spaces to ~
+        .map(p => `'${p.replace(/'/g, `'\\''`)}'`)           // escape single quotes
+        .join(' ');
 
     exec(`bash "${absoluteScriptPath}" ${safeParams}`, (error, stdout, stderr) => {
         if (error) return res.status(500).send(`Error: ${error.message}`);
@@ -34,6 +39,7 @@ app.post('/run-script', (req, res) => {
         res.send(`Script output:\n${stdout}`);
     });
 });
+
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
