@@ -2,44 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Run Script</title>
+    <title>Marketplace for Used Items</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: #ffffff;
+            padding: 40px 60px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 2rem;
+            color: #333;
+        }
+        h2 {
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+        button {
+            display: block;
+            width: 250px;
+            margin: 15px auto;
+            padding: 12px;
+            font-size: 1rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .input-group {
+            margin-top: 30px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+        }
+        .input-group input {
+            width: 250px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Run Bash Script</h1>
+    <div class="container">
+        <h1>Welcome to the Marketplace for Used Items!</h1>
+        <h2>Please Choose One of the Following</h2>
 
-    <button id="runBtn1">Run Script with Params A</button>
-    <button id="runBtn2">Run Script with Params B</button>
+        <button id="loginBtn">Login</button>
+        <button id="createBtn">Create Account</button>
+        <button id="forgotBtn">Forgot Password</button>
 
-    <div style="margin-top: 20px;">
-        <label for="jsonString">String from JSON:</label>
-        <input type="text" id="jsonString" readonly style="margin-left: 10px; padding: 5px;">
+        <div class="input-group">
+            <label for="extraParam">Extra Info for Create Account</label>
+            <input type="text" id="extraParam" placeholder="Enter extra info">
+        </div>
     </div>
 
     <script>
-        const SCRIPT_PARAMS_A = [
-            "./use_cases/forgot_password/forgot_password.sh","the string"
+        const LOGIN_PARAMS = [
+            "./use_cases/login/login.sh", "user_login"
         ];
 
-        const SCRIPT_PARAMS_B = [
-            "insert script path 2","paramB2","paramB3","paramB4","paramB5",
-            "paramB6","paramB7","paramB8","paramB9","paramB10"
+        const CREATE_PARAMS_BASE = [
+            "./use_cases/create_account/create_account.sh", // second param will be added dynamically
         ];
 
-        async function loadJsonData() {
-            try {
-                const response = await fetch('./data.json', { cache: "no-store" });
-                const data = await response.json();
-                document.getElementById('jsonString').value = data.string;
-            } catch (err) {
-                console.error('Error loading JSON:', err);
-                document.getElementById('jsonString').value = 'Error loading data';
-            }
-        }
-
-        loadJsonData();
+        const FORGOT_PARAMS = [
+            "./use_cases/forgot_password/forgot_password.sh", "reset_request"
+        ];
 
         async function runScript(params) {
-            const response = await fetch('/run-script', { 
+            const response = await fetch('/run-script', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ params })
@@ -47,17 +100,21 @@
             return response.text();
         }
 
-        document.getElementById('runBtn1').addEventListener('click', async () => {
-            const text = await runScript(SCRIPT_PARAMS_A);
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const text = await runScript(LOGIN_PARAMS);
             alert(text);
-            window.location.reload();
         });
 
-        document.getElementById('runBtn2').addEventListener('click', async () => {
-            const text = await runScript(SCRIPT_PARAMS_B);
+        document.getElementById('createBtn').addEventListener('click', async () => {
+            const extra = document.getElementById('extraParam').value || "default_value";
+            const params = [...CREATE_PARAMS_BASE, extra];
+            const text = await runScript(params);
             alert(text);
-            // Once script finishes, go to no-B page and refresh it
-            window.location.href = "page_no_b.html?refresh=" + Date.now();
+        });
+
+        document.getElementById('forgotBtn').addEventListener('click', async () => {
+            const text = await runScript(FORGOT_PARAMS);
+            alert(text);
         });
     </script>
 </body>
