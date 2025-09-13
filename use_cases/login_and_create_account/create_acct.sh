@@ -10,6 +10,6 @@
 # with the data passed in
 
 # randomly generate account id
-# set loggedInUserID in local_data.json to that user's id
+# set loggedInUserID in local_data.json to that user's id, open main menu
 
 # after all this, open the main menu (use the helper script called in start.sh)
