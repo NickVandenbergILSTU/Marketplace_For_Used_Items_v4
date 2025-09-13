@@ -19,7 +19,6 @@ app.get('/', (req, res) => {
 app.post('/run-script', (req, res) => {
     let { params } = req.body;
     if (!Array.isArray(params)) params = [];
-    if (params.length > 10) params = params.slice(0, 10);
 
     // Assume first param is script path, others are real params
     const scriptPath = params.shift();
@@ -29,8 +28,10 @@ app.post('/run-script', (req, res) => {
     
     // Replace spaces with ~ and escape single quotes
     const safeParams = params
-        .map(p => p.replace(/ /g, '~'))                     // convert spaces to ~
-        .map(p => `'${p.replace(/'/g, `'\\''`)}'`)           // escape single quotes
+        .map(p => p.replace(/ /g, '~'))               // convert spaces to ~
+        .map(p => `'${p.replace(/'/g, `'\\''`)}'`)      // escape single quotes
+        .map(p => p.replace(/\$/g, "\\$"))     // replace $ with \$ (literal bash dollar sign)
+
         .join(' ');
 
     exec(`bash "${absoluteScriptPath}" ${safeParams}`, (error, stdout, stderr) => {

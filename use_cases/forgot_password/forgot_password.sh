@@ -11,4 +11,3 @@
 # if they are right, open a new html file prompting th user to enter a new password, update the password stored in the json, set loggedin variable in local_data.json, and open the main menu (use the helper script called in start.sh)
 
 # if they are wrong, print an error message and exit
-
