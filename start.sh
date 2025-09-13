@@ -10,5 +10,3 @@
 # fi
 
 node javascript/server.js
-
-./helper_scripts/start_html_multi_platform.sh "http://localhost:3000"

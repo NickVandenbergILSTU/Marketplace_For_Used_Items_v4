@@ -3,6 +3,8 @@
 # Get the HTML file path from the first argument
 html_path="$1" 
 
+echo "1"
+
 # Check the operating system
 case "$(uname -s)" in
     Darwin) # macOS
