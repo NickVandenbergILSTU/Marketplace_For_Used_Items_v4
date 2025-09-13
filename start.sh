@@ -9,9 +9,6 @@
 #     ./helper_scripts/start_html_multi_platform.sh "html/login.html"
 # fi
 
-echo $1
-echo $2
+node javascript/server.js
 
-# node javascript/server.js
-
-# start_html_multi_platform.sh "http://localhost:3000"
+./helper_scripts/start_html_multi_platform.sh "http://localhost:3000"

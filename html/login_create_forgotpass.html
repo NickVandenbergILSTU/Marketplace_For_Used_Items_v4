@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Run Script</title>
+</head>
+<body>
+    <h1>Run Bash Script</h1>
+
+    <button id="runBtn1">Run Script with Params A</button>
+    <button id="runBtn2">Run Script with Params B</button>
+
+    <div style="margin-top: 20px;">
+        <label for="jsonString">String from JSON:</label>
+        <input type="text" id="jsonString" readonly style="margin-left: 10px; padding: 5px;">
+    </div>
+
+    <script>
+        const SCRIPT_PARAMS_A = [
+            "insert script path","paramA2","paramA3","paramA4","paramA5",
+            "paramA6","paramA7","paramA8","paramA9","paramA10"
+        ];
+
+        const SCRIPT_PARAMS_B = [
+            "insert script path 2","paramB2","paramB3","paramB4","paramB5",
+            "paramB6","paramB7","paramB8","paramB9","paramB10"
+        ];
+
+        async function loadJsonData() {
+            try {
+                const response = await fetch('./data.json', { cache: "no-store" });
+                const data = await response.json();
+                document.getElementById('jsonString').value = data.string;
+            } catch (err) {
+                console.error('Error loading JSON:', err);
+                document.getElementById('jsonString').value = 'Error loading data';
+            }
+        }
+
+        loadJsonData();
+
+        async function runScript(params) {
+            const response = await fetch('/run-script', { 
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ params })
+            });
+            return response.text();
+        }
+
+        document.getElementById('runBtn1').addEventListener('click', async () => {
+            const text = await runScript(SCRIPT_PARAMS_A);
+            alert(text);
+            window.location.reload();
+        });
+
+        document.getElementById('runBtn2').addEventListener('click', async () => {
+            const text = await runScript(SCRIPT_PARAMS_B);
+            alert(text);
+            // Once script finishes, go to no-B page and refresh it
+            window.location.href = "page_no_b.html?refresh=" + Date.now();
+        });
+    </script>
+</body>
+</html>
