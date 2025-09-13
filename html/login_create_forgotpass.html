@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Logged Out</title>
+    <title>Marketplace for Used Items</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -46,21 +46,6 @@
         button:hover {
             background: #45a049;
         }
-        .input-group {
-            margin-top: 30px;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 6px;
-            color: #555;
-        }
-        .input-group input {
-            width: 250px;
-            padding: 10px;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
     </style>
 </head>
 <body>
@@ -68,23 +53,20 @@
         <h1>Welcome to the Marketplace for Used Items!</h1>
         <h2>Please Choose One of the Following</h2>
 
-        <button id="loginBtn">Login</button>
+        <!-- Login button now redirects -->
+        <button onclick="window.location.href='login.html'">Login</button>
+
+        <!-- Keep other buttons running scripts -->
         <button id="createBtn">Create Account</button>
         <button id="forgotBtn">Forgot Password</button>
-
     </div>
 
     <script>
-        const LOGIN_PARAMS = [
-            "./use_cases/login/login.sh", "user_login"
+        const CREATE_PARAMS = [
+            "./use_cases/create_account/create_account.sh","create_param"
         ];
-
-        const CREATE_PARAMS_BASE = [
-            "./use_cases/create_account/create_account.sh", // second param will be added dynamically
-        ];
-
         const FORGOT_PARAMS = [
-            "./use_cases/forgot_password/forgot_password.sh", "reset_request"
+            "./use_cases/forgot_password/forgot_password.sh","reset_request"
         ];
 
         async function runScript(params) {
@@ -96,15 +78,8 @@
             return response.text();
         }
 
-        document.getElementById('loginBtn').addEventListener('click', async () => {
-            const text = await runScript(LOGIN_PARAMS);
-            alert(text);
-        });
-
         document.getElementById('createBtn').addEventListener('click', async () => {
-            const extra = document.getElementById('extraParam').value || "default_value";
-            const params = [...CREATE_PARAMS_BASE, extra];
-            const text = await runScript(params);
+            const text = await runScript(CREATE_PARAMS);
             alert(text);
         });
 
