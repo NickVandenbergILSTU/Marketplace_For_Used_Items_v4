@@ -65,6 +65,11 @@
         button.login:hover {
             background: #45a049;
         }
+        #userStatus {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -76,6 +81,9 @@
         <input type="password" id="password" placeholder="Password">
 
         <button class="login" id="loginBtn">Login</button>
+
+        <!-- Display the user ID -->
+        <p id="userStatus"></p>
     </div>
 
     <script>
@@ -90,13 +98,37 @@
             return response.text();
         }
 
+        async function checkLoginStatus() {
+            try {
+                const res = await fetch('./json/local/local_data.json');
+                const data = await res.json();
+
+                // Show the value on the page
+                document.getElementById('userStatus').textContent =
+                    `currentlyLoggedInUserID: ${data.currentlyLoggedInUserID}`;
+
+                // Redirect if logged in
+                if (data.currentlyLoggedInUserID !== -1) {
+                    window.location.href = 'main_menu.html';
+                }
+            } catch (err) {
+                console.error('Error checking login status:', err);
+            }
+        }
+
         document.getElementById('loginBtn').addEventListener('click', async () => {
             const user = document.getElementById('username').value || "";
             const pass = document.getElementById('password').value || "";
             const params = [LOGIN_SCRIPT, user, pass];
             const text = await runScript(params);
             alert(text);
+
+            // Refresh the page after the script finishes
+            location.reload();
         });
+
+        // Run on page load
+        checkLoginStatus();
     </script>
 </body>
 </html>
