@@ -70,6 +70,21 @@
             font-size: 1rem;
             color: #555;
         }
+        #goMainMenuBtn {
+            display: none;
+            margin-top: 20px;
+            width: 250px;
+            padding: 12px;
+            font-size: 1rem;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        #goMainMenuBtn:hover {
+            background: #1976D2;
+        }
     </style>
 </head>
 <body>
@@ -84,6 +99,9 @@
 
         <!-- Display the user ID -->
         <p id="userStatus"></p>
+
+        <!-- Button that appears if user is logged in -->
+        <button id="goMainMenuBtn" onclick="window.location.href='main_menu.html'">Go to Main Menu</button>
     </div>
 
     <script>
@@ -98,24 +116,6 @@
             return response.text();
         }
 
-        async function checkLoginStatus() {
-            try {
-                const res = await fetch('./json/local/local_data.json');
-                const data = await res.json();
-
-                // Show the value on the page
-                document.getElementById('userStatus').textContent =
-                    `currentlyLoggedInUserID: ${data.currentlyLoggedInUserID}`;
-
-                // Redirect if logged in
-                if (data.currentlyLoggedInUserID !== -1) {
-                    window.location.href = 'main_menu.html';
-                }
-            } catch (err) {
-                console.error('Error checking login status:', err);
-            }
-        }
-
         document.getElementById('loginBtn').addEventListener('click', async () => {
             const user = document.getElementById('username').value || "";
             const pass = document.getElementById('password').value || "";
@@ -123,12 +123,21 @@
             const text = await runScript(params);
             alert(text);
 
-            // Refresh the page after the script finishes
-            location.reload();
-        });
+            // After script finishes, check login status and redirect if logged in
+            try {
+                const res = await fetch('../json/local/local_data.json');
 
-        // Run on page load
-        checkLoginStatus();
+                const data = await res.json();
+                if (data.currentlyLoggedInUserID !== -1) {
+                    window.location.href = "main_menu.html";
+                } else {
+                    location.reload();
+                }
+            } catch (err) {
+                // fallback: reload if error
+                location.reload();
+            }
+        });
     </script>
 </body>
 </html>
