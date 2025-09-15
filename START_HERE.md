@@ -45,5 +45,4 @@ SETTING UP:
 5. TO BE ABLE TO COMMIT CHANGES:
 git config --global user.name "{username}"
 git config --global user.email "{email}"
-git remote set-url origin https://{github_pat}@github.com/NickVande
-nbergILSTU/Marketplace_For_Used_Items_v4.git
+git remote set-url origin https://{github_pat}@github.com/NickVandenbergILSTU/Marketplace_For_Used_Items_v4.git
