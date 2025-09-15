@@ -37,7 +37,7 @@ fi
 if [ -n "$USER_ID" ]; then
     # Set loggedInUserID in local_data.json
     jq --argjson id "$USER_ID" '.currentlyLoggedInUserID = $id' $LOCAL_DATA_JSON_PATH > tmp.$$.json && mv tmp.$$.json $LOCAL_DATA_JSON_PATH
-    echo "Login successful. User ID: $USER_ID"
+    echo "Login successful."
 else
     echo "Error: Invalid username or password."
     exit 1
