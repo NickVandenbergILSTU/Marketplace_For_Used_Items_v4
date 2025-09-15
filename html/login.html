@@ -116,24 +116,6 @@
             return response.text();
         }
 
-        // async function checkLoginStatus() {
-        //     try {
-        //         const res = await fetch('./../json/local/local_data.json');
-        //         const data = await res.json();
-
-        //         // Show the value on the page
-        //         document.getElementById('userStatus').textContent =
-        //             `currentlyLoggedInUserID: ${data.currentlyLoggedInUserID}`;
-
-        //         // If logged in, show the "Go to Main Menu" button
-        //         if (data.currentlyLoggedInUserID !== -1) {
-        //             document.getElementById('goMainMenuBtn').style.display = 'block';
-        //         }
-        //     } catch (err) {
-        //         console.error('Error checking login status:', err);
-        //     }
-        // }
-
         document.getElementById('loginBtn').addEventListener('click', async () => {
             const user = document.getElementById('username').value || "";
             const pass = document.getElementById('password').value || "";
@@ -142,12 +124,9 @@
             alert(text);
 
             // After script finishes, check login status and redirect if logged in
-
-            // ERROR IS IN THIS TRY BLOCK:
             try {
                 const res = await fetch('../json/local/local_data.json');
 
-                // ERROR IS ON THIS LINE::
                 const data = await res.json();
                 if (data.currentlyLoggedInUserID !== -1) {
                     window.location.href = "main_menu.html";

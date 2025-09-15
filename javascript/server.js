@@ -6,6 +6,7 @@ const app = express();
 
 app.use(express.json());
 app.use('/json', express.static('json'));
+app.use('/html', express.static('html'));
 
 // Serve static HTML/JSON from the ../html folder
 app.use(express.static(path.join(__dirname, '../html')));
