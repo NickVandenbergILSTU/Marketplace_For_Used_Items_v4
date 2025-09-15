@@ -11,13 +11,18 @@
 
 script_path=$1
 
+if [ -z "$script_path" ]; then
+  echo "Error: No script path provided."
+  exit 1
+fi
+
 # UNCOMMENT FOR PULLING AND PUSHING: If the script involves reading OR writing user data (json, user images, user ai convo history, etc.) > git pull
 # if($script_path = insert scripts that read or write user data (i.e. json) here)
 # then
   # git pull
 # fi
 
-echo $2
+
 
 # runs script stored in script_path variable, with all parameters
 $script_path "${@:2}"

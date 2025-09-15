@@ -8,15 +8,21 @@
 # if not, print error message and exit
 
 # Check whether this script has 2 parameters, print an error message and exit if not
-if [ "$#" -ne 2 ]; then
-    echo "Error: Please provide both username and password."
-    exit 1
-fi
 
 USERNAME="$1"
 PASSWORD="$2"
 ACCOUNTS_JSON_PATH="json/accounts.json"
 LOCAL_DATA_JSON_PATH="json/local/local_data.json"
+
+if [ "$#" -ne 2 or]; then
+    echo "Error: Please provide both username and password."
+    exit 1
+fi
+
+if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]; then
+  echo "Error: Both USERNAME and PASSWORD parameters are required."
+  exit 1
+fi
 
 # Check whether username and password match an account in accounts.json
 USER_ID=$(jq -r --arg u "$USERNAME" --arg p "$PASSWORD" \
