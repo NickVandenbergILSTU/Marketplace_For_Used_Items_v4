@@ -152,18 +152,13 @@
                 if (data.currentlyLoggedInUserID !== -1) {
                     window.location.href = "main_menu.html";
                 } else {
-                    // location.reload();
+                    location.reload();
                 }
-                window.location.href = "main_menu.html";
             } catch (err) {
                 // fallback: reload if error
-                window.location.href = "forgot_password.html";
-                // location.reload();
+                location.reload();
             }
         });
-
-        // Run on page load
-        // checkLoginStatus();
     </script>
 </body>
 </html>
