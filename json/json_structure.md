@@ -32,14 +32,13 @@ items.json:
 
 keep a json file for each item that exists (each item that belongs to someone or a store):
 
-    - item name
+    - item name (must be unique)
     - item id (randomly generated 20 digit number)
     - comments array (store id of person who posted the comment, and comment itself)
     - isReserved boolean (change this to false once the item is purchased)
     - string: picture path (picture is optional, set to "null" if no picture)
     - price
-    - total num of ratings
-    - sum of ratings (out of 5)
+    - ratings array (stores account id, and what rating they gave)
     - hasImage boolean?
 
 once an item is added, it will not be deleted from this array
