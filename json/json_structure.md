@@ -40,8 +40,7 @@ keep a json file for each item that exists (each item that belongs to someone or
     - price
     - total num of ratings
     - sum of ratings (out of 5)
-    - array of problems (store user id of who posted the problem, and the problem itself)
-    - hasImage boolean
+    - hasImage boolean?
 
 once an item is added, it will not be deleted from this array
 
