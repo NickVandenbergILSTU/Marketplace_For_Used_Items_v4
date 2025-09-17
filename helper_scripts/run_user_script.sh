@@ -9,6 +9,8 @@
 # =============================================
 # START SCRIPT HERE:
 
+echo "Running helper_scripts/run_user_script.sh..."
+
 script_path=$1
 
 if [ -z "$script_path" ]; then
