@@ -73,11 +73,8 @@
         .username {
             font-size: 18px;
             font-weight: 600;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 10px 20px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .main-content {
@@ -257,7 +254,7 @@
             <div class="menu-column">
                 <h2 class="column-title">Other</h2>
                 <button class="menu-button" onclick="openAIAssistant()">AI Assistant</button>
-                <button class="menu-button" onclick="autoPushPullData()">Auto Push and Pull Data</button>
+                <button class="menu-button" onclick="autoPushPullData()">Push and Pull Data Settings</button>
             </div>
         </div>
     </div>
@@ -265,19 +262,31 @@
     <script>
         let userData = null;
 
-        // Load user data from JSON file
+        // Load user data based on currently logged in user ID
         async function loadUserData() {
             try {
-                const response = await fetch('/json/accounts.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                // First, get the currently logged in user ID from local data
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                if (!localDataResponse.ok) {
+                    throw new Error(`HTTP error! status: ${localDataResponse.status}`);
                 }
-                userData = await response.json();
+                const localData = await localDataResponse.json();
+                const currentlyLoggedInUserID = localData.currentlyLoggedInUserID;
+
+                // Then, get all accounts data
+                const accountsResponse = await fetch('/json/accounts.json');
+                if (!accountsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${accountsResponse.status}`);
+                }
+                const accounts = await accountsResponse.json();
+
+                // Find the account with matching ID
+                const currentUser = accounts.find(account => account.id === currentlyLoggedInUserID);
                 
                 // Display username
                 const usernameElement = document.getElementById('username');
-                if (userData && userData.username) {
-                    usernameElement.textContent = userData.username;
+                if (currentUser && currentUser.username) {
+                    usernameElement.textContent = currentUser.username;
                 } else {
                     usernameElement.textContent = 'Guest User';
                 }
