@@ -25,21 +25,21 @@ Array of accounts containing:
 - profile picture png path (optional)
 - array of items this account owns (the array will just store item ids)
 - default store (location id)
+- array of store ids (stores owned by each user)
 
 =====================================================================
 items.json:
 
 keep a json file for each item that exists (each item that belongs to someone or a store):
 
-    - item name
+    - item name (must be unique)
     - item id (randomly generated 20 digit number)
     - comments array (store id of person who posted the comment, and comment itself)
     - isReserved boolean (change this to false once the item is purchased)
     - string: picture path (picture is optional, set to "null" if no picture)
     - price
-    - average rating (make n/a if no ratings)
-    - array of problems (store user id of who posted the problem, and the problem itself)
-    - hasImage boolean
+    - ratings array (stores account id, and what rating they gave)
+    - hasImage boolean?
 
 once an item is added, it will not be deleted from this array
 

@@ -36,6 +36,13 @@ SETTING UP:
         - Check LABS project > Nick's test repo > feature/javascript branch
 
 2. MAKE SURE YOU HAVE THE REPO CLONED INTO VSCODE
+
 3. CHANGE THE DIRECTORY TO THE ROOT OF YOUR REPO
-4. THERE IS DATA THAT ONLY WILL EXIST IN YOUR LOCAL REPO, NOT IN AZURE DEVOPS/GITHUB. RUN THIS TO CREATE THOSE FILES:
+
+4. THERE IS DATA THAT ONLY WILL EXIST IN YOUR LOCAL REPO, NOT IN AZURE DEVOPS/GITHUB. LOOK AT THIS FILE TO SEE WHAT TO COPY AND WHERE (this script does not work, just manually copy the files):
 ./helper_scripts/set_default_local_data_and_installs/set_default_local_data.sh
+
+5. TO BE ABLE TO COMMIT CHANGES:
+git config --global user.name "{username}"
+git config --global user.email "{email}"
+git remote set-url origin https://{github_pat}@github.com/NickVandenbergILSTU/Marketplace_For_Used_Items_v4.git

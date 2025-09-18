@@ -1,13 +1,19 @@
 #!/bin/bash
 
+# if the script has the wrong number of parameters, or if any param is empty, print an error message and exit
+
 # open an html file with the security question printed to the screen
-# also, create a script "enter_security_answer.sh" that will be displayed
-# in the html file, that takes the security answer as a parameter
+# the file also takes in the following as params:
+# - security answer
+# - new password
 
+# if the security answer is correct, check for the password
 
-# give the user 1 chance to get the question right, and let them know
-# if they are right or wrong
+# check password using the script ./use_cases/check_password_requirements/check_password_requirements.sh
+# if the password meets requirements:
+# - update the password stored in the json,
+# - set loggedin variable in local_data.json,
+# - redirect to main menu
+# if not:
+# - print an error message saying the security answer was correct, put password doesn't meet requirements, exit 1
 
-# if they are right, open a new html file prompting th user to enter a new password, update the password stored in the json, set loggedin variable in local_data.json, and open the main menu (use the helper script called in start.sh)
-
-# if they are wrong, print an error message and exit

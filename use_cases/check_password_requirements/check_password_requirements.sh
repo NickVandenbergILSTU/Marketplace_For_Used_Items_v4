@@ -1,0 +1,1 @@
+# exit if the password doesn't meet requirements
