@@ -26,6 +26,7 @@ Array of accounts containing:
 - array of items this account owns (the array will just store item ids)
 - default store (location id)
 - array of store ids (stores owned by each user)
+- auto push and pull data boolean
 
 =====================================================================
 items.json:

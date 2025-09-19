@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Menu</title>
+    <title>Main Menu - Marketplace for Used Items</title>
     <style>
         * {
             margin: 0;
@@ -246,9 +246,10 @@
             </div>
 
             <div class="menu-column">
-                <h2 class="column-title">Users</h2>
+                <h2 class="column-title">User Info</h2>
                 <button class="menu-button" onclick="viewAllAccounts()">All Accounts</button>
                 <button class="menu-button" onclick="viewMyAccount()">My Account</button>
+                <button class="menu-button" onclick="viewMoneyBalance()">Account Balance</button>
             </div>
 
             <div class="menu-column">
@@ -316,7 +317,7 @@
         }
 
         function viewMyItems() {
-            window.location.href = '/items/my';
+            window.location.href = '/html/main_menu_options/items/my_items.html';
         }
 
         function viewOrderHistory() {
