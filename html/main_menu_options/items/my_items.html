@@ -6,7 +6,6 @@
     <title>My Items - Marketplace for Used Items</title>
     <style>
         /* --- your existing CSS unchanged --- */
-        /* Add styling for item buttons */
         .item-button {
             width: 100%;
             display: flex;
@@ -54,7 +53,7 @@
             <div class="control-group">
                 <label class="control-label">Display By:</label>
                 <div class="button-group">
-                    <button class="sort-button active" onclick="sortBy('time')" id="sort-time">Time Acquired</button>
+                    <button class="sort-button active" onclick="sortBy('default')" id="sort-default">Default Order</button>
                     <button class="sort-button" onclick="sortBy('rating')" id="sort-rating">Rating</button>
                     <button class="sort-button" onclick="sortBy('alphabetical')" id="sort-alpha">Alphabetical</button>
                     <button class="sort-button" onclick="sortBy('price')" id="sort-price">Price</button>
@@ -81,23 +80,20 @@
     <script>
         let userData = null;
         let userItems = [];
-        let currentSort = 'time';
+        let defaultOrder = [];
+        let currentSort = 'default';
         let currentSearchTerm = '';
 
-        // Load user data
         async function loadUserData() {
             try {
-                // Get logged in user ID
                 const localDataResponse = await fetch('/json/local/local_data.json');
                 const localData = await localDataResponse.json();
                 const currentlyLoggedInUserID = localData.currentlyLoggedInUserID;
 
-                // Get all accounts
                 const accountsResponse = await fetch('/json/accounts.json');
                 const accounts = await accountsResponse.json();
                 const currentUser = accounts.find(acc => acc.id === currentlyLoggedInUserID);
 
-                // Display username
                 const usernameElement = document.getElementById('username');
                 if (currentUser && currentUser.username) {
                     usernameElement.textContent = currentUser.username;
@@ -106,7 +102,6 @@
                     usernameElement.textContent = 'Guest User';
                 }
 
-                // Load user's items
                 await loadUserItems();
             } catch (error) {
                 console.error('Error loading user data:', error);
@@ -115,7 +110,6 @@
             }
         }
 
-        // Load items from items.json
         async function loadUserItems() {
             if (!userData || !userData.myItems) {
                 document.getElementById('items-list').textContent = 'No items found.';
@@ -126,11 +120,11 @@
                 const itemsResponse = await fetch('/json/items.json');
                 const allItems = await itemsResponse.json();
 
-                // Map user's myItems IDs to actual item objects
                 userItems = userData.myItems
                     .map(id => allItems.find(item => item.id === id))
                     .filter(item => item !== undefined);
 
+                defaultOrder = [...userItems];
                 displayItems();
             } catch (error) {
                 console.error('Error loading items:', error);
@@ -138,18 +132,35 @@
             }
         }
 
-        // Display items as buttons
         function displayItems() {
             const itemsList = document.getElementById('items-list');
             itemsList.innerHTML = '';
 
-            let filteredItems = userItems;
+            let filteredItems = [...userItems];
 
-            // Apply search
             if (currentSearchTerm) {
                 filteredItems = filteredItems.filter(item =>
                     item.name.toLowerCase().includes(currentSearchTerm.toLowerCase())
                 );
+            }
+
+            // Apply sorting
+            switch (currentSort) {
+                case 'alphabetical':
+                    filteredItems.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'rating':
+                    filteredItems.sort((a, b) => (b.avgRating || 0) - (a.avgRating || 0));
+                    break;
+                case 'price':
+                    filteredItems.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+                    break;
+                case 'default':
+                default:
+                    filteredItems = defaultOrder.filter(item =>
+                        filteredItems.some(f => f.id === item.id)
+                    );
+                    break;
             }
 
             if (filteredItems.length === 0) {
@@ -157,40 +168,37 @@
                 return;
             }
 
-            // Render buttons
             filteredItems.forEach(item => {
                 const btn = document.createElement('button');
                 btn.className = 'item-button';
                 btn.innerHTML = `
                     <span class="item-name">${item.name}</span>
-                    <span class="item-price">$${item.price}</span>
+                    <span class="item-price">${item.price}</span>
                 `;
                 itemsList.appendChild(btn);
             });
         }
 
-        // Sort functionality (stub)
+        function parsePrice(priceStr) {
+            return parseFloat(priceStr.replace('$', '')) || 0;
+        }
+
         function sortBy(sortType) {
             document.querySelectorAll('.sort-button').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`sort-${sortType === 'alphabetical' ? 'alpha' : sortType}`).classList.add('active');
             currentSort = sortType;
-
-            // TODO: implement sorting logic
             displayItems();
         }
 
-        // Search functionality
         function searchItems() {
             currentSearchTerm = document.getElementById('search-input').value.trim();
             displayItems();
         }
 
-        // Navigation
         function goToMainMenu() {
             window.location.href = '/html/main_menu.html';
         }
 
-        // Setup
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('search-input').addEventListener('keypress', e => {
                 if (e.key === 'Enter') searchItems();

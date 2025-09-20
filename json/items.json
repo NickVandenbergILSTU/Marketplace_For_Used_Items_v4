@@ -2,31 +2,37 @@
     {
         "id": 1,
         "name": "item1",
-        "price": 100.00
+        "price": "$100.00",
+        "avgRating": 1.0
     },
     {
         "id": 2,
-        "name": "item2",
-        "price": 200.00
+        "name": "aitem2",
+        "price": "$200.00",
+        "avgRating": 2.0
     },
     {
         "id": 3,
         "name": "item5",
-        "price": 50.00
+        "price": "$50.00",
+        "avgRating": 3.0
     },
     {
         "id": 4,
         "name": "item4",
-        "price": 1.00
+        "price": "$1.50",
+        "avgRating": 4.0
     },
     {
         "id": 5,
         "name": "item6",
-        "price": 500.00
+        "price": "$500.00",
+        "avgRating": 6.0
     },
     {
         "id": 6,
         "name": "item7",
-        "price": 600.00
+        "price": "$600.00",
+        "avgRating": 5.0
     }
 ]
