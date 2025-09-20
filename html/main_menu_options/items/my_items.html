@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -108,24 +108,22 @@
                 const img = document.createElement("img");
                 img.className = "item-img";
                 img.alt = item.name;
-                img.src = `/images/${item.id}.png`;
+                img.src = `/images/items/${item.id}.png`;
 
-                img.onerror = () => {
-                    img.style.display = "none"; // hide broken img
-                };
-
-                imgWrapper.appendChild(img);
-
-                // Image buttons
                 const imgButtons = document.createElement("div");
-                if (img.complete && img.naturalWidth !== 0) {
+
+                img.onload = () => {
                     imgButtons.innerHTML = `
                         <button>Replace Image</button>
                         <button>Delete Image</button>
                     `;
-                } else {
+                };
+                img.onerror = () => {
+                    img.style.display = "none";
                     imgButtons.innerHTML = `<button>Add Image</button>`;
-                }
+                };
+
+                imgWrapper.appendChild(img);
 
                 // Action buttons
                 const actions = document.createElement("div");

@@ -5,6 +5,7 @@
         "password": "pass",
         "autoPushAndPullData": "false",
         "accountBlanance": 1000.00,
-        "myItems": [1,2,3,4,5]
+        "myItems": [1,2,3,4,5],
+        "bookmarkedItems": [1,2]
     }
 ]
