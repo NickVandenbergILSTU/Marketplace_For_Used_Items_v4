@@ -71,5 +71,32 @@ app.get('/api/items', (req, res) => {
     }
 });
 
+const ACCOUNTS_PATH = path.join(__dirname, '../json/accounts.json');
+const LOCATIONS_PATH = path.join(__dirname, '../json/locations.json');
+
+// API route to get accounts
+app.get('/api/accounts', (req, res) => {
+    try {
+        const rawData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
+        const accounts = JSON.parse(rawData);
+        res.json(accounts);
+    } catch (err) {
+        console.error('Error reading accounts.json:', err);
+        res.status(500).json({ error: 'Failed to load accounts' });
+    }
+});
+
+// API route to get locations
+app.get('/api/locations', (req, res) => {
+    try {
+        const rawData = fs.readFileSync(LOCATIONS_PATH, 'utf8');
+        const locations = JSON.parse(rawData);
+        res.json(locations);
+    } catch (err) {
+        console.error('Error reading locations.json:', err);
+        res.status(500).json({ error: 'Failed to load locations' });
+    }
+});
+
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
