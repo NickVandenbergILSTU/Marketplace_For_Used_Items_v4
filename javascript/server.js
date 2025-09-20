@@ -54,5 +54,19 @@ app.post('/run-script', (req, res) => {
     });
 });
 
+const ITEMS_PATH = path.join(__dirname, '../json/items.json');
+
+// API route to get items
+app.get('/api/items', (req, res) => {
+    try {
+        const rawData = fs.readFileSync(ITEMS_PATH, 'utf8');
+        const items = JSON.parse(rawData);
+        res.json(items);
+    } catch (err) {
+        console.error('Error reading items.json:', err);
+        res.status(500).json({ error: 'Failed to load items' });
+    }
+});
+
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

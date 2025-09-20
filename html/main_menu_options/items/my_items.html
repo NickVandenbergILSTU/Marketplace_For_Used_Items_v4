@@ -1,210 +1,157 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Items - Marketplace for Used Items</title>
+    <title>My Items</title>
     <style>
-        /* --- your existing CSS unchanged --- */
-        .item-button {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 20px;
-            margin: 8px 0;
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+        }
+
+        #itemsContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            padding: 16px;
+        }
+
+        .item-box {
+            border: 1px solid #ccc;
             border-radius: 12px;
-            border: 2px solid #e5e7eb;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 12px;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .item-img {
+            width: 100%;
+            max-height: 150px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .item-box button {
+            margin: 4px 2px;
+            padding: 6px 10px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .item-button:hover {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            color: white;
-            border-color: #dc2626;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(220, 38, 38, 0.3);
-        }
-
-        .item-name {
-            flex: 1;
-            text-align: left;
-        }
-
-        .item-price {
-            font-weight: bold;
-            margin-left: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="header-panel">
-        <button class="main-menu-btn" onclick="goToMainMenu()">Main Menu</button>
-        <div class="header-title">My Items</div>
-        <div class="username" id="username">Loading...</div>
+    <h1>My Items</h1>
+    <div>
+        <label for="sort">Sort by:</label>
+        <select id="sort" onchange="loadItems(this.value)">
+            <option value="default">Default Order</option>
+            <option value="alphabetical">Alphabetical</option>
+            <option value="rating">Rating</option>
+            <option value="price">Price</option>
+        </select>
     </div>
 
-    <div class="main-content">
-        <div class="controls-section">
-            <div class="control-group">
-                <label class="control-label">Display By:</label>
-                <div class="button-group">
-                    <button class="sort-button active" onclick="sortBy('default')" id="sort-default">Default Order</button>
-                    <button class="sort-button" onclick="sortBy('rating')" id="sort-rating">Rating</button>
-                    <button class="sort-button" onclick="sortBy('alphabetical')" id="sort-alpha">Alphabetical</button>
-                    <button class="sort-button" onclick="sortBy('price')" id="sort-price">Price</button>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label">Search:</label>
-                <div class="search-group">
-                    <input type="text" class="search-input" id="search-input" placeholder="Search your items...">
-                    <button class="search-button" onclick="searchItems()">Search</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="items-container">
-            <h2 class="items-title">Your Items</h2>
-            <div id="items-list" class="no-items-message">
-                Loading your items...
-            </div>
-        </div>
-    </div>
+    <div id="itemsContainer"></div>
 
     <script>
-        let userData = null;
-        let userItems = [];
-        let defaultOrder = [];
-        let currentSort = 'default';
-        let currentSearchTerm = '';
+        async function loadItems(order = "default") {
+            const res = await fetch("/api/items");
+            let items = await res.json();
 
-        async function loadUserData() {
-            try {
-                const localDataResponse = await fetch('/json/local/local_data.json');
-                const localData = await localDataResponse.json();
-                const currentlyLoggedInUserID = localData.currentlyLoggedInUserID;
+            // Sorting logic
+            if (order === "alphabetical") {
+                items.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (order === "rating") {
+                items.sort((a, b) => (b.avgRating || 0) - (a.avgRating || 0));
+            } else if (order === "price") {
+                items.sort((a, b) => {
+                    const parsePrice = str => parseFloat(str.replace(/[^0-9.]/g, ""));
+                    return parsePrice(b.price) - parsePrice(a.price);
+                });
+            }
+            // "default" = JSON order, leave as is
 
-                const accountsResponse = await fetch('/json/accounts.json');
-                const accounts = await accountsResponse.json();
-                const currentUser = accounts.find(acc => acc.id === currentlyLoggedInUserID);
+            renderItems(items);
+        }
 
-                const usernameElement = document.getElementById('username');
-                if (currentUser && currentUser.username) {
-                    usernameElement.textContent = currentUser.username;
-                    userData = currentUser;
+        function renderItems(items) {
+            const container = document.getElementById("itemsContainer");
+            container.innerHTML = "";
+
+            items.forEach(item => {
+                const itemBox = document.createElement("div");
+                itemBox.className = "item-box";
+
+                // Name
+                const name = document.createElement("h3");
+                name.textContent = item.name;
+
+                // Price
+                const price = document.createElement("p");
+                price.textContent = `Price: ${item.price}`;
+
+                // Rating with stars
+                const rating = document.createElement("p");
+                const stars = "⭐".repeat(Math.floor(item.avgRating || 0));
+                rating.textContent = `Rating: ${item.avgRating?.toFixed(1) || "0.0"} ${stars}`;
+
+                // Image
+                const imgWrapper = document.createElement("div");
+                const img = document.createElement("img");
+                img.className = "item-img";
+                img.alt = item.name;
+                img.src = `/images/${item.id}.png`;
+
+                img.onerror = () => {
+                    img.style.display = "none"; // hide broken img
+                };
+
+                imgWrapper.appendChild(img);
+
+                // Image buttons
+                const imgButtons = document.createElement("div");
+                if (img.complete && img.naturalWidth !== 0) {
+                    imgButtons.innerHTML = `
+                        <button>Replace Image</button>
+                        <button>Delete Image</button>
+                    `;
                 } else {
-                    usernameElement.textContent = 'Guest User';
+                    imgButtons.innerHTML = `<button>Add Image</button>`;
                 }
 
-                await loadUserItems();
-            } catch (error) {
-                console.error('Error loading user data:', error);
-                document.getElementById('username').textContent = 'Guest User';
-                document.getElementById('items-list').textContent = 'Error loading items.';
-            }
-        }
-
-        async function loadUserItems() {
-            if (!userData || !userData.myItems) {
-                document.getElementById('items-list').textContent = 'No items found.';
-                return;
-            }
-
-            try {
-                const itemsResponse = await fetch('/json/items.json');
-                const allItems = await itemsResponse.json();
-
-                userItems = userData.myItems
-                    .map(id => allItems.find(item => item.id === id))
-                    .filter(item => item !== undefined);
-
-                defaultOrder = [...userItems];
-                displayItems();
-            } catch (error) {
-                console.error('Error loading items:', error);
-                document.getElementById('items-list').textContent = 'Error loading items.';
-            }
-        }
-
-        function displayItems() {
-            const itemsList = document.getElementById('items-list');
-            itemsList.innerHTML = '';
-
-            let filteredItems = [...userItems];
-
-            if (currentSearchTerm) {
-                filteredItems = filteredItems.filter(item =>
-                    item.name.toLowerCase().includes(currentSearchTerm.toLowerCase())
-                );
-            }
-
-            // Apply sorting
-            switch (currentSort) {
-                case 'alphabetical':
-                    filteredItems.sort((a, b) => a.name.localeCompare(b.name));
-                    break;
-                case 'rating':
-                    filteredItems.sort((a, b) => (b.avgRating || 0) - (a.avgRating || 0));
-                    break;
-                case 'price':
-                    filteredItems.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
-                    break;
-                case 'default':
-                default:
-                    filteredItems = defaultOrder.filter(item =>
-                        filteredItems.some(f => f.id === item.id)
-                    );
-                    break;
-            }
-
-            if (filteredItems.length === 0) {
-                itemsList.textContent = 'No items found.';
-                return;
-            }
-
-            filteredItems.forEach(item => {
-                const btn = document.createElement('button');
-                btn.className = 'item-button';
-                btn.innerHTML = `
-                    <span class="item-name">${item.name}</span>
-                    <span class="item-price">${item.price}</span>
+                // Action buttons
+                const actions = document.createElement("div");
+                actions.innerHTML = `
+                    <button>Rate</button>
+                    <button>Set Price</button>
+                    <button>${item.bookmarked ? "Unbookmark" : "Bookmark"}</button>
+                    <button>Sell to User</button>
+                    <button>Sell to Store</button>
+                    <button>Comments</button>
                 `;
-                itemsList.appendChild(btn);
+
+                // Build card
+                itemBox.appendChild(name);
+                itemBox.appendChild(price);
+                itemBox.appendChild(rating);
+                itemBox.appendChild(imgWrapper);
+                itemBox.appendChild(imgButtons);
+                itemBox.appendChild(actions);
+
+                container.appendChild(itemBox);
             });
         }
 
-        function parsePrice(priceStr) {
-            return parseFloat(priceStr.replace('$', '')) || 0;
-        }
-
-        function sortBy(sortType) {
-            document.querySelectorAll('.sort-button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`sort-${sortType === 'alphabetical' ? 'alpha' : sortType}`).classList.add('active');
-            currentSort = sortType;
-            displayItems();
-        }
-
-        function searchItems() {
-            currentSearchTerm = document.getElementById('search-input').value.trim();
-            displayItems();
-        }
-
-        function goToMainMenu() {
-            window.location.href = '/html/main_menu.html';
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('search-input').addEventListener('keypress', e => {
-                if (e.key === 'Enter') searchItems();
-            });
-            loadUserData();
-        });
+        // Load default on startup
+        loadItems();
     </script>
 </body>
 </html>
