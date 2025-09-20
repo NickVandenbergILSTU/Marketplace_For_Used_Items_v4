@@ -45,6 +45,10 @@
             border-radius: 6px;
             cursor: pointer;
         }
+
+        .action-group {
+            margin-top: 6px;
+        }
     </style>
 </head>
 <body>
@@ -66,20 +70,37 @@
             const res = await fetch("/api/items");
             let items = await res.json();
 
+            // Calculate average rating from ratings array
+            items.forEach(item => {
+                if (Array.isArray(item.ratings) && item.ratings.length > 0) {
+                    const sum = item.ratings.reduce((acc, r) => acc + r.rating, 0);
+                    item.avgRating = sum / item.ratings.length;
+                } else {
+                    item.avgRating = 0;
+                }
+            });
+
             // Sorting logic
             if (order === "alphabetical") {
                 items.sort((a, b) => a.name.localeCompare(b.name));
             } else if (order === "rating") {
-                items.sort((a, b) => (b.avgRating || 0) - (a.avgRating || 0));
+                items.sort((a, b) => b.avgRating - a.avgRating);
             } else if (order === "price") {
                 items.sort((a, b) => {
                     const parsePrice = str => parseFloat(str.replace(/[^0-9.]/g, ""));
                     return parsePrice(b.price) - parsePrice(a.price);
                 });
             }
-            // "default" = JSON order, leave as is
 
             renderItems(items);
+        }
+
+        async function runUserScript(param) {
+            await fetch("/run-script", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ params: ["./helper_scripts/run_user_script.sh", param] })
+            });
         }
 
         function renderItems(items) {
@@ -100,8 +121,8 @@
 
                 // Rating with stars
                 const rating = document.createElement("p");
-                const stars = "⭐".repeat(Math.floor(item.avgRating || 0));
-                rating.textContent = `Rating: ${item.avgRating?.toFixed(1) || "0.0"} ${stars}`;
+                const stars = "⭐".repeat(Math.floor(item.avgRating));
+                rating.textContent = `Rating: ${item.avgRating.toFixed(1)} ${stars}`;
 
                 // Image
                 const imgWrapper = document.createElement("div");
@@ -125,16 +146,74 @@
 
                 imgWrapper.appendChild(img);
 
-                // Action buttons
+                // Actions
                 const actions = document.createElement("div");
-                actions.innerHTML = `
-                    <button>Rate</button>
-                    <button>Set Price</button>
-                    <button>${item.bookmarked ? "Unbookmark" : "Bookmark"}</button>
-                    <button>Sell to User</button>
-                    <button>Sell to Store</button>
-                    <button>Comments</button>
-                `;
+                actions.className = "action-group";
+
+                // ⭐ Rate (dropdown + button)
+                const rateDiv = document.createElement("div");
+                const rateSelect = document.createElement("select");
+                for (let i = 1; i <= 5; i++) {
+                    const opt = document.createElement("option");
+                    opt.value = i;
+                    opt.textContent = i;
+                    rateSelect.appendChild(opt);
+                }
+                const rateBtn = document.createElement("button");
+                rateBtn.textContent = "Rate";
+                rateBtn.onclick = () => runUserScript(rateSelect.value);
+                rateDiv.appendChild(rateSelect);
+                rateDiv.appendChild(rateBtn);
+
+                // 💲 Set Price (textbox + button)
+                const priceDiv = document.createElement("div");
+                const priceInput = document.createElement("input");
+                priceInput.type = "text";
+                priceInput.placeholder = "New Price";
+                const priceBtn = document.createElement("button");
+                priceBtn.textContent = "Set Price";
+                priceBtn.onclick = () => runUserScript(priceInput.value);
+                priceDiv.appendChild(priceInput);
+                priceDiv.appendChild(priceBtn);
+
+                // 🔖 Bookmark
+                const bookmarkBtn = document.createElement("button");
+                bookmarkBtn.textContent = item.bookmarked ? "Unbookmark" : "Bookmark";
+                bookmarkBtn.onclick = () => runUserScript("bookmark");
+
+                // 👤 Sell to User (textbox + button)
+                const sellUserDiv = document.createElement("div");
+                const sellUserInput = document.createElement("input");
+                sellUserInput.type = "text";
+                sellUserInput.placeholder = "User ID";
+                const sellUserBtn = document.createElement("button");
+                sellUserBtn.textContent = "Sell to User";
+                sellUserBtn.onclick = () => runUserScript(sellUserInput.value);
+                sellUserDiv.appendChild(sellUserInput);
+                sellUserDiv.appendChild(sellUserBtn);
+
+                // 🏪 Sell to Store (textbox + button)
+                const sellStoreDiv = document.createElement("div");
+                const sellStoreInput = document.createElement("input");
+                sellStoreInput.type = "text";
+                sellStoreInput.placeholder = "Store ID";
+                const sellStoreBtn = document.createElement("button");
+                sellStoreBtn.textContent = "Sell to Store";
+                sellStoreBtn.onclick = () => runUserScript(sellStoreInput.value);
+                sellStoreDiv.appendChild(sellStoreInput);
+                sellStoreDiv.appendChild(sellStoreBtn);
+
+                // 💬 Comments placeholder
+                const commentsBtn = document.createElement("button");
+                commentsBtn.textContent = "Comments";
+
+                // Add everything
+                actions.appendChild(rateDiv);
+                actions.appendChild(priceDiv);
+                actions.appendChild(bookmarkBtn);
+                actions.appendChild(sellUserDiv);
+                actions.appendChild(sellStoreDiv);
+                actions.appendChild(commentsBtn);
 
                 // Build card
                 itemBox.appendChild(name);
