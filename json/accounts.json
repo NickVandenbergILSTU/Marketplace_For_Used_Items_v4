@@ -3,6 +3,8 @@
         "id": 41,
         "username": "nick",
         "password": "pass",
-        "autoPushAndPullData": "false"
+        "autoPushAndPullData": "false",
+        "accountBlanance": 1000.00,
+        "myItems": [1,2,3,4,5,6]
     }
 ]
