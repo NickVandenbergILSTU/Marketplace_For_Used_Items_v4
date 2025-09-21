@@ -74,7 +74,7 @@ fi
 
 # If script involves writing user data > git add files; git commit -m "message"; git push {files that could have been changed}
 if [ "$read_and_write" == "true" ]; then
-  git add .
+  git add /json/*.json /images/*/*.png
   git commit -m "[AUTOMATED COMMIT, DATA UPDATED]"
   git push
 fi
