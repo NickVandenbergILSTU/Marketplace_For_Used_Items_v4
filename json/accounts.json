@@ -16,14 +16,5 @@
         "accountBlanance": 1000.00,
         "myItems": [],
         "bookmarkedItems": [1]
-    },
-    {
-        "id": 43,
-        "username": "steve",
-        "password": "password",
-        "autoPushAndPullData": "false",
-        "accountBlanance": 1000.00,
-        "myItems": [],
-        "bookmarkedItems": [1]
     }
 ]
