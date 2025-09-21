@@ -95,11 +95,11 @@
             renderItems(items);
         }
 
-        async function runUserScript(param) {
+        async function runUserScript(params) {
             await fetch("/run-script", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ params: ["./helper_scripts/run_user_script.sh", param] })
+                body: JSON.stringify({ params })
             });
         }
 
