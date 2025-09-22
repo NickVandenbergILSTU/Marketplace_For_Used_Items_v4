@@ -14,10 +14,10 @@ PASSWORD="$2"
 ACCOUNTS_JSON_PATH="json/accounts.json"
 LOCAL_DATA_JSON_PATH="json/local/local_data.json"
 
-if [ "$#" -ne 2 or]; then
-    echo "Error: Please provide both username and password."
-    exit 1
-fi
+# if [ "$#" -ne 2 or]; then
+#     echo "Error: Please provide both username and password."
+#     exit 1
+# fi
 
 if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]; then
   echo "Error: Both USERNAME and PASSWORD parameters are required."
