@@ -1,6 +1,6 @@
 #!/bin/bash
 
-$1 = "[AUTOMATED COMMIT, DATA UPDATED]"
+message="${1:-[AUTOMATED COMMIT, DATA UPDATED]}"
 git add .
-git commit -m "$1"
+git commit -m "$message"
 git push
