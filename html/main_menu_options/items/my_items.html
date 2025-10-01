@@ -49,6 +49,16 @@
         .action-group {
             margin-top: 6px;
         }
+
+        .item-name-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bookmark-emoji {
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
@@ -66,9 +76,13 @@
     <div id="itemsContainer"></div>
 
     <script>
+        let userBookmarkedItems = [];
+
         async function loadItems(order = "default") {
             const res = await fetch("/api/my-items");
-            let items = await res.json();
+            const data = await res.json();
+            let items = data.items;
+            userBookmarkedItems = data.bookmarkedItems;
 
             // Calculate average rating
             items.forEach(item => {
@@ -111,9 +125,24 @@
                 const itemBox = document.createElement("div");
                 itemBox.className = "item-box";
 
-                // Name
+                const isBookmarked = userBookmarkedItems.includes(item.id);
+
+                // Name with bookmark emoji
+                const nameContainer = document.createElement("div");
+                nameContainer.className = "item-name-container";
+                
                 const name = document.createElement("h3");
                 name.textContent = item.name;
+                name.style.margin = "0";
+                
+                nameContainer.appendChild(name);
+                
+                if (isBookmarked) {
+                    const bookmarkEmoji = document.createElement("span");
+                    bookmarkEmoji.className = "bookmark-emoji";
+                    bookmarkEmoji.textContent = "🔖";
+                    nameContainer.appendChild(bookmarkEmoji);
+                }
 
                 // Price
                 const price = document.createElement("p");
@@ -178,7 +207,7 @@
 
                 // Bookmark
                 const bookmarkBtn = document.createElement("button");
-                bookmarkBtn.textContent = item.bookmarked ? "Unbookmark" : "Bookmark";
+                bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
                 bookmarkBtn.onclick = () => runUserScript("bookmark");
 
                 // Sell to User (dropdown + search)
@@ -234,7 +263,7 @@
                 actions.appendChild(commentsBtn);
 
                 // Build card
-                itemBox.appendChild(name);
+                itemBox.appendChild(nameContainer);
                 itemBox.appendChild(price);
                 itemBox.appendChild(rating);
                 itemBox.appendChild(imgWrapper);

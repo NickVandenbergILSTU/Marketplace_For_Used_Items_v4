@@ -71,7 +71,7 @@ app.get('/api/items', (req, res) => {
     }
 });
 
-// NEW API route to get only the logged-in user's items
+// API route to get only the logged-in user's items with bookmark info
 app.get('/api/my-items', (req, res) => {
     try {
         // Read local_data.json to get currentlyLoggedInUserID
@@ -91,8 +91,9 @@ app.get('/api/my-items', (req, res) => {
             return res.status(404).json({ error: 'User account not found' });
         }
 
-        // Get the user's myItems array
+        // Get the user's myItems array and bookmarkedItems array
         const userItemIds = userAccount.myItems || [];
+        const bookmarkedItems = userAccount.bookmarkedItems || [];
 
         // Read all items
         const itemsData = fs.readFileSync(ITEMS_PATH, 'utf8');
@@ -101,7 +102,10 @@ app.get('/api/my-items', (req, res) => {
         // Filter to only include items in the user's myItems array
         const userItems = allItems.filter(item => userItemIds.includes(item.id));
 
-        res.json(userItems);
+        res.json({
+            items: userItems,
+            bookmarkedItems: bookmarkedItems
+        });
     } catch (err) {
         console.error('Error loading user items:', err);
         res.status(500).json({ error: 'Failed to load user items' });
