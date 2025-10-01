@@ -344,6 +344,7 @@
 
     <script>
         let userBookmarkedItems = [];
+        let currentUserId = null;
 
         // Load user data to display username
         async function loadUserData() {
@@ -353,7 +354,7 @@
                     throw new Error(`HTTP error! status: ${localDataResponse.status}`);
                 }
                 const localData = await localDataResponse.json();
-                const currentlyLoggedInUserID = localData.currentlyLoggedInUserID;
+                currentUserId = localData.currentlyLoggedInUserID;
 
                 const accountsResponse = await fetch('/json/accounts.json');
                 if (!accountsResponse.ok) {
@@ -361,7 +362,7 @@
                 }
                 const accounts = await accountsResponse.json();
 
-                const currentUser = accounts.find(account => account.id === currentlyLoggedInUserID);
+                const currentUser = accounts.find(account => account.id === currentUserId);
                 
                 const usernameElement = document.getElementById('username');
                 if (currentUser && currentUser.username) {
@@ -519,11 +520,14 @@
                 fetch("/api/accounts")
                     .then(res => res.json())
                     .then(accounts => {
+                        // Filter out the currently logged in user
                         accounts.forEach(acc => {
-                            const opt = document.createElement("option");
-                            opt.value = acc.id;
-                            opt.textContent = acc.username;
-                            sellUserSelect.appendChild(opt);
+                            if (acc.id !== currentUserId) {
+                                const opt = document.createElement("option");
+                                opt.value = acc.id;
+                                opt.textContent = acc.username;
+                                sellUserSelect.appendChild(opt);
+                            }
                         });
                     });
                 const sellUserBtn = document.createElement("button");
