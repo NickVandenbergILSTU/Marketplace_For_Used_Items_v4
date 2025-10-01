@@ -72,6 +72,13 @@
             box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
         }
 
+        .username {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
         .sort-controls {
             background: white;
             border-radius: 15px;
@@ -316,9 +323,9 @@
 </head>
 <body>
     <div class="header-panel">
-        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">Main Menu</button>
+        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Back to Menu</button>
         <div class="header-title">My Items</div>
-        <div style="width: 150px;"></div>
+        <div class="username" id="username">Loading...</div>
     </div>
 
     <div class="main-content">
@@ -337,6 +344,36 @@
 
     <script>
         let userBookmarkedItems = [];
+
+        // Load user data to display username
+        async function loadUserData() {
+            try {
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                if (!localDataResponse.ok) {
+                    throw new Error(`HTTP error! status: ${localDataResponse.status}`);
+                }
+                const localData = await localDataResponse.json();
+                const currentlyLoggedInUserID = localData.currentlyLoggedInUserID;
+
+                const accountsResponse = await fetch('/json/accounts.json');
+                if (!accountsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${accountsResponse.status}`);
+                }
+                const accounts = await accountsResponse.json();
+
+                const currentUser = accounts.find(account => account.id === currentlyLoggedInUserID);
+                
+                const usernameElement = document.getElementById('username');
+                if (currentUser && currentUser.username) {
+                    usernameElement.textContent = currentUser.username;
+                } else {
+                    usernameElement.textContent = 'Guest User';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'Guest User';
+            }
+        }
 
         async function loadItems(order = "default") {
             const res = await fetch("/api/my-items");
@@ -540,8 +577,11 @@
             });
         }
 
-        // Load default on startup
-        loadItems();
+        // Load user data and items on startup
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            loadItems();
+        });
     </script>
 </body>
 </html>
