@@ -2,6 +2,19 @@
     {
         "id": 41,
         "username": "nick",
-        "password": "vandy"
+        "password": "pass",
+        "autoPushAndPullData": "false",
+        "accountBlanance": 1000.00,
+        "myItems": [1,2,3,4,5],
+        "bookmarkedItems": [1,2]
+    },
+    {
+        "id": 42,
+        "username": "john-smith",
+        "password": "password",
+        "autoPushAndPullData": "false",
+        "accountBlanance": 1000.00,
+        "myItems": [],
+        "bookmarkedItems": [1]
     }
 ]

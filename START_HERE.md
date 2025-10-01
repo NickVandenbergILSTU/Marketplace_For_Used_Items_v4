@@ -1,11 +1,3 @@
-WELCOME TO THE MARKETPLACE FOR USED ITEMS!
-
-TO OPEN THE MARKETPLACE, COPY THE FOLLOWING PATH INTO YOUR TERMINAL IN YOUR CLONED REPO:
-(NOTE, THIS DOES NOT DO ANYTHING YET)
-./start.sh
-
-============================================================================
-
 SETTING UP:
 
 1. MAKE SURE YOUR PC HAS THE FOLLOWING DOWNLOADED:
@@ -39,10 +31,14 @@ SETTING UP:
 
 3. CHANGE THE DIRECTORY TO THE ROOT OF YOUR REPO
 
-4. THERE IS DATA THAT ONLY WILL EXIST IN YOUR LOCAL REPO, NOT IN AZURE DEVOPS/GITHUB. LOOK AT THIS FILE TO SEE WHAT TO COPY AND WHERE (this script does not work, just manually copy the files):
+4. THERE IS DATA THAT ONLY WILL EXIST IN YOUR LOCAL REPO, NOT IN AZURE DEVOPS/GITHUB. 
+RUN THIS SCRIPT TO SET THOSE FILES UP:
 ./helper_scripts/set_default_local_data_and_installs/set_default_local_data.sh
 
 5. TO BE ABLE TO COMMIT CHANGES:
 git config --global user.name "{username}"
 git config --global user.email "{email}"
 git remote set-url origin https://{github_pat}@github.com/NickVandenbergILSTU/Marketplace_For_Used_Items_v4.git
+
+6. IF YOU HAVE ISSUES WITH INSTALLS, RUN THIS:
+./helper_scripts/set_default_local_data_and_installs/run_installs.sh

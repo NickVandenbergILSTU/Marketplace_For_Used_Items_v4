@@ -8,6 +8,9 @@ app.use(express.json());
 app.use('/json', express.static('json'));
 app.use('/html', express.static('html'));
 
+// serve item images
+app.use('/images', express.static(path.join(__dirname, '../images')));
+
 // Serve static HTML/JSON from the ../html folder
 app.use(express.static(path.join(__dirname, '../html')));
 
@@ -44,7 +47,7 @@ app.post('/run-script', (req, res) => {
     // Replace spaces with ~ and escape single quotes
     const safeParams = params
         .map(p => p.replace(/ /g, '~'))                    // convert spaces to ~
-        .map(p => `'${p.replace(/'/g, `'\\''`)}'`)          // escape single quotes
+        .map(p => `${p.replace(/'/g, '\\\'')}`)          // escape single quotes
         .join(' ');
 
     exec(`bash "${absoluteScriptPath}" ${safeParams}`, (error, stdout, stderr) => {
@@ -52,6 +55,84 @@ app.post('/run-script', (req, res) => {
         if (stderr) console.error(stderr);
         res.send(`Script output:\n${stdout}`);
     });
+});
+
+const ITEMS_PATH = path.join(__dirname, '../json/items.json');
+
+// API route to get items
+app.get('/api/items', (req, res) => {
+    try {
+        const rawData = fs.readFileSync(ITEMS_PATH, 'utf8');
+        const items = JSON.parse(rawData);
+        res.json(items);
+    } catch (err) {
+        console.error('Error reading items.json:', err);
+        res.status(500).json({ error: 'Failed to load items' });
+    }
+});
+
+// NEW API route to get only the logged-in user's items
+app.get('/api/my-items', (req, res) => {
+    try {
+        // Read local_data.json to get currentlyLoggedInUserID
+        const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
+        const currentUserId = localData.currentlyLoggedInUserID;
+
+        if (currentUserId === -1) {
+            return res.status(401).json({ error: 'No user logged in' });
+        }
+
+        // Read accounts.json to find the user's account
+        const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
+        const accounts = JSON.parse(accountsData);
+        const userAccount = accounts.find(acc => acc.id === currentUserId);
+
+        if (!userAccount) {
+            return res.status(404).json({ error: 'User account not found' });
+        }
+
+        // Get the user's myItems array
+        const userItemIds = userAccount.myItems || [];
+
+        // Read all items
+        const itemsData = fs.readFileSync(ITEMS_PATH, 'utf8');
+        const allItems = JSON.parse(itemsData);
+
+        // Filter to only include items in the user's myItems array
+        const userItems = allItems.filter(item => userItemIds.includes(item.id));
+
+        res.json(userItems);
+    } catch (err) {
+        console.error('Error loading user items:', err);
+        res.status(500).json({ error: 'Failed to load user items' });
+    }
+});
+
+const ACCOUNTS_PATH = path.join(__dirname, '../json/accounts.json');
+const LOCATIONS_PATH = path.join(__dirname, '../json/locations.json');
+
+// API route to get accounts
+app.get('/api/accounts', (req, res) => {
+    try {
+        const rawData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
+        const accounts = JSON.parse(rawData);
+        res.json(accounts);
+    } catch (err) {
+        console.error('Error reading accounts.json:', err);
+        res.status(500).json({ error: 'Failed to load accounts' });
+    }
+});
+
+// API route to get locations
+app.get('/api/locations', (req, res) => {
+    try {
+        const rawData = fs.readFileSync(LOCATIONS_PATH, 'utf8');
+        const locations = JSON.parse(rawData);
+        res.json(locations);
+    } catch (err) {
+        console.error('Error reading locations.json:', err);
+        res.status(500).json({ error: 'Failed to load locations' });
+    }
 });
 
 const PORT = 3000;
