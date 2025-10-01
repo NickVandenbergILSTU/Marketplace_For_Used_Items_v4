@@ -47,7 +47,7 @@ app.post('/run-script', (req, res) => {
     // Replace spaces with ~ and escape single quotes
     const safeParams = params
         .map(p => p.replace(/ /g, '~'))                    // convert spaces to ~
-        .map(p => `'${p.replace(/'/g, `'\\''`)}'`)          // escape single quotes
+        .map(p => `${p.replace(/'/g, '\\\'')}`)          // escape single quotes
         .join(' ');
 
     exec(`bash "${absoluteScriptPath}" ${safeParams}`, (error, stdout, stderr) => {
@@ -68,6 +68,43 @@ app.get('/api/items', (req, res) => {
     } catch (err) {
         console.error('Error reading items.json:', err);
         res.status(500).json({ error: 'Failed to load items' });
+    }
+});
+
+// NEW API route to get only the logged-in user's items
+app.get('/api/my-items', (req, res) => {
+    try {
+        // Read local_data.json to get currentlyLoggedInUserID
+        const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
+        const currentUserId = localData.currentlyLoggedInUserID;
+
+        if (currentUserId === -1) {
+            return res.status(401).json({ error: 'No user logged in' });
+        }
+
+        // Read accounts.json to find the user's account
+        const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
+        const accounts = JSON.parse(accountsData);
+        const userAccount = accounts.find(acc => acc.id === currentUserId);
+
+        if (!userAccount) {
+            return res.status(404).json({ error: 'User account not found' });
+        }
+
+        // Get the user's myItems array
+        const userItemIds = userAccount.myItems || [];
+
+        // Read all items
+        const itemsData = fs.readFileSync(ITEMS_PATH, 'utf8');
+        const allItems = JSON.parse(itemsData);
+
+        // Filter to only include items in the user's myItems array
+        const userItems = allItems.filter(item => userItemIds.includes(item.id));
+
+        res.json(userItems);
+    } catch (err) {
+        console.error('Error loading user items:', err);
+        res.status(500).json({ error: 'Failed to load user items' });
     }
 });
 

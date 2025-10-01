@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>  
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -67,7 +67,7 @@
 
     <script>
         async function loadItems(order = "default") {
-            const res = await fetch("/api/items");
+            const res = await fetch("/api/my-items");
             let items = await res.json();
 
             // Calculate average rating
