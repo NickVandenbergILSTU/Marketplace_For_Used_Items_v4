@@ -2,78 +2,338 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Items</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f7f7f7;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
             padding: 0;
         }
 
-        h1 {
-            text-align: center;
-            padding: 20px;
+        .header-panel {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+            position: relative;
+        }
+
+        .header-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            pointer-events: none;
+        }
+
+        .header-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: white;
+            color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .sort-controls {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 400px;
+            margin: 0 auto 30px;
+        }
+
+        .sort-controls label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 16px;
+        }
+
+        .sort-controls select {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            color: #374151;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sort-controls select:hover {
+            border-color: #dc2626;
+            background: white;
+        }
+
+        .sort-controls select:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .main-content {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         #itemsContainer {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 16px;
-            padding: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
         }
 
         .item-box {
-            border: 1px solid #ccc;
-            border-radius: 12px;
-            padding: 12px;
-            background: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .item-img {
-            width: 100%;
-            max-height: 150px;
-            object-fit: contain;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .item-box button {
-            margin: 4px 2px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .action-group {
-            margin-top: 6px;
+        .item-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
         }
 
         .item-name-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #dc2626;
+        }
+
+        .item-name-container h3 {
+            color: #1f2937;
+            font-size: 1.4em;
+            font-weight: bold;
+            margin: 0;
         }
 
         .bookmark-emoji {
-            font-size: 1.2em;
+            font-size: 1.5em;
+            animation: bookmarkPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes bookmarkPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .item-box p {
+            color: #4b5563;
+            margin: 8px 0;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .item-box p strong {
+            color: #1f2937;
+        }
+
+        .item-img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            margin: 15px 0;
+            display: block;
+            border-radius: 12px;
+            background: #f8fafc;
+            padding: 10px;
+        }
+
+        .img-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .img-buttons button {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            background: #f8fafc;
+            color: #374151;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .img-buttons button:hover {
+            background: #dc2626;
+            color: white;
+            border-color: #dc2626;
+        }
+
+        .action-group {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .action-row select,
+        .action-row input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #374151;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .action-row select:focus,
+        .action-row input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .action-row button,
+        .action-group > button {
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #374151;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .action-row button:hover,
+        .action-group > button:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border-color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .action-group > button {
+            width: 100%;
+        }
+
+        .price-text {
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .rating-text {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .header-panel {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-title {
+                position: static;
+                transform: none;
+                font-size: 2em;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            #itemsContainer {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .sort-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>My Items</h1>
-    <div>
-        <label for="sort">Sort by:</label>
-        <select id="sort" onchange="loadItems(this.value)">
-            <option value="default">Default Order</option>
-            <option value="alphabetical">Alphabetical</option>
-            <option value="rating">Rating</option>
-            <option value="price">Price</option>
-        </select>
+    <div class="header-panel">
+        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">Main Menu</button>
+        <div class="header-title">My Items</div>
+        <div style="width: 150px;"></div>
     </div>
 
-    <div id="itemsContainer"></div>
+    <div class="main-content">
+        <div class="sort-controls">
+            <label for="sort">Sort by:</label>
+            <select id="sort" onchange="loadItems(this.value)">
+                <option value="default">Default Order</option>
+                <option value="alphabetical">Alphabetical</option>
+                <option value="rating">Rating</option>
+                <option value="price">Price</option>
+            </select>
+        </div>
+
+        <div id="itemsContainer"></div>
+    </div>
 
     <script>
         let userBookmarkedItems = [];
@@ -121,6 +381,11 @@
             const container = document.getElementById("itemsContainer");
             container.innerHTML = "";
 
+            if (items.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #6b7280; font-size: 18px;">You don\'t have any items yet.</div>';
+                return;
+            }
+
             items.forEach(item => {
                 const itemBox = document.createElement("div");
                 itemBox.className = "item-box";
@@ -133,7 +398,6 @@
                 
                 const name = document.createElement("h3");
                 name.textContent = item.name;
-                name.style.margin = "0";
                 
                 nameContainer.appendChild(name);
                 
@@ -146,21 +410,21 @@
 
                 // Price
                 const price = document.createElement("p");
-                price.textContent = `Price: ${item.price}`;
+                price.innerHTML = `<strong>Price:</strong> <span class="price-text">${item.price}</span>`;
 
                 // Rating with stars
                 const rating = document.createElement("p");
                 const stars = "⭐".repeat(Math.floor(item.avgRating));
-                rating.textContent = `Rating: ${item.avgRating.toFixed(1)} ${stars}`;
+                rating.innerHTML = `<strong>Rating:</strong> <span class="rating-text">${item.avgRating.toFixed(1)} ${stars}</span>`;
 
                 // Image
-                const imgWrapper = document.createElement("div");
                 const img = document.createElement("img");
                 img.className = "item-img";
                 img.alt = item.name;
                 img.src = `/images/items/${item.id}.png`;
 
                 const imgButtons = document.createElement("div");
+                imgButtons.className = "img-buttons";
 
                 img.onload = () => {
                     imgButtons.innerHTML = `
@@ -173,19 +437,18 @@
                     imgButtons.innerHTML = `<button>Add Image</button>`;
                 };
 
-                imgWrapper.appendChild(img);
-
                 // Actions
                 const actions = document.createElement("div");
                 actions.className = "action-group";
 
                 // Rate
                 const rateDiv = document.createElement("div");
+                rateDiv.className = "action-row";
                 const rateSelect = document.createElement("select");
                 for (let i = 1; i <= 5; i++) {
                     const opt = document.createElement("option");
                     opt.value = i;
-                    opt.textContent = i;
+                    opt.textContent = `${i} Star${i > 1 ? 's' : ''}`;
                     rateSelect.appendChild(opt);
                 }
                 const rateBtn = document.createElement("button");
@@ -196,6 +459,7 @@
 
                 // Set Price
                 const priceDiv = document.createElement("div");
+                priceDiv.className = "action-row";
                 const priceInput = document.createElement("input");
                 priceInput.type = "text";
                 priceInput.placeholder = "New Price";
@@ -207,11 +471,12 @@
 
                 // Bookmark
                 const bookmarkBtn = document.createElement("button");
-                bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
+                bookmarkBtn.textContent = isBookmarked ? "🔖 Unbookmark" : "Bookmark";
                 bookmarkBtn.onclick = () => runUserScript("bookmark");
 
                 // Sell to User (dropdown + search)
                 const sellUserDiv = document.createElement("div");
+                sellUserDiv.className = "action-row";
                 const sellUserSelect = document.createElement("select");
                 sellUserSelect.innerHTML = `<option value="">Select User...</option>`;
                 fetch("/api/accounts")
@@ -230,8 +495,9 @@
                 sellUserDiv.appendChild(sellUserSelect);
                 sellUserDiv.appendChild(sellUserBtn);
 
-                // 🏪 Sell to Store (dropdown + search)
+                // Sell to Store (dropdown + search)
                 const sellStoreDiv = document.createElement("div");
+                sellStoreDiv.className = "action-row";
                 const sellStoreSelect = document.createElement("select");
                 sellStoreSelect.innerHTML = `<option value="">Select Store...</option>`;
                 fetch("/api/locations")
@@ -250,9 +516,9 @@
                 sellStoreDiv.appendChild(sellStoreSelect);
                 sellStoreDiv.appendChild(sellStoreBtn);
 
-                // 💬 Comments
+                // Comments
                 const commentsBtn = document.createElement("button");
-                commentsBtn.textContent = "Comments";
+                commentsBtn.textContent = "💬 Comments";
 
                 // Add everything
                 actions.appendChild(rateDiv);
@@ -266,7 +532,7 @@
                 itemBox.appendChild(nameContainer);
                 itemBox.appendChild(price);
                 itemBox.appendChild(rating);
-                itemBox.appendChild(imgWrapper);
+                itemBox.appendChild(img);
                 itemBox.appendChild(imgButtons);
                 itemBox.appendChild(actions);
 
