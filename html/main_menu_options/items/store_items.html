@@ -19,13 +19,13 @@
         }
 
         .header-panel {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             color: white;
             padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
             position: relative;
         }
 
@@ -67,15 +67,29 @@
 
         .back-btn:hover {
             background: white;
-            color: #2563eb;
+            color: #dc2626;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
         }
 
-        .store-name {
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .username {
             font-size: 18px;
             font-weight: 600;
             color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .balance {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fef08a;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
@@ -111,14 +125,14 @@
         }
 
         .sort-controls select:hover {
-            border-color: #2563eb;
+            border-color: #dc2626;
             background: white;
         }
 
         .sort-controls select:focus {
             outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
         }
 
         .main-content {
@@ -154,7 +168,7 @@
             gap: 10px;
             margin-bottom: 15px;
             padding-bottom: 15px;
-            border-bottom: 3px solid #2563eb;
+            border-bottom: 3px solid #dc2626;
         }
 
         .item-name-container h3 {
@@ -169,9 +183,19 @@
             animation: bookmarkPulse 2s ease-in-out infinite;
         }
 
+        .reserve-emoji {
+            font-size: 1.5em;
+            animation: reservePulse 2s ease-in-out infinite;
+        }
+
         @keyframes bookmarkPulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
+        }
+
+        @keyframes reservePulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.15) rotate(10deg); }
         }
 
         .item-box p {
@@ -216,9 +240,9 @@
         }
 
         .img-buttons button:hover {
-            background: #2563eb;
+            background: #dc2626;
             color: white;
-            border-color: #2563eb;
+            border-color: #dc2626;
         }
 
         .action-group {
@@ -250,8 +274,8 @@
         .action-row select:focus,
         .action-row input:focus {
             outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
         }
 
         .action-row button,
@@ -270,11 +294,11 @@
 
         .action-row button:hover,
         .action-group > button:hover {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             color: white;
-            border-color: #2563eb;
+            border-color: #dc2626;
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 5px 20px rgba(220, 38, 38, 0.3);
         }
 
         .action-group > button {
@@ -282,7 +306,7 @@
         }
 
         .price-text {
-            color: #2563eb;
+            color: #dc2626;
             font-weight: bold;
             font-size: 1.1em;
         }
@@ -325,7 +349,10 @@
     <div class="header-panel">
         <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Back to Menu</button>
         <div class="header-title">Store Items</div>
-        <div class="store-name" id="storeName">Loading...</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
     </div>
 
     <div class="main-content">
@@ -344,10 +371,11 @@
 
     <script>
         let userBookmarkedItems = [];
+        let userReservedItems = [];
         let currentUserId = null;
 
-        // Load store data to display store name
-        async function loadStoreData() {
+        // Load user data to display username and balance
+        async function loadUserData() {
             try {
                 const localDataResponse = await fetch('/json/local/local_data.json');
                 if (!localDataResponse.ok) {
@@ -355,37 +383,31 @@
                 }
                 const localData = await localDataResponse.json();
                 currentUserId = localData.currentlyLoggedInUserID;
-                const currentStoreId = localData.currentStore;
 
-                const locationsResponse = await fetch('/json/locations.json');
-                if (!locationsResponse.ok) {
-                    throw new Error(`HTTP error! status: ${locationsResponse.status}`);
+                const accountsResponse = await fetch('/json/accounts.json');
+                if (!accountsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${accountsResponse.status}`);
                 }
-                const locations = await locationsResponse.json();
+                const accounts = await accountsResponse.json();
 
-                const currentStore = locations.find(location => location.id === currentStoreId);
+                const currentUser = accounts.find(account => account.id === currentUserId);
                 
-                const storeNameElement = document.getElementById('storeName');
-                if (currentStore && currentStore.name) {
-                    storeNameElement.textContent = currentStore.name;
+                const usernameElement = document.getElementById('username');
+                const balanceElement = document.getElementById('balance');
+                
+                if (currentUser && currentUser.username) {
+                    usernameElement.textContent = currentUser.username;
+                    balanceElement.textContent = currentUser.accountBalance || '$0.00';
+                    userBookmarkedItems = currentUser.bookmarkedItems || [];
+                    userReservedItems = currentUser.reservedItems || [];
                 } else {
-                    storeNameElement.textContent = 'Unknown Store';
-                }
-
-                // Load user's bookmarked items
-                if (currentUserId !== -1) {
-                    const accountsResponse = await fetch('/json/accounts.json');
-                    if (accountsResponse.ok) {
-                        const accounts = await accountsResponse.json();
-                        const currentUser = accounts.find(account => account.id === currentUserId);
-                        if (currentUser) {
-                            userBookmarkedItems = currentUser.bookmarkedItems || [];
-                        }
-                    }
+                    usernameElement.textContent = 'Guest User';
+                    balanceElement.textContent = '$0.00';
                 }
             } catch (error) {
-                console.error('Error loading store data:', error);
-                document.getElementById('storeName').textContent = 'Unknown Store';
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
             }
         }
 
@@ -441,8 +463,9 @@
                 itemBox.className = "item-box";
 
                 const isBookmarked = userBookmarkedItems.includes(item.id);
+                const isReserved = userReservedItems.includes(item.id);
 
-                // Name with bookmark emoji
+                // Name with bookmark and reserve emojis
                 const nameContainer = document.createElement("div");
                 nameContainer.className = "item-name-container";
                 
@@ -456,6 +479,13 @@
                     bookmarkEmoji.className = "bookmark-emoji";
                     bookmarkEmoji.textContent = "🔖";
                     nameContainer.appendChild(bookmarkEmoji);
+                }
+
+                if (isReserved) {
+                    const reserveEmoji = document.createElement("span");
+                    reserveEmoji.className = "reserve-emoji";
+                    reserveEmoji.textContent = "❗";
+                    nameContainer.appendChild(reserveEmoji);
                 }
 
                 // Price
@@ -511,6 +541,11 @@
                 bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
                 bookmarkBtn.onclick = () => runUserScript("bookmark");
 
+                // Reserve Item
+                const reserveBtn = document.createElement("button");
+                reserveBtn.textContent = isReserved ? "Unreserve Item" : "Reserve Item";
+                reserveBtn.onclick = () => runUserScript("reserve");
+
                 // Buy Item
                 const buyBtn = document.createElement("button");
                 buyBtn.textContent = "🛒 Buy Item";
@@ -523,6 +558,7 @@
                 // Add everything
                 actions.appendChild(rateDiv);
                 actions.appendChild(bookmarkBtn);
+                actions.appendChild(reserveBtn);
                 actions.appendChild(buyBtn);
                 actions.appendChild(commentsBtn);
 
@@ -538,9 +574,9 @@
             });
         }
 
-        // Load store data and items on startup
+        // Load user data and items on startup
         document.addEventListener('DOMContentLoaded', () => {
-            loadStoreData();
+            loadUserData();
             loadItems();
         });
     </script>
