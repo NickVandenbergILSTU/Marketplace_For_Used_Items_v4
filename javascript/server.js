@@ -115,6 +115,45 @@ app.get('/api/my-items', (req, res) => {
 const ACCOUNTS_PATH = path.join(__dirname, '../json/accounts.json');
 const LOCATIONS_PATH = path.join(__dirname, '../json/locations.json');
 
+// API route to get store items based on currentStore in local_data.json
+app.get('/api/store-items', (req, res) => {
+    try {
+        // Read local_data.json to get currentStore
+        const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
+        const currentStoreId = localData.currentStore;
+
+        if (currentStoreId === undefined || currentStoreId === null) {
+            return res.status(400).json({ error: 'No store selected' });
+        }
+
+        // Read locations.json to find the store
+        const locationsData = fs.readFileSync(LOCATIONS_PATH, 'utf8');
+        const locations = JSON.parse(locationsData);
+        const currentStore = locations.find(loc => loc.id === currentStoreId);
+
+        if (!currentStore) {
+            return res.status(404).json({ error: 'Store not found' });
+        }
+
+        // Get the store's items array
+        const storeItemIds = currentStore.storeItems || [];
+
+        // Read all items
+        const itemsData = fs.readFileSync(ITEMS_PATH, 'utf8');
+        const allItems = JSON.parse(itemsData);
+
+        // Filter to only include items in the store's storeItems array
+        const storeItems = allItems.filter(item => storeItemIds.includes(item.id));
+
+        res.json({
+            items: storeItems
+        });
+    } catch (err) {
+        console.error('Error loading store items:', err);
+        res.status(500).json({ error: 'Failed to load store items' });
+    }
+});
+
 // API route to get accounts
 app.get('/api/accounts', (req, res) => {
     try {
