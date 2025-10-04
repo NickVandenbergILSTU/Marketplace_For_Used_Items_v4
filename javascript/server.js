@@ -144,18 +144,20 @@ app.get('/api/store-items', (req, res) => {
         // Filter to only include items in the store's storeItems array
         const storeItems = allItems.filter(item => storeItemIds.includes(item.id));
 
-        // Read accounts to get bookmarked and reserved items for the current user
+        // Read accounts to get bookmarked, reserved, and cart items for the current user
         const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
         const accounts = JSON.parse(accountsData);
         const userAccount = accounts.find(acc => acc.id === currentUserId);
 
         const bookmarkedItems = userAccount ? (userAccount.bookmarkedItems || []) : [];
         const reservedItems = userAccount ? (userAccount.reservedItems || []) : [];
+        const itemsInCart = userAccount ? (userAccount.itemsInCart || []) : [];
 
         res.json({
             items: storeItems,
             bookmarkedItems: bookmarkedItems,
-            reservedItems: reservedItems
+            reservedItems: reservedItems,
+            itemsInCart: itemsInCart
         });
     } catch (err) {
         console.error('Error loading store items:', err);

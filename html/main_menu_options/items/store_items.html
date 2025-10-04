@@ -385,6 +385,7 @@
     <script>
         let userBookmarkedItems = [];
         let userReservedItems = [];
+        let userCartItems = [];
         let currentUserId = null;
         let allReservedItems = {};
 
@@ -441,9 +442,10 @@
             const data = await res.json();
             let items = data.items;
             
-            // Get bookmarked and reserved items from API response
+            // Get bookmarked, reserved, and cart items from API response
             userBookmarkedItems = data.bookmarkedItems || [];
             userReservedItems = data.reservedItems || [];
+            userCartItems = data.itemsInCart || [];
 
             // Calculate average rating
             items.forEach(item => {
@@ -493,6 +495,7 @@
 
                 const isBookmarked = userBookmarkedItems.includes(item.id);
                 const isReservedByCurrentUser = userReservedItems.includes(item.id);
+                const isInCart = userCartItems.includes(item.id);
                 const reservedByUserId = allReservedItems[item.id];
                 const isReservedBySomeone = reservedByUserId !== undefined;
 
@@ -592,10 +595,14 @@
                     actions.appendChild(reserveBtn);
                 }
 
-                // Buy Item
-                const buyBtn = document.createElement("button");
-                buyBtn.textContent = "🛒 Buy Item";
-                buyBtn.onclick = () => runUserScript("buy");
+                // Add to Cart / Remove from Cart
+                const cartBtn = document.createElement("button");
+                if (isInCart) {
+                    cartBtn.textContent = "🛒 Remove from Cart";
+                } else {
+                    cartBtn.textContent = "🛒 Add to Cart";
+                }
+                cartBtn.onclick = () => runUserScript("cart");
 
                 // Comments
                 const commentsBtn = document.createElement("button");
@@ -604,7 +611,7 @@
                 // Add everything
                 actions.insertBefore(rateDiv, actions.firstChild);
                 actions.appendChild(bookmarkBtn);
-                actions.appendChild(buyBtn);
+                actions.appendChild(cartBtn);
                 actions.appendChild(commentsBtn);
 
                 // Build card

@@ -7,7 +7,8 @@
         "accountBlanance": 1000.00,
         "myItems": [1,2,3,4,5],
         "bookmarkedItems": [1,2],
-        "reservedItems": [1]
+        "reservedItems": [1],
+        "itemsInCart": []
     },
     {
         "id": 42,
@@ -17,6 +18,7 @@
         "accountBlanance": 1000.00,
         "myItems": [1,2,3,6],
         "bookmarkedItems": [1,2,3],
-        "reservedItems": [2,3]
+        "reservedItems": [2,3],
+        "itemsInCart": [1]
     }
 ]
