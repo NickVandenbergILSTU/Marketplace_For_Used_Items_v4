@@ -415,17 +415,13 @@
                     // Format balance with 2 decimal places
                     const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
                     const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
-                    balanceElement.textContent = `${balanceNum.toFixed(2)}`;
-                    
-                    // Get current user's bookmarked and reserved items
-                    userBookmarkedItems = currentUser.bookmarkedItems || [];
-                    userReservedItems = currentUser.reservedItems || [];
+                    balanceElement.textContent = `$${balanceNum.toFixed(2)}`;
                 } else {
                     usernameElement.textContent = 'Guest User';
                     balanceElement.textContent = '$0.00';
                 }
 
-                // Build map of all reserved items
+                // Build map of all reserved items from all accounts
                 accounts.forEach(account => {
                     if (account.reservedItems && Array.isArray(account.reservedItems)) {
                         account.reservedItems.forEach(itemId => {
@@ -444,6 +440,10 @@
             const res = await fetch("/api/store-items");
             const data = await res.json();
             let items = data.items;
+            
+            // Get bookmarked and reserved items from API response
+            userBookmarkedItems = data.bookmarkedItems || [];
+            userReservedItems = data.reservedItems || [];
 
             // Calculate average rating
             items.forEach(item => {
@@ -492,7 +492,7 @@
                 itemBox.className = "item-box";
 
                 const isBookmarked = userBookmarkedItems.includes(item.id);
-                const isReserved = userReservedItems.includes(item.id);
+                const isReservedByCurrentUser = userReservedItems.includes(item.id);
                 const reservedByUserId = allReservedItems[item.id];
                 const isReservedBySomeone = reservedByUserId !== undefined;
 
@@ -580,14 +580,17 @@
                 bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
                 bookmarkBtn.onclick = () => runUserScript("bookmark");
 
-                // Reserve Item
-                const reserveBtn = document.createElement("button");
-                if (isReserved) {
-                    reserveBtn.textContent = "Unreserve Item";
-                } else {
-                    reserveBtn.textContent = "Reserve Item";
+                // Reserve Item - only show if not reserved by someone else
+                if (!isReservedBySomeone || isReservedByCurrentUser) {
+                    const reserveBtn = document.createElement("button");
+                    if (isReservedByCurrentUser) {
+                        reserveBtn.textContent = "Unreserve Item";
+                    } else {
+                        reserveBtn.textContent = "Reserve Item";
+                    }
+                    reserveBtn.onclick = () => runUserScript("reserve");
+                    actions.appendChild(reserveBtn);
                 }
-                reserveBtn.onclick = () => runUserScript("reserve");
 
                 // Buy Item
                 const buyBtn = document.createElement("button");
@@ -599,9 +602,8 @@
                 commentsBtn.textContent = "💬 Comments";
 
                 // Add everything
-                actions.appendChild(rateDiv);
+                actions.insertBefore(rateDiv, actions.firstChild);
                 actions.appendChild(bookmarkBtn);
-                actions.appendChild(reserveBtn);
                 actions.appendChild(buyBtn);
                 actions.appendChild(commentsBtn);
 
@@ -621,9 +623,9 @@
         }
 
         // Load user data and items on startup
-        document.addEventListener('DOMContentLoaded', () => {
-            loadUserData();
-            loadItems();
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUserData();
+            await loadItems();
         });
     </script>
 </body>
