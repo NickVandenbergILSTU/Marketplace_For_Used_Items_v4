@@ -1,3 +1,60 @@
+Most use cases will strictly consist of writing a Bash Script (or Python),
+that executes the tasks for the use case. The forgot password use case will require creating an html file, which Eric is working on. Other than that, it will probably be all Bash or Python.  Writing use case scripts with Bash is highly recommended, though.
+
+Order of operations for each use case:
+1. Create a branch that you will plan to use for the whole project
+    Title it {your_name}/branch_v1, (i.e. nick's branch is nick/branch_v1)
+    Use this branch for each use case, create subsequent branches called {name}/branch_v2 etc. if necessary
+2. Check the /use_cases folder for a script for your use case
+    If one doesn't already exist, create a .sh file for bash or .py file for python, and put 
+3. Write your script (and html for forgot password)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==============================================================================
+IGNORE EVERYTHING BELOW THIS LINE
+==============================================================================
+
+
 NOTES FOR EACH USE CASE:
 - textboxes displayed in html containing user scripts should be mutable
     - (mutable means the user can change the text on the front end, immutable is the opposite)
