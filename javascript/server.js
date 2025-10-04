@@ -17,6 +17,9 @@ app.use(express.static(path.join(__dirname, '../html')));
 const DEFAULT_HTML = path.join(__dirname, '../html/login_create_forgotpass.html');
 const MAIN_MENU_HTML = path.join(__dirname, '../html/main_menu.html');
 const LOCAL_DATA_PATH = path.join(__dirname, '../json/local/local_data.json');
+const ITEMS_PATH = path.join(__dirname, '../json/items.json');
+const ACCOUNTS_PATH = path.join(__dirname, '../json/accounts.json');
+const LOCATIONS_PATH = path.join(__dirname, '../json/locations.json');
 
 // Route root "/" to either DEFAULT_HTML or MAIN_MENU_HTML
 app.get('/', (req, res) => {
@@ -56,8 +59,6 @@ app.post('/run-script', (req, res) => {
         res.send(`Script output:\n${stdout}`);
     });
 });
-
-const ITEMS_PATH = path.join(__dirname, '../json/items.json');
 
 // API route to get items
 app.get('/api/items', (req, res) => {
@@ -112,15 +113,13 @@ app.get('/api/my-items', (req, res) => {
     }
 });
 
-const ACCOUNTS_PATH = path.join(__dirname, '../json/accounts.json');
-const LOCATIONS_PATH = path.join(__dirname, '../json/locations.json');
-
 // API route to get store items based on currentStore in local_data.json
 app.get('/api/store-items', (req, res) => {
     try {
-        // Read local_data.json to get currentStore
+        // Read local_data.json to get currentStore and currentlyLoggedInUserID
         const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
         const currentStoreId = localData.currentStore;
+        const currentUserId = localData.currentlyLoggedInUserID;
 
         if (currentStoreId === undefined || currentStoreId === null) {
             return res.status(400).json({ error: 'No store selected' });
@@ -145,8 +144,18 @@ app.get('/api/store-items', (req, res) => {
         // Filter to only include items in the store's storeItems array
         const storeItems = allItems.filter(item => storeItemIds.includes(item.id));
 
+        // Read accounts to get bookmarked and reserved items for the current user
+        const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
+        const accounts = JSON.parse(accountsData);
+        const userAccount = accounts.find(acc => acc.id === currentUserId);
+
+        const bookmarkedItems = userAccount ? (userAccount.bookmarkedItems || []) : [];
+        const reservedItems = userAccount ? (userAccount.reservedItems || []) : [];
+
         res.json({
-            items: storeItems
+            items: storeItems,
+            bookmarkedItems: bookmarkedItems,
+            reservedItems: reservedItems
         });
     } catch (err) {
         console.error('Error loading store items:', err);

@@ -316,6 +316,19 @@
             font-weight: bold;
         }
 
+        .reserved-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
         @media (max-width: 768px) {
             .header-panel {
                 padding: 15px 20px;
@@ -373,6 +386,7 @@
         let userBookmarkedItems = [];
         let userReservedItems = [];
         let currentUserId = null;
+        let allReservedItems = {};
 
         // Load user data to display username and balance
         async function loadUserData() {
@@ -397,13 +411,28 @@
                 
                 if (currentUser && currentUser.username) {
                     usernameElement.textContent = currentUser.username;
-                    balanceElement.textContent = currentUser.accountBalance || '$0.00';
+                    
+                    // Format balance with 2 decimal places
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    balanceElement.textContent = `${balanceNum.toFixed(2)}`;
+                    
+                    // Get current user's bookmarked and reserved items
                     userBookmarkedItems = currentUser.bookmarkedItems || [];
                     userReservedItems = currentUser.reservedItems || [];
                 } else {
                     usernameElement.textContent = 'Guest User';
                     balanceElement.textContent = '$0.00';
                 }
+
+                // Build map of all reserved items
+                accounts.forEach(account => {
+                    if (account.reservedItems && Array.isArray(account.reservedItems)) {
+                        account.reservedItems.forEach(itemId => {
+                            allReservedItems[itemId] = account.id;
+                        });
+                    }
+                });
             } catch (error) {
                 console.error('Error loading user data:', error);
                 document.getElementById('username').textContent = 'Guest User';
@@ -464,6 +493,8 @@
 
                 const isBookmarked = userBookmarkedItems.includes(item.id);
                 const isReserved = userReservedItems.includes(item.id);
+                const reservedByUserId = allReservedItems[item.id];
+                const isReservedBySomeone = reservedByUserId !== undefined;
 
                 // Name with bookmark and reserve emojis
                 const nameContainer = document.createElement("div");
@@ -481,7 +512,7 @@
                     nameContainer.appendChild(bookmarkEmoji);
                 }
 
-                if (isReserved) {
+                if (isReservedBySomeone) {
                     const reserveEmoji = document.createElement("span");
                     reserveEmoji.className = "reserve-emoji";
                     reserveEmoji.textContent = "❗";
@@ -496,6 +527,14 @@
                 const rating = document.createElement("p");
                 const stars = "⭐".repeat(Math.floor(item.avgRating));
                 rating.innerHTML = `<strong>Rating:</strong> <span class="rating-text">${item.avgRating.toFixed(1)} ${stars}</span>`;
+
+                // Reserved badge if item is reserved by anyone
+                let reservedBadge = null;
+                if (isReservedBySomeone) {
+                    reservedBadge = document.createElement("div");
+                    reservedBadge.className = "reserved-badge";
+                    reservedBadge.innerHTML = `<span>❗</span><span>Reserved</span>`;
+                }
 
                 // Image
                 const img = document.createElement("img");
@@ -543,7 +582,11 @@
 
                 // Reserve Item
                 const reserveBtn = document.createElement("button");
-                reserveBtn.textContent = isReserved ? "Unreserve Item" : "Reserve Item";
+                if (isReserved) {
+                    reserveBtn.textContent = "Unreserve Item";
+                } else {
+                    reserveBtn.textContent = "Reserve Item";
+                }
                 reserveBtn.onclick = () => runUserScript("reserve");
 
                 // Buy Item
@@ -566,6 +609,9 @@
                 itemBox.appendChild(nameContainer);
                 itemBox.appendChild(price);
                 itemBox.appendChild(rating);
+                if (reservedBadge) {
+                    itemBox.appendChild(reservedBadge);
+                }
                 itemBox.appendChild(img);
                 itemBox.appendChild(imgButtons);
                 itemBox.appendChild(actions);
