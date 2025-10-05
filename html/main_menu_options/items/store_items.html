@@ -11,7 +11,7 @@
 <body>
     <div class="header-panel">
         <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
-        <div class="header-title">Store Items</div>
+        <div class="header-title" id="storeTitle">Store Items</div>
         <div class="user-info">
             <div class="username" id="username">Loading...</div>
             <div class="balance" id="balance">$0.00</div>
@@ -39,13 +39,24 @@
         let currentUserId = null;
         let allReservedItems = {};
 
-        // Load user data to display username and balance
+        // Load user data and store name
         async function loadUserData() {
             try {
                 const localDataResponse = await fetch('/json/local/local_data.json');
                 if (!localDataResponse.ok) throw new Error(`HTTP error! status: ${localDataResponse.status}`);
                 const localData = await localDataResponse.json();
                 currentUserId = localData.currentlyLoggedInUserID;
+                const currentStoreId = localData.currentStore;
+
+                // Load store name
+                const locationsResponse = await fetch('/json/locations.json');
+                if (locationsResponse.ok) {
+                    const locations = await locationsResponse.json();
+                    const currentStore = locations.find(loc => loc.id === currentStoreId);
+                    if (currentStore && currentStore.name) {
+                        document.getElementById('storeTitle').textContent = `${currentStore.name}'s Items`;
+                    }
+                }
 
                 const accountsResponse = await fetch('/json/accounts.json');
                 if (!accountsResponse.ok) throw new Error(`HTTP error! status: ${accountsResponse.status}`);

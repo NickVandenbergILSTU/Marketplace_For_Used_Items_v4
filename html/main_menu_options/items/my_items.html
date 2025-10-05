@@ -10,7 +10,10 @@
     <div class="header-panel">
         <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
         <div class="header-title">My Items</div>
-        <div class="username" id="username">Loading...</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
     </div>
 
     <div class="main-content">
@@ -49,14 +52,21 @@
                 const currentUser = accounts.find(account => account.id === currentUserId);
                 
                 const usernameElement = document.getElementById('username');
+                const balanceElement = document.getElementById('balance');
+                
                 if (currentUser && currentUser.username) {
                     usernameElement.textContent = currentUser.username;
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    balanceElement.textContent = `$${balanceNum.toFixed(2)}`;
                 } else {
                     usernameElement.textContent = 'Guest User';
+                    balanceElement.textContent = '$0.00';
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
                 document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
             }
         }
 
