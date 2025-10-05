@@ -19,6 +19,6 @@
         "myItems": [1,2,3,6],
         "bookmarkedItems": [1,2],
         "reservedItems": [3],
-        "itemsInCart": [1,2]
+        "itemsInCart": [1,2,3]
     }
 ]
