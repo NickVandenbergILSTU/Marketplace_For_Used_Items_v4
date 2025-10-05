@@ -6,6 +6,7 @@
     },
     {
         "id": 6,
-        "name": "store2"
+        "name": "store2",
+        "storeItems": [1]
     }
 ]

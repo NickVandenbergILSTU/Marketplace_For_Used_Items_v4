@@ -2,7 +2,7 @@
     {
         "id": 41,
         "username": "nick",
-        "password": "pass",
+        "password": "password",
         "autoPushAndPullData": "false",
         "accountBlanance": 1000.00,
         "myItems": [1,2,3,4,5],
