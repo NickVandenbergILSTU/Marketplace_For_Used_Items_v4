@@ -4,363 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Store Items</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            padding: 0;
-        }
-
-        .header-panel {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            color: white;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
-            position: relative;
-        }
-
-        .header-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
-            pointer-events: none;
-        }
-
-        .header-title {
-            font-size: 2.5em;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            letter-spacing: 1px;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .back-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid white;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .back-btn:hover {
-            background: white;
-            color: #dc2626;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
-        }
-
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 5px;
-        }
-
-        .username {
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .balance {
-            font-size: 16px;
-            font-weight: 700;
-            color: #fef08a;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .sort-controls {
-            background: white;
-            border-radius: 15px;
-            padding: 15px 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            max-width: 400px;
-            margin: 0 auto 30px;
-        }
-
-        .sort-controls label {
-            font-weight: 600;
-            color: #374151;
-            font-size: 16px;
-        }
-
-        .sort-controls select {
-            flex: 1;
-            padding: 10px 15px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 15px;
-            color: #374151;
-            background: #f8fafc;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .sort-controls select:hover {
-            border-color: #dc2626;
-            background: white;
-        }
-
-        .sort-controls select:focus {
-            outline: none;
-            border-color: #dc2626;
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
-        }
-
-        .main-content {
-            padding: 40px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        #itemsContainer {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
-        }
-
-        .item-box {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .item-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-        }
-
-        .item-name-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #dc2626;
-        }
-
-        .item-name-container h3 {
-            color: #1f2937;
-            font-size: 1.4em;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .bookmark-emoji {
-            font-size: 1.5em;
-            animation: bookmarkPulse 2s ease-in-out infinite;
-        }
-
-        .reserve-emoji {
-            font-size: 1.5em;
-            animation: reservePulse 2s ease-in-out infinite;
-        }
-
-        @keyframes bookmarkPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        @keyframes reservePulse {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.15) rotate(10deg); }
-        }
-
-        .item-box p {
-            color: #4b5563;
-            margin: 8px 0;
-            font-size: 15px;
-            font-weight: 500;
-        }
-
-        .item-box p strong {
-            color: #1f2937;
-        }
-
-        .item-img {
-            width: 100%;
-            height: 200px;
-            object-fit: contain;
-            margin: 15px 0;
-            display: block;
-            border-radius: 12px;
-            background: #f8fafc;
-            padding: 10px;
-        }
-
-        .img-buttons {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .img-buttons button {
-            flex: 1;
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 2px solid #e5e7eb;
-            background: #f8fafc;
-            color: #374151;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .img-buttons button:hover {
-            background: #dc2626;
-            color: white;
-            border-color: #dc2626;
-        }
-
-        .action-group {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .action-row {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .action-row select,
-        .action-row input {
-            flex: 1;
-            padding: 10px 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 14px;
-            color: #374151;
-            background: #f8fafc;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .action-row select:focus,
-        .action-row input:focus {
-            outline: none;
-            border-color: #dc2626;
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
-        }
-
-        .action-row button,
-        .action-group > button {
-            padding: 10px 18px;
-            border-radius: 10px;
-            border: 2px solid #e5e7eb;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            color: #374151;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .action-row button:hover,
-        .action-group > button:hover {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            color: white;
-            border-color: #dc2626;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(220, 38, 38, 0.3);
-        }
-
-        .action-group > button {
-            width: 100%;
-        }
-
-        .price-text {
-            color: #dc2626;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .rating-text {
-            color: #f59e0b;
-            font-weight: bold;
-        }
-
-        .reserved-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: #fef3c7;
-            color: #92400e;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-top: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .header-panel {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .header-title {
-                position: static;
-                transform: none;
-                font-size: 2em;
-            }
-
-            .main-content {
-                padding: 20px;
-            }
-
-            #itemsContainer {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .sort-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
-    </style>
+    <!-- Use shared stylesheet -->
+    <link rel="stylesheet" href="/html/main_menu_options/items/items.css">
 </head>
 <body>
     <div class="header-panel">
-        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Back to Menu</button>
+        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
         <div class="header-title">Store Items</div>
         <div class="user-info">
             <div class="username" id="username">Loading...</div>
@@ -393,27 +43,20 @@
         async function loadUserData() {
             try {
                 const localDataResponse = await fetch('/json/local/local_data.json');
-                if (!localDataResponse.ok) {
-                    throw new Error(`HTTP error! status: ${localDataResponse.status}`);
-                }
+                if (!localDataResponse.ok) throw new Error(`HTTP error! status: ${localDataResponse.status}`);
                 const localData = await localDataResponse.json();
                 currentUserId = localData.currentlyLoggedInUserID;
 
                 const accountsResponse = await fetch('/json/accounts.json');
-                if (!accountsResponse.ok) {
-                    throw new Error(`HTTP error! status: ${accountsResponse.status}`);
-                }
+                if (!accountsResponse.ok) throw new Error(`HTTP error! status: ${accountsResponse.status}`);
                 const accounts = await accountsResponse.json();
 
                 const currentUser = accounts.find(account => account.id === currentUserId);
-                
                 const usernameElement = document.getElementById('username');
                 const balanceElement = document.getElementById('balance');
-                
+
                 if (currentUser && currentUser.username) {
                     usernameElement.textContent = currentUser.username;
-                    
-                    // Format balance with 2 decimal places
                     const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
                     const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
                     balanceElement.textContent = `$${balanceNum.toFixed(2)}`;
@@ -422,9 +65,9 @@
                     balanceElement.textContent = '$0.00';
                 }
 
-                // Build map of all reserved items from all accounts
+                // Build map of all reserved items
                 accounts.forEach(account => {
-                    if (account.reservedItems && Array.isArray(account.reservedItems)) {
+                    if (Array.isArray(account.reservedItems)) {
                         account.reservedItems.forEach(itemId => {
                             allReservedItems[itemId] = account.id;
                         });
@@ -441,13 +84,11 @@
             const res = await fetch("/api/store-items");
             const data = await res.json();
             let items = data.items;
-            
-            // Get bookmarked, reserved, and cart items from API response
+
             userBookmarkedItems = data.bookmarkedItems || [];
             userReservedItems = data.reservedItems || [];
             userCartItems = data.itemsInCart || [];
 
-            // Calculate average rating
             items.forEach(item => {
                 if (Array.isArray(item.ratings) && item.ratings.length > 0) {
                     const sum = item.ratings.reduce((acc, r) => acc + r.rating, 0);
@@ -457,16 +98,13 @@
                 }
             });
 
-            // Sorting logic
             if (order === "alphabetical") {
                 items.sort((a, b) => a.name.localeCompare(b.name));
             } else if (order === "rating") {
                 items.sort((a, b) => b.avgRating - a.avgRating);
             } else if (order === "price") {
-                items.sort((a, b) => {
-                    const parsePrice = str => parseFloat(str.replace(/[^0-9.]/g, ""));
-                    return parsePrice(b.price) - parsePrice(a.price);
-                });
+                const parsePrice = str => parseFloat(str.replace(/[^0-9.]/g, ""));
+                items.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
             }
 
             renderItems(items);
@@ -485,7 +123,7 @@
             container.innerHTML = "";
 
             if (items.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #6b7280; font-size: 18px;">This store doesn\'t have any items yet.</div>';
+                container.innerHTML = '<div class="no-items">This store doesn\'t have any items yet.</div>';
                 return;
             }
 
@@ -499,15 +137,12 @@
                 const reservedByUserId = allReservedItems[item.id];
                 const isReservedBySomeone = reservedByUserId !== undefined;
 
-                // Name with bookmark and reserve emojis
                 const nameContainer = document.createElement("div");
                 nameContainer.className = "item-name-container";
-                
                 const name = document.createElement("h3");
                 name.textContent = item.name;
-                
                 nameContainer.appendChild(name);
-                
+
                 if (isBookmarked) {
                     const bookmarkEmoji = document.createElement("span");
                     bookmarkEmoji.className = "bookmark-emoji";
@@ -522,16 +157,13 @@
                     nameContainer.appendChild(reserveEmoji);
                 }
 
-                // Price
                 const price = document.createElement("p");
                 price.innerHTML = `<strong>Price:</strong> <span class="price-text">${item.price}</span>`;
 
-                // Rating with stars
                 const rating = document.createElement("p");
                 const stars = "⭐".repeat(Math.floor(item.avgRating));
                 rating.innerHTML = `<strong>Rating:</strong> <span class="rating-text">${item.avgRating.toFixed(1)} ${stars}</span>`;
 
-                // Reserved badge if item is reserved by anyone
                 let reservedBadge = null;
                 if (isReservedBySomeone) {
                     reservedBadge = document.createElement("div");
@@ -539,30 +171,15 @@
                     reservedBadge.innerHTML = `<span>❗</span><span>Reserved</span>`;
                 }
 
-                // Image
                 const img = document.createElement("img");
                 img.className = "item-img";
                 img.alt = item.name;
                 img.src = `/images/items/${item.id}.png`;
+                img.onerror = () => (img.style.display = "none");
 
-                const imgButtons = document.createElement("div");
-                imgButtons.className = "img-buttons";
-
-                // img.onload = () => {
-                //     imgButtons.innerHTML = `
-                //         <button>View Image</button>
-                //     `;
-                // };
-                img.onerror = () => {
-                    img.style.display = "none";
-                    imgButtons.innerHTML = ``;
-                };
-
-                // Actions
                 const actions = document.createElement("div");
                 actions.className = "action-group";
 
-                // Rate
                 const rateDiv = document.createElement("div");
                 rateDiv.className = "action-row";
                 const rateSelect = document.createElement("select");
@@ -578,58 +195,39 @@
                 rateDiv.appendChild(rateSelect);
                 rateDiv.appendChild(rateBtn);
 
-                // Bookmark
                 const bookmarkBtn = document.createElement("button");
                 bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
                 bookmarkBtn.onclick = () => runUserScript("bookmark");
 
-                // Reserve Item - only show if not reserved by someone else
                 if (!isReservedBySomeone || isReservedByCurrentUser) {
                     const reserveBtn = document.createElement("button");
-                    if (isReservedByCurrentUser) {
-                        reserveBtn.textContent = "Unreserve Item";
-                    } else {
-                        reserveBtn.textContent = "Reserve Item";
-                    }
+                    reserveBtn.textContent = isReservedByCurrentUser ? "Unreserve Item" : "Reserve Item";
                     reserveBtn.onclick = () => runUserScript("reserve");
                     actions.appendChild(reserveBtn);
                 }
 
-                // Add to Cart / Remove from Cart
                 const cartBtn = document.createElement("button");
-                if (isInCart) {
-                    cartBtn.textContent = "🛒 Remove from Cart";
-                } else {
-                    cartBtn.textContent = "🛒 Add to Cart";
-                }
+                cartBtn.textContent = isInCart ? "🛒 Remove from Cart" : "🛒 Add to Cart";
                 cartBtn.onclick = () => runUserScript("cart");
 
-                // Comments
                 const commentsBtn = document.createElement("button");
                 commentsBtn.textContent = "💬 Comments";
 
-                // Add everything
-                actions.insertBefore(rateDiv, actions.firstChild);
+                actions.appendChild(rateDiv);
                 actions.appendChild(bookmarkBtn);
                 actions.appendChild(cartBtn);
                 actions.appendChild(commentsBtn);
 
-                // Build card
                 itemBox.appendChild(nameContainer);
                 itemBox.appendChild(price);
                 itemBox.appendChild(rating);
-                if (reservedBadge) {
-                    itemBox.appendChild(reservedBadge);
-                }
+                if (reservedBadge) itemBox.appendChild(reservedBadge);
                 itemBox.appendChild(img);
-                itemBox.appendChild(imgButtons);
                 itemBox.appendChild(actions);
-
                 container.appendChild(itemBox);
             });
         }
 
-        // Load user data and items on startup
         document.addEventListener('DOMContentLoaded', async () => {
             await loadUserData();
             await loadItems();
