@@ -17,8 +17,8 @@
         "autoPushAndPullData": "false",
         "accountBlanance": 1000.00,
         "myItems": [1,2,3,6],
-        "bookmarkedItems": [1,2,3],
+        "bookmarkedItems": [1,2],
         "reservedItems": [2,3],
-        "itemsInCart": [1]
+        "itemsInCart": [1,2]
     }
 ]

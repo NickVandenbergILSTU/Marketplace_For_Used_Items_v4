@@ -548,11 +548,11 @@
                 const imgButtons = document.createElement("div");
                 imgButtons.className = "img-buttons";
 
-                img.onload = () => {
-                    imgButtons.innerHTML = `
-                        <button>View Image</button>
-                    `;
-                };
+                // img.onload = () => {
+                //     imgButtons.innerHTML = `
+                //         <button>View Image</button>
+                //     `;
+                // };
                 img.onerror = () => {
                     img.style.display = "none";
                     imgButtons.innerHTML = ``;
