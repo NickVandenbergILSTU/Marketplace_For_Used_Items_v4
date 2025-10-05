@@ -18,6 +18,9 @@
 
     <div class="main-content">
         <div class="sort-controls">
+            <label for="search">Search:</label>
+            <input type="text" id="search" class="search-input" placeholder="Search items..." oninput="filterItems()">
+            
             <label for="sort">Sort by:</label>
             <select id="sort" onchange="loadItems(this.value)">
                 <option value="default">Default Order</option>
@@ -33,6 +36,7 @@
     <script>
         let userBookmarkedItems = [];
         let currentUserId = null;
+        let allItems = [];
 
         async function loadUserData() {
             try {
@@ -96,7 +100,16 @@
                 });
             }
 
-            renderItems(items);
+            allItems = items;
+            filterItems();
+        }
+
+        function filterItems() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filteredItems = allItems.filter(item => 
+                item.name.toLowerCase().includes(searchTerm)
+            );
+            renderItems(filteredItems);
         }
 
         async function runUserScript(params) {
@@ -112,7 +125,7 @@
             container.innerHTML = "";
 
             if (items.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #6b7280; font-size: 18px;">You don\'t have any items yet.</div>';
+                container.innerHTML = '<div class="no-items">No items found.</div>';
                 return;
             }
 

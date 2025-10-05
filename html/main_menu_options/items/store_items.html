@@ -20,6 +20,9 @@
 
     <div class="main-content">
         <div class="sort-controls">
+            <label for="search">Search:</label>
+            <input type="text" id="search" class="search-input" placeholder="Search items..." oninput="filterItems()">
+            
             <label for="sort">Sort by:</label>
             <select id="sort" onchange="loadItems(this.value)">
                 <option value="default">Default Order</option>
@@ -38,6 +41,7 @@
         let userCartItems = [];
         let currentUserId = null;
         let allReservedItems = {};
+        let allItems = [];
 
         // Load user data and store name
         async function loadUserData() {
@@ -118,7 +122,16 @@
                 items.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
             }
 
-            renderItems(items);
+            allItems = items;
+            filterItems();
+        }
+
+        function filterItems() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filteredItems = allItems.filter(item => 
+                item.name.toLowerCase().includes(searchTerm)
+            );
+            renderItems(filteredItems);
         }
 
         async function runUserScript(params) {
@@ -134,7 +147,7 @@
             container.innerHTML = "";
 
             if (items.length === 0) {
-                container.innerHTML = '<div class="no-items">This store doesn\'t have any items yet.</div>';
+                container.innerHTML = '<div class="no-items">No items found.</div>';
                 return;
             }
 

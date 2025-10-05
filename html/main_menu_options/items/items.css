@@ -71,6 +71,13 @@ body {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+.balance {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
 .sort-controls {
     background: white;
     border-radius: 15px;
@@ -79,7 +86,7 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    max-width: 400px;
+    max-width: 700px;
     margin: 0 auto 30px;
 }
 
@@ -87,6 +94,30 @@ body {
     font-weight: 600;
     color: #374151;
     font-size: 16px;
+}
+
+.sort-controls .search-input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #374151;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    min-width: 200px;
+}
+
+.sort-controls .search-input:hover {
+    border-color: #dc2626;
+    background: white;
+}
+
+.sort-controls .search-input:focus {
+    outline: none;
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 .sort-controls select {
@@ -100,6 +131,7 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
+    min-width: 180px;
 }
 
 .sort-controls select:hover {
@@ -161,9 +193,32 @@ body {
     animation: bookmarkPulse 2s ease-in-out infinite;
 }
 
+.reserve-emoji {
+    font-size: 1.5em;
+    animation: reservePulse 2s ease-in-out infinite;
+}
+
 @keyframes bookmarkPulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.1); }
+}
+
+@keyframes reservePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.reserved-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 10px 0;
 }
 
 .item-box p {
@@ -284,6 +339,16 @@ body {
     font-weight: bold;
 }
 
+.no-items {
+    text-align: center;
+    font-size: 1.2em;
+    color: #6b7280;
+    padding: 40px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
 @media (max-width: 768px) {
     .header-panel {
         padding: 15px 20px;
@@ -297,5 +362,23 @@ body {
         font-size: 2em;
     }
 
-    .main-content }
-       
+    .sort-controls {
+        flex-direction: column;
+        align-items: stretch;
+        max-width: 100%;
+    }
+
+    .sort-controls .search-input,
+    .sort-controls select {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    #itemsContainer {
+        grid-template-columns: 1fr;
+    }
+}
