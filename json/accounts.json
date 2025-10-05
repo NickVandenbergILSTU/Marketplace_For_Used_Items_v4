@@ -2,13 +2,13 @@
     {
         "id": 41,
         "username": "nickvandy",
-        "password": "password",
+        "password": "pass word",
         "autoPushAndPullData": "false",
         "accountBlanance": 1000.00,
         "myItems": [1,2,3,4,5],
-        "bookmarkedItems": [1,2,3],
+        "bookmarkedItems": [1,2],
         "reservedItems": [1],
-        "itemsInCart": []
+        "itemsInCart": [1,2]
     },
     {
         "id": 42,

@@ -174,12 +174,12 @@
                     nameContainer.appendChild(bookmarkEmoji);
                 }
 
-                if (isReservedBySomeone) {
-                    const reserveEmoji = document.createElement("span");
-                    reserveEmoji.className = "reserve-emoji";
-                    reserveEmoji.textContent = "❗";
-                    nameContainer.appendChild(reserveEmoji);
-                }
+                // if (isReservedBySomeone) {
+                //     const reserveEmoji = document.createElement("span");
+                //     reserveEmoji.className = "reserve-emoji";
+                //     reserveEmoji.textContent = "❗";
+                //     nameContainer.appendChild(reserveEmoji);
+                // }
 
                 const price = document.createElement("p");
                 price.innerHTML = `<strong>Price:</strong> <span class="price-text">${item.price}</span>`;

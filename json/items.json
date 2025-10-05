@@ -13,6 +13,17 @@
                 "accountId": 42,
                 "rating": 4
             }
+        ],
+        "itemComments":
+        [
+            {
+                "commentBody": "",
+                "commenterId": 41
+            },
+            {
+                "commentBody": "",
+                "commenterId": 42
+            }
         ]
     },
     {

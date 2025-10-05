@@ -32,7 +32,6 @@ app.get('/', (req, res) => {
         }
     } catch (err) {
         console.error('Error reading local_data.json:', err);
-        // If there's an error, just fall back to DEFAULT_HTML
     }
     res.sendFile(DEFAULT_HTML);
 });
@@ -47,10 +46,13 @@ app.post('/run-script', (req, res) => {
 
     const absoluteScriptPath = path.resolve(path.join(__dirname, '../', scriptPath));
 
-    // Replace spaces with ~ and escape single quotes
+    // Only replace " and $ with their literal forms, leave everything else untouched
     const safeParams = params
-        .map(p => p.replace(/ /g, '~'))                    // convert spaces to ~
-        .map(p => `${p.replace(/'/g, '\\\'')}`)          // escape single quotes
+        .map(p => 
+            p.replace(/"/g, '\\"')  // escape double quotes
+             .replace(/\$/g, '\\$') // escape dollar signs
+        )
+        .map(p => `'${p}'`) // wrap each param safely in single quotes
         .join(' ');
 
     exec(`bash "${absoluteScriptPath}" ${safeParams}`, (error, stdout, stderr) => {
@@ -75,7 +77,6 @@ app.get('/api/items', (req, res) => {
 // API route to get only the logged-in user's items with bookmark info
 app.get('/api/my-items', (req, res) => {
     try {
-        // Read local_data.json to get currentlyLoggedInUserID
         const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
         const currentUserId = localData.currentlyLoggedInUserID;
 
@@ -83,7 +84,6 @@ app.get('/api/my-items', (req, res) => {
             return res.status(401).json({ error: 'No user logged in' });
         }
 
-        // Read accounts.json to find the user's account
         const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
         const accounts = JSON.parse(accountsData);
         const userAccount = accounts.find(acc => acc.id === currentUserId);
@@ -92,15 +92,12 @@ app.get('/api/my-items', (req, res) => {
             return res.status(404).json({ error: 'User account not found' });
         }
 
-        // Get the user's myItems array and bookmarkedItems array
         const userItemIds = userAccount.myItems || [];
         const bookmarkedItems = userAccount.bookmarkedItems || [];
 
-        // Read all items
         const itemsData = fs.readFileSync(ITEMS_PATH, 'utf8');
         const allItems = JSON.parse(itemsData);
 
-        // Filter to only include items in the user's myItems array
         const userItems = allItems.filter(item => userItemIds.includes(item.id));
 
         res.json({
@@ -113,10 +110,58 @@ app.get('/api/my-items', (req, res) => {
     }
 });
 
+// API route to get cart items for the logged-in user
+app.get('/api/cart-items', (req, res) => {
+    try {
+        const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
+        const currentUserId = localData.currentlyLoggedInUserID;
+
+        if (currentUserId === -1) {
+            return res.status(401).json({ error: 'No user logged in' });
+        }
+
+        const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
+        const accounts = JSON.parse(accountsData);
+        const userAccount = accounts.find(acc => acc.id === currentUserId);
+
+        if (!userAccount) {
+            return res.status(404).json({ error: 'User account not found' });
+        }
+
+        const cartItemIds = userAccount.itemsInCart || [];
+        const bookmarkedItems = userAccount.bookmarkedItems || [];
+        const reservedItems = userAccount.reservedItems || [];
+
+        const itemsData = fs.readFileSync(ITEMS_PATH, 'utf8');
+        const allItems = JSON.parse(itemsData);
+
+        const cartItems = allItems.filter(item => cartItemIds.includes(item.id));
+
+        // Build map of all reserved items
+        const allReservedItems = {};
+        accounts.forEach(account => {
+            if (Array.isArray(account.reservedItems)) {
+                account.reservedItems.forEach(itemId => {
+                    allReservedItems[itemId] = account.id;
+                });
+            }
+        });
+
+        res.json({
+            items: cartItems,
+            bookmarkedItems: bookmarkedItems,
+            reservedItems: reservedItems,
+            allReservedItems: allReservedItems
+        });
+    } catch (err) {
+        console.error('Error loading cart items:', err);
+        res.status(500).json({ error: 'Failed to load cart items' });
+    }
+});
+
 // API route to get store items based on currentStore in local_data.json
 app.get('/api/store-items', (req, res) => {
     try {
-        // Read local_data.json to get currentStore and currentlyLoggedInUserID
         const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
         const currentStoreId = localData.currentStore;
         const currentUserId = localData.currentlyLoggedInUserID;
@@ -125,7 +170,6 @@ app.get('/api/store-items', (req, res) => {
             return res.status(400).json({ error: 'No store selected' });
         }
 
-        // Read locations.json to find the store
         const locationsData = fs.readFileSync(LOCATIONS_PATH, 'utf8');
         const locations = JSON.parse(locationsData);
         const currentStore = locations.find(loc => loc.id === currentStoreId);
@@ -134,17 +178,13 @@ app.get('/api/store-items', (req, res) => {
             return res.status(404).json({ error: 'Store not found' });
         }
 
-        // Get the store's items array
         const storeItemIds = currentStore.storeItems || [];
 
-        // Read all items
         const itemsData = fs.readFileSync(ITEMS_PATH, 'utf8');
         const allItems = JSON.parse(itemsData);
 
-        // Filter to only include items in the store's storeItems array
         const storeItems = allItems.filter(item => storeItemIds.includes(item.id));
 
-        // Read accounts to get bookmarked, reserved, and cart items for the current user
         const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
         const accounts = JSON.parse(accountsData);
         const userAccount = accounts.find(acc => acc.id === currentUserId);
