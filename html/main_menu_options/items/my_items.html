@@ -233,8 +233,9 @@
                 const renameInput = document.createElement("input");
                 renameInput.type = "text";
                 renameInput.placeholder = "New Name";
+                renameInput.style.fontSize = "14px";
                 const renameBtn = document.createElement("button");
-                renameBtn.textContent = "Rename Item";
+                renameBtn.textContent = "Rename";
                 renameBtn.onclick = () => renameItem(item.id, renameInput.value);
                 renameDiv.appendChild(renameInput);
                 renameDiv.appendChild(renameBtn);
@@ -272,7 +273,6 @@
                 const deleteBtn = document.createElement("button");
                 deleteBtn.textContent = "🗑️ Delete Item";
                 deleteBtn.style.backgroundColor = "#dc3545";
-                deleteBtn.style.color = "white";
                 deleteBtn.onclick = () => deleteItem(item.id);
 
                 const sellUserDiv = document.createElement("div");
