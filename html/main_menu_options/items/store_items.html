@@ -1,0 +1,267 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Items</title>
+
+    <!-- Use shared stylesheet -->
+    <link rel="stylesheet" href="/html/main_menu_options/items/items.css">
+</head>
+<body>
+    <div class="header-panel">
+        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
+        <div class="header-title" id="storeTitle">*No Store Selected*</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="sort-controls">
+            <label for="search">Search:</label>
+            <input type="text" id="search" class="search-input" placeholder="Search items..." oninput="filterItems()">
+            
+            <label for="sort">Sort by:</label>
+            <select id="sort" onchange="loadItems(this.value)">
+                <option value="default">Default Order</option>
+                <option value="alphabetical">Alphabetical</option>
+                <option value="rating">Rating</option>
+                <option value="price">Price</option>
+            </select>
+        </div>
+
+        <div id="itemsContainer"></div>
+
+        <div style="text-align: center; margin: 30px 0; padding-bottom: 20px;">
+            <button class="back-btn" onclick="window.location.href='/html/main_menu_options/items/shopping_cart.html'" style="font-size: 16px; padding: 12px 24px;">
+                🛒 Go to Shopping Cart
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let userBookmarkedItems = [];
+        let userReservedItems = [];
+        let userCartItems = [];
+        let currentUserId = null;
+        let allReservedItems = {};
+        let allItems = [];
+
+        // Load user data and store name
+        async function loadUserData() {
+            try {
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                if (!localDataResponse.ok) throw new Error(`HTTP error! status: ${localDataResponse.status}`);
+                const localData = await localDataResponse.json();
+                currentUserId = localData.currentlyLoggedInUserID;
+                const currentStoreId = localData.currentStore;
+
+                // Load store name
+                const locationsResponse = await fetch('/json/locations.json');
+                if (locationsResponse.ok) {
+                    const locations = await locationsResponse.json();
+                    const currentStore = locations.find(loc => loc.id === currentStoreId);
+                    if (currentStore && currentStore.name) {
+                        document.getElementById('storeTitle').textContent = `${currentStore.name}'s Items`;
+                    }
+                }
+
+                const accountsResponse = await fetch('/json/accounts.json');
+                if (!accountsResponse.ok) throw new Error(`HTTP error! status: ${accountsResponse.status}`);
+                const accounts = await accountsResponse.json();
+
+                const currentUser = accounts.find(account => account.id === currentUserId);
+                const usernameElement = document.getElementById('username');
+                const balanceElement = document.getElementById('balance');
+
+                if (currentUser && currentUser.username) {
+                    usernameElement.textContent = currentUser.username;
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    balanceElement.textContent = `$${balanceNum.toFixed(2)}`;
+                } else {
+                    usernameElement.textContent = 'Guest User';
+                    balanceElement.textContent = '$0.00';
+                }
+
+                // Build map of all reserved items
+                accounts.forEach(account => {
+                    if (Array.isArray(account.reservedItems)) {
+                        account.reservedItems.forEach(itemId => {
+                            allReservedItems[itemId] = account.id;
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
+            }
+        }
+
+        async function loadItems(order = "default") {
+            const res = await fetch("/api/store-items");
+            const data = await res.json();
+            let items = data.items;
+
+            userBookmarkedItems = data.bookmarkedItems || [];
+            userReservedItems = data.reservedItems || [];
+            userCartItems = data.itemsInCart || [];
+
+            items.forEach(item => {
+                if (Array.isArray(item.ratings) && item.ratings.length > 0) {
+                    const sum = item.ratings.reduce((acc, r) => acc + r.rating, 0);
+                    item.avgRating = sum / item.ratings.length;
+                } else {
+                    item.avgRating = 0;
+                }
+            });
+
+            if (order === "alphabetical") {
+                items.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (order === "rating") {
+                items.sort((a, b) => b.avgRating - a.avgRating);
+            } else if (order === "price") {
+                const parsePrice = str => parseFloat(str.replace(/[^0-9.]/g, ""));
+                items.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+            }
+
+            allItems = items;
+            filterItems();
+        }
+
+        function filterItems() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filteredItems = allItems.filter(item => 
+                item.name.toLowerCase().includes(searchTerm)
+            );
+            renderItems(filteredItems);
+        }
+
+        async function runUserScript(params) {
+            await fetch("/run-script", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ params })
+            });
+        }
+
+        function renderItems(items) {
+            const container = document.getElementById("itemsContainer");
+            container.innerHTML = "";
+
+            if (items.length === 0) {
+                container.innerHTML = '<div class="no-items">No items found.</div>';
+                return;
+            }
+
+            items.forEach(item => {
+                const itemBox = document.createElement("div");
+                itemBox.className = "item-box";
+
+                const isBookmarked = userBookmarkedItems.includes(item.id);
+                const isReservedByCurrentUser = userReservedItems.includes(item.id);
+                const isInCart = userCartItems.includes(item.id);
+                const reservedByUserId = allReservedItems[item.id];
+                const isReservedBySomeone = reservedByUserId !== undefined;
+
+                const nameContainer = document.createElement("div");
+                nameContainer.className = "item-name-container";
+                const name = document.createElement("h3");
+                name.textContent = item.name;
+                nameContainer.appendChild(name);
+
+                if (isBookmarked) {
+                    const bookmarkEmoji = document.createElement("span");
+                    bookmarkEmoji.className = "bookmark-emoji";
+                    bookmarkEmoji.textContent = "🔖";
+                    nameContainer.appendChild(bookmarkEmoji);
+                }
+
+                // if (isReservedBySomeone) {
+                //     const reserveEmoji = document.createElement("span");
+                //     reserveEmoji.className = "reserve-emoji";
+                //     reserveEmoji.textContent = "❗";
+                //     nameContainer.appendChild(reserveEmoji);
+                // }
+
+                const price = document.createElement("p");
+                price.innerHTML = `<strong>Price:</strong> <span class="price-text">${item.price}</span>`;
+
+                const rating = document.createElement("p");
+                const stars = "⭐".repeat(Math.floor(item.avgRating));
+                rating.innerHTML = `<strong>Rating:</strong> <span class="rating-text">${item.avgRating.toFixed(1)} ${stars}</span>`;
+
+                let reservedBadge = null;
+                if (isReservedBySomeone) {
+                    reservedBadge = document.createElement("div");
+                    reservedBadge.className = "reserved-badge";
+                    reservedBadge.innerHTML = `<span>❗</span><span>Reserved</span>`;
+                }
+
+                const img = document.createElement("img");
+                img.className = "item-img";
+                img.alt = item.name;
+                img.src = `/images/items/${item.id}.png`;
+                img.onerror = () => (img.style.display = "none");
+
+                const actions = document.createElement("div");
+                actions.className = "action-group";
+
+                const rateDiv = document.createElement("div");
+                rateDiv.className = "action-row";
+                const rateSelect = document.createElement("select");
+                for (let i = 1; i <= 5; i++) {
+                    const opt = document.createElement("option");
+                    opt.value = i;
+                    opt.textContent = `${i} Star${i > 1 ? 's' : ''}`;
+                    rateSelect.appendChild(opt);
+                }
+                const rateBtn = document.createElement("button");
+                rateBtn.textContent = "Rate";
+                rateBtn.onclick = () => runUserScript(rateSelect.value);
+                rateDiv.appendChild(rateSelect);
+                rateDiv.appendChild(rateBtn);
+
+                const bookmarkBtn = document.createElement("button");
+                bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
+                bookmarkBtn.onclick = () => runUserScript("bookmark");
+
+                if (!isReservedBySomeone || isReservedByCurrentUser) {
+                    const reserveBtn = document.createElement("button");
+                    reserveBtn.textContent = isReservedByCurrentUser ? "Unreserve Item" : "Reserve Item";
+                    reserveBtn.onclick = () => runUserScript("reserve");
+                    actions.appendChild(reserveBtn);
+                }
+
+                const cartBtn = document.createElement("button");
+                cartBtn.textContent = isInCart ? "🛒 Remove from Cart" : "🛒 Add to Cart";
+                cartBtn.onclick = () => runUserScript("cart");
+
+                const commentsBtn = document.createElement("button");
+                commentsBtn.textContent = "💬 Comments";
+
+                actions.appendChild(rateDiv);
+                actions.appendChild(bookmarkBtn);
+                actions.appendChild(cartBtn);
+                actions.appendChild(commentsBtn);
+
+                itemBox.appendChild(nameContainer);
+                itemBox.appendChild(price);
+                itemBox.appendChild(rating);
+                if (reservedBadge) itemBox.appendChild(reservedBadge);
+                itemBox.appendChild(img);
+                itemBox.appendChild(actions);
+                container.appendChild(itemBox);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUserData();
+            await loadItems();
+        });
+    </script>
+</body>
+</html>

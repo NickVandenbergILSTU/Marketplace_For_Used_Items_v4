@@ -1,12 +1,14 @@
 [
     {
         "id": 41,
-        "username": "nick",
-        "password": "pass",
+        "username": "nickvandy",
+        "password": "pass word",
         "autoPushAndPullData": "false",
-        "accountBlanance": 1000.00,
+        "accountBlanance": 100.00,
         "myItems": [1,2,3,4,5],
-        "bookmarkedItems": [1,2]
+        "bookmarkedItems": [1,2],
+        "reservedItems": [1],
+        "itemsInCart": [1,2]
     },
     {
         "id": 42,
@@ -14,7 +16,9 @@
         "password": "password",
         "autoPushAndPullData": "false",
         "accountBlanance": 1000.00,
-        "myItems": [],
-        "bookmarkedItems": [1]
+        "myItems": [1,2,3,6],
+        "bookmarkedItems": [1,2],
+        "reservedItems": [3],
+        "itemsInCart": [1,2,3]
     }
 ]

@@ -1,8 +1,35 @@
 [
     {
         "id": 1,
-        "name": "item1",
-        "price": "$100.00",
+        "name": "TV",
+        "price": "$300.00",
+        "ratings": 
+        [
+            {
+                "accountId": 41,
+                "rating": 5
+            },
+            {
+                "accountId": 42,
+                "rating": 4
+            }
+        ],
+        "itemComments":
+        [
+            {
+                "commentBody": "",
+                "commenterId": 41
+            },
+            {
+                "commentBody": "",
+                "commenterId": 42
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Laptop",
+        "price": "$200.00",
         "ratings": 
         [
             {
@@ -16,38 +43,67 @@
         ]
     },
     {
-        "id": 2,
-        "name": "aitem2",
-        "price": "$200.00",
-        "numRatings": 2,
-        "ratingSum": 10.0
-    },
-    {
         "id": 3,
-        "name": "item5",
+        "name": "Microwave",
         "price": "$50.00",
-        "numRatings": 2,
-        "ratingSum": 10.0
+        "ratings": 
+        [
+            {
+                "accountId": 41,
+                "rating": 5
+            },
+            {
+                "accountId": 42,
+                "rating": 4
+            }
+        ]
     },
     {
         "id": 4,
-        "name": "item4",
+        "name": "Apple",
         "price": "$1.50",
-        "numRatings": 2,
-        "ratingSum": 10.0
+        "ratings": 
+        [
+            {
+                "accountId": 41,
+                "rating": 5
+            },
+            {
+                "accountId": 42,
+                "rating": 4
+            }
+        ]
     },
     {
         "id": 5,
-        "name": "item6",
+        "name": "Car",
         "price": "$500.00",
-        "numRatings": 2,
-        "ratingSum": 10.0
+        "ratings": 
+        [
+            {
+                "accountId": 41,
+                "rating": 5
+            },
+            {
+                "accountId": 42,
+                "rating": 5
+            }
+        ]
     },
     {
         "id": 6,
-        "name": "item7",
+        "name": "Truck",
         "price": "$600.00",
-        "numRatings": 2,
-        "ratingSum": 10.0
+        "ratings": 
+        [
+            {
+                "accountId": 41,
+                "rating": 3
+            },
+            {
+                "accountId": 42,
+                "rating": 4
+            }
+        ]
     }
 ]

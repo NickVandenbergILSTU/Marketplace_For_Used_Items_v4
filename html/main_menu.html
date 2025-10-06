@@ -70,9 +70,23 @@
             box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
         }
 
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
         .username {
             font-size: 18px;
             font-weight: 600;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .balance {
+            font-size: 20px;
+            font-weight: bold;
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
@@ -205,6 +219,10 @@
                 font-size: 2em;
             }
 
+            .user-info {
+                align-items: center;
+            }
+
             .main-content {
                 padding: 20px;
             }
@@ -224,16 +242,18 @@
     <div class="header-panel">
         <button class="logout-btn" onclick="logout()">Log Out</button>
         <div class="header-title">Main Menu</div>
-        <div class="username" id="username">Loading...</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
     </div>
 
     <div class="main-content">
         <div class="menu-grid">
             <div class="menu-column">
                 <h2 class="column-title">Stores</h2>
-                <button class="menu-button" onclick="openDefaultStore()">Open Default Store</button>
-                <button class="menu-button" onclick="viewAllStores()">All Stores</button>
-                <button class="menu-button" onclick="viewMyStores()">My Stores</button>
+                <button class="menu-button" onclick="openDefaultStore()">Keep Shopping at Current Store</button>
+                <button class="menu-button" onclick="viewAllStores()">Browse Stores</button>
             </div>
 
             <div class="menu-column">
@@ -249,7 +269,7 @@
                 <h2 class="column-title">User Info</h2>
                 <button class="menu-button" onclick="viewAllAccounts()">All Accounts</button>
                 <button class="menu-button" onclick="viewMyAccount()">My Account</button>
-                <button class="menu-button" onclick="viewMoneyBalance()">Account Balance</button>
+
             </div>
 
             <div class="menu-column">
@@ -284,16 +304,23 @@
                 // Find the account with matching ID
                 const currentUser = accounts.find(account => account.id === currentlyLoggedInUserID);
                 
-                // Display username
+                // Display username and balance
                 const usernameElement = document.getElementById('username');
+                const balanceElement = document.getElementById('balance');
+                
                 if (currentUser && currentUser.username) {
                     usernameElement.textContent = currentUser.username;
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    balanceElement.textContent = `$${balanceNum.toFixed(2)}`;
                 } else {
                     usernameElement.textContent = 'Guest User';
+                    balanceElement.textContent = '$0.00';
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
                 document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
             }
         }
 
@@ -305,15 +332,11 @@
         }
 
         function openDefaultStore() {
-            window.location.href = '/store/default';
+            window.location.href = '/html/main_menu_options/items/store_items.html';
         }
 
         function viewAllStores() {
             window.location.href = '/stores/all';
-        }
-
-        function viewMyStores() {
-            window.location.href = '/stores/my';
         }
 
         function viewMyItems() {
@@ -333,7 +356,7 @@
         }
 
         function viewShoppingCart() {
-            window.location.href = '/cart';
+            window.location.href = '/html/main_menu_options/items/shopping_cart.html';
         }
 
         function viewAllAccounts() {

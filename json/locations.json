@@ -1,10 +1,12 @@
 [
     {
         "id": 5,
-        "name": "store"
+        "name": "Nick's Store",
+        "storeItems": [1,2,3]
     },
     {
         "id": 6,
-        "name": "store2"
+        "name": "Store 2",
+        "storeItems": [1]
     }
 ]

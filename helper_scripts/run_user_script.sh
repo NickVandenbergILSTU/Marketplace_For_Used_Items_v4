@@ -12,10 +12,6 @@ LOCAL_DATA_PATH="json/local/local_data.json"
 ACCOUNTS_JSON_PATH="json/accounts.json"
 CURRENTLY_LOGGED_IN_USER_ID=$(jq -r '.currentlyLoggedInUserID' "$LOCAL_DATA_PATH")
 
-echo "Running helper script to run user script: "
-echo "$SCRIPT_PATH"
-echo ""
-
 # ==================================================================
 # ERROR HANDLING:
 # ==================================================================
@@ -69,8 +65,17 @@ if [ "$read_only" == "true" ] || [ "$read_and_write" == "true" ]; then
   git pull
 fi
 
-# runs script stored in SCRIPT_PATH variable, with all parameters
-"$SCRIPT_PATH" "${@:2}"
+# Run script
+ext="${SCRIPT_PATH: -3}"
+
+if [ "$ext" = ".sh" ]; then
+    "$SCRIPT_PATH" "${@:2}"
+elif [ "$ext" = ".py" ]; then
+    python "$SCRIPT_PATH" "${@:2}"
+else
+    echo "Error: Unsupported file type. Only .sh and .py are allowed."
+    exit 1
+fi
 
 # If script involves writing user data > git add files; git commit -m "message"; git push {files that could have been changed}
 if [ "$read_and_write" == "true" ]; then
