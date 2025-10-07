@@ -159,6 +159,61 @@ app.get('/api/cart-items', (req, res) => {
     }
 });
 
+// API route to get reserved items for the logged-in user
+app.get('/api/reserved-items', (req, res) => {
+    try {
+        // Read local_data.json to get currentlyLoggedInUserID
+        const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
+        const currentUserId = localData.currentlyLoggedInUserID;
+
+        if (currentUserId === -1) {
+            return res.status(401).json({ error: 'No user logged in' });
+        }
+
+        // Read accounts.json to find the user account
+        const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
+        const accounts = JSON.parse(accountsData);
+        const userAccount = accounts.find(acc => acc.id === currentUserId);
+
+        if (!userAccount) {
+            return res.status(404).json({ error: 'User account not found' });
+        }
+
+        // Get the reservedItems array from the user account
+        const reservedItemIds = userAccount.reservedItems || [];
+        const bookmarkedItems = userAccount.bookmarkedItems || [];
+        const cartItemIds = userAccount.itemsInCart || [];
+
+        // Read items.json
+        const itemsData = fs.readFileSync(ITEMS_PATH, 'utf8');
+        const allItems = JSON.parse(itemsData);
+
+        // Filter items whose id matches values in reservedItems array
+        const reservedItems = allItems.filter(item => reservedItemIds.includes(item.id));
+
+        // Build map of all reserved items across all accounts
+        const allReservedItems = {};
+        accounts.forEach(account => {
+            if (Array.isArray(account.reservedItems)) {
+                account.reservedItems.forEach(itemId => {
+                    allReservedItems[itemId] = account.id;
+                });
+            }
+        });
+
+        res.json({
+            items: reservedItems,
+            bookmarkedItems: bookmarkedItems,
+            reservedItems: reservedItemIds,
+            itemsInCart: cartItemIds,
+            allReservedItems: allReservedItems
+        });
+    } catch (err) {
+        console.error('Error loading reserved items:', err);
+        res.status(500).json({ error: 'Failed to load reserved items' });
+    }
+});
+
 // API route to get store items based on currentStore in local_data.json
 app.get('/api/store-items', (req, res) => {
     try {
