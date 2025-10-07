@@ -5,8 +5,8 @@
         "password": "pass word",
         "autoPushAndPullData": "false",
         "accountBlanance": 100.00,
-        "myItems": [1,2,3,4],
-        "bookmarkedItems": [1,2],
+        "myItems": [1,2],
+        "bookmarkedItems": [1,2,3],
         "reservedItems": [1,2,3],
         "itemsInCart": [1,2]
     },

@@ -260,6 +260,105 @@ app.get('/api/store-items', (req, res) => {
     }
 });
 
+// API route to get bookmarked items for the logged-in user
+app.get('/api/bookmarked-items', (req, res) => {
+    try {
+        // Read local_data.json to get currentlyLoggedInUserID
+        const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
+        const currentUserId = localData.currentlyLoggedInUserID;
+
+        if (currentUserId === -1) {
+            return res.status(401).json({ error: 'No user logged in' });
+        }
+
+        // Read accounts.json to find the user account
+        const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
+        const accounts = JSON.parse(accountsData);
+        const userAccount = accounts.find(acc => acc.id === currentUserId);
+
+        if (!userAccount) {
+            return res.status(404).json({ error: 'User account not found' });
+        }
+
+        // Get the bookmarkedItems array from the user account
+        const bookmarkedItemIds = userAccount.bookmarkedItems || [];
+        const userItemIds = userAccount.myItems || [];
+        const reservedItems = userAccount.reservedItems || [];
+        const cartItemIds = userAccount.itemsInCart || [];
+
+        // Read items.json
+        const itemsData = fs.readFileSync(ITEMS_PATH, 'utf8');
+        const allItems = JSON.parse(itemsData);
+
+        // Read locations.json
+        const locationsData = fs.readFileSync(LOCATIONS_PATH, 'utf8');
+        const locations = JSON.parse(locationsData);
+
+        // Filter items whose id matches values in bookmarkedItems array
+        const bookmarkedItems = allItems.filter(item => bookmarkedItemIds.includes(item.id));
+
+        // For each bookmarked item, determine ownership
+        const itemsWithOwnership = bookmarkedItems.map(item => {
+            let ownership = { type: 'none', name: null, id: null };
+
+            // Check if item belongs to current user
+            if (userItemIds.includes(item.id)) {
+                ownership = { type: 'user', name: userAccount.username, id: currentUserId };
+            } else {
+                // Check if item belongs to another user
+                const ownerAccount = accounts.find(acc => 
+                    acc.myItems && acc.myItems.includes(item.id)
+                );
+                
+                if (ownerAccount) {
+                    ownership = { type: 'other_user', name: ownerAccount.username, id: ownerAccount.id };
+                } else {
+                    // Check if item belongs to a store
+                    const ownerStore = locations.find(loc => 
+                        loc.storeItems && loc.storeItems.includes(item.id)
+                    );
+                    
+                    if (ownerStore) {
+                        ownership = { type: 'store', name: ownerStore.name, id: ownerStore.id };
+                    }
+                }
+            }
+
+            return {
+                ...item,
+                ownership
+            };
+        });
+
+        // Filter out items that belong to other users
+        const filteredItems = itemsWithOwnership.filter(item => 
+            item.ownership.type !== 'other_user'
+        );
+
+        // Build map of all reserved items across all accounts
+        const allReservedItems = {};
+        accounts.forEach(account => {
+            if (Array.isArray(account.reservedItems)) {
+                account.reservedItems.forEach(itemId => {
+                    allReservedItems[itemId] = account.id;
+                });
+            }
+        });
+
+        res.json({
+            items: filteredItems,
+            bookmarkedItems: bookmarkedItemIds,
+            reservedItems: reservedItems,
+            itemsInCart: cartItemIds,
+            allReservedItems: allReservedItems,
+            userItemIds: userItemIds
+        });
+    } catch (err) {
+        console.error('Error loading bookmarked items:', err);
+        res.status(500).json({ error: 'Failed to load bookmarked items' });
+    }
+});
+
 // API route to get accounts
 app.get('/api/accounts', (req, res) => {
     try {
