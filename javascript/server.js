@@ -390,6 +390,21 @@ app.get('/api/order-history', (req, res) => {
     }
 });
 
+// API route to get all locations
+app.get('/api/all-locations', (req, res) => {
+    try {
+        const locationsData = fs.readFileSync(LOCATIONS_PATH, 'utf8');
+        const locations = JSON.parse(locationsData);
+
+        res.json({
+            locations: locations
+        });
+    } catch (err) {
+        console.error('Error loading locations:', err);
+        res.status(500).json({ error: 'Failed to load locations' });
+    }
+});
+
 // API route to get accounts
 app.get('/api/accounts', (req, res) => {
     try {

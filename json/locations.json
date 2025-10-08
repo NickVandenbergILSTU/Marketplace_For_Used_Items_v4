@@ -8,5 +8,10 @@
         "id": 6,
         "name": "Store 2",
         "storeItems": [1]
+    },
+    {
+        "id": 7,
+        "name": "Store 3",
+        "storeItems": [1]
     }
 ]

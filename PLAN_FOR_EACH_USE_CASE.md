@@ -11,7 +11,11 @@ Order of operations for each use case:
 
 
 
-For item comment html page, just make 1 html page, and make it so that if the item belongs to the signed in user (if the comment's user id = currentlyLoggedInUserID), allow the user to delete all comments. Otherwise, only the user who posted the comments can delete them
+For item comment html page, just make 1 html page, and make it so that if the item belongs to the 
+signed in user (if the comment's user id = currentlyLoggedInUserID), allow the user to delete all 
+comments. Otherwise, only the user who posted the comments can delete them
+
+
 
 
 
