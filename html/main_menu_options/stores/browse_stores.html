@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browse Stores</title>
+    <title>All Stores</title>
     <link rel="stylesheet" href="/html/main_menu_options/items/items.css">
 </head>
 <body>
     <div class="header-panel">
         <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
-        <div class="header-title">Browse Stores</div>
+        <div class="header-title">All Stores</div>
         <div class="user-info">
             <div class="username" id="username">Loading...</div>
             <div class="balance" id="balance">$0.00</div>
@@ -190,15 +190,36 @@
             // and then navigate to store_items.html
         }
 
-        function createNewStore() {
+        async function createNewStore() {
             const storeName = document.getElementById('newStoreName').value.trim();
             if (storeName === '') {
                 alert('Please enter a store name');
                 return;
             }
-            // TODO: Implement create new store functionality
-            console.log(`Creating new store: ${storeName}`);
-            document.getElementById('newStoreName').value = '';
+            
+            // Call run-script endpoint to create new store
+            const params = [
+                './helper_scripts/run_user_script.sh',
+                './use_cases/add_location/add_location.sh',
+                storeName
+            ];
+            
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+                
+                // Clear input and reload stores after creation
+                document.getElementById('newStoreName').value = '';
+                await loadStores();
+            } catch (error) {
+                console.error('Error running script:', error);
+                alert('Error creating store');
+            }
         }
 
         function renderStores(stores) {
