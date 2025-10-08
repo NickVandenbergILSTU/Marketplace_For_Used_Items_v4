@@ -19,5 +19,10 @@
     "storeItems": [
       1
     ]
+  },
+  {
+    "id": 8,
+    "name": "Store 4",
+    "storeItems": []
   }
 ]

@@ -184,11 +184,29 @@
             renderStores(filteredStores);
         }
 
-        function visitStore(storeId, storeName) {
-            // TODO: Implement functionality to set current store and navigate
+        async function visitStore(storeId, storeName) {
             console.log(`Visiting store ${storeId}: ${storeName}`);
-            // This would typically update local_data.json's currentStore value
-            // and then navigate to store_items.html
+            
+            // Call run-script endpoint with store ID
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/set_current_store/set_current_store.sh',
+                storeId.toString()
+            ];
+            
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                console.log('Script output:', text);
+                alert(text);
+            } catch (error) {
+                console.error('Error running script:', error);
+                alert('Error visiting store');
+            }
         }
 
         async function createNewStore() {
