@@ -126,6 +126,7 @@
     </style>
 
     <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
         let currentUserId = null;
         let allStores = [];
 
@@ -199,7 +200,7 @@
             
             // Call run-script endpoint to create new store
             const params = [
-                './helper_scripts/run_user_script.sh',
+                HELPER_SCRIPT,
                 './use_cases/add_location/add_location.sh',
                 storeName
             ];
