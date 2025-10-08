@@ -16,6 +16,14 @@ if [ ! -f "$LOCATIONS_FILE" ]; then
     exit 1
 fi
 
+# Check if a store with the same name already exists
+EXISTING_STORE=$(jq --arg name "$STORE_NAME" '[.[] | select(.name == $name)] | length' "$LOCATIONS_FILE")
+
+if [ "$EXISTING_STORE" -gt 0 ]; then
+    echo "Error: A store with the name '$STORE_NAME' already exists"
+    exit 1
+fi
+
 # Generate a random ID (0 or greater)
 # Get all existing IDs and find the maximum to avoid conflicts
 MAX_ID=$(jq '[.[].id] | max // -1' "$LOCATIONS_FILE")
