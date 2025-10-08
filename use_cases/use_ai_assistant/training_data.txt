@@ -1,7 +1,3 @@
-The secret number is 46
+Training Data:
 
-User question:
-what is the secret number
-
-GPT response:
-The secret number is 46.
+If you get lost navigate to the main menu

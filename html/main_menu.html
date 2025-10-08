@@ -85,8 +85,8 @@
         }
 
         .balance {
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 16px;
+            font-weight: normal;
             color: white;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
@@ -252,7 +252,7 @@
         <div class="menu-grid">
             <div class="menu-column">
                 <h2 class="column-title">Stores</h2>
-                <button class="menu-button" onclick="openDefaultStore()">Keep Shopping at Current Store</button>
+                <button class="menu-button" id="currentStoreBtn" onclick="openDefaultStore()">Loading...</button>
                 <button class="menu-button" onclick="viewAllStores()">Browse Stores</button>
             </div>
 
@@ -282,19 +282,21 @@
 
     <script>
         let userData = null;
+        let currentStoreName = null;
 
-        // Load user data based on currently logged in user ID
+        // Load user data and current store
         async function loadUserData() {
             try {
-                // First, get the currently logged in user ID from local data
+                // First, get the currently logged in user ID and current store from local data
                 const localDataResponse = await fetch('/json/local/local_data.json');
                 if (!localDataResponse.ok) {
                     throw new Error(`HTTP error! status: ${localDataResponse.status}`);
                 }
                 const localData = await localDataResponse.json();
                 const currentlyLoggedInUserID = localData.currentlyLoggedInUserID;
+                const currentStoreId = localData.currentStore;
 
-                // Then, get all accounts data
+                // Get all accounts data
                 const accountsResponse = await fetch('/json/accounts.json');
                 if (!accountsResponse.ok) {
                     throw new Error(`HTTP error! status: ${accountsResponse.status}`);
@@ -317,10 +319,38 @@
                     usernameElement.textContent = 'Guest User';
                     balanceElement.textContent = '$0.00';
                 }
+
+                // Get locations data to find current store name
+                const locationsResponse = await fetch('/json/locations.json');
+                if (!locationsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${locationsResponse.status}`);
+                }
+                const locations = await locationsResponse.json();
+
+                // Update the button text or hide it if no store selected
+                const currentStoreBtn = document.getElementById('currentStoreBtn');
+                
+                if (currentStoreId === -1) {
+                    // Hide the button if currentStore is -1
+                    currentStoreBtn.style.display = 'none';
+                } else {
+                    // Find the location with matching ID
+                    const currentStore = locations.find(location => location.id === currentStoreId);
+                    
+                    if (currentStore && currentStore.name) {
+                        currentStoreBtn.textContent = `Shop at: ${currentStore.name}`;
+                        currentStoreName = currentStore.name;
+                        currentStoreBtn.style.display = 'block';
+                    } else {
+                        currentStoreBtn.textContent = 'Shop at Current Store';
+                        currentStoreBtn.style.display = 'block';
+                    }
+                }
             } catch (error) {
                 console.error('Error loading user data:', error);
                 document.getElementById('username').textContent = 'Guest User';
                 document.getElementById('balance').textContent = '$0.00';
+                document.getElementById('currentStoreBtn').textContent = 'Shop at Current Store';
             }
         }
 
@@ -336,7 +366,7 @@
         }
 
         function viewAllStores() {
-            window.location.href = '/stores/all';
+            window.location.href = '/html/main_menu_options/stores/browse_stores.html';
         }
 
         function viewMyItems() {
@@ -344,15 +374,15 @@
         }
 
         function viewOrderHistory() {
-            window.location.href = '/orders/history';
+            window.location.href = '/html/main_menu_options/items/order_history.html';
         }
 
         function viewBookmarkedItems() {
-            window.location.href = '/items/bookmarked';
+            window.location.href = '/html/main_menu_options/items/bookmarked_items.html';
         }
 
         function viewReservedItems() {
-            window.location.href = '/items/reserved';
+            window.location.href = '/html/main_menu_options/items/my_reserved_items.html';
         }
 
         function viewShoppingCart() {

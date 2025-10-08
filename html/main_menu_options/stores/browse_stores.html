@@ -1,0 +1,272 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Stores</title>
+    <link rel="stylesheet" href="/html/main_menu_options/items/items.css">
+</head>
+<body>
+    <div class="header-panel">
+        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
+        <div class="header-title">All Stores</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="sort-controls">
+            <label for="search">Search:</label>
+            <input type="text" id="search" class="search-input" placeholder="Search stores..." oninput="filterStores()">
+            
+            <label for="sort">Sort by:</label>
+            <select id="sort" onchange="loadStores(this.value)">
+                <option value="default">Default Order</option>
+                <option value="alphabetical">Alphabetical</option>
+            </select>
+        </div>
+
+        <div id="storesContainer"></div>
+
+        <div class="create-store-container">
+            <input type="text" id="newStoreName" class="new-store-input" placeholder="Enter store name...">
+            <button class="create-store-btn" onclick="createNewStore()">+ Create New Store</button>
+        </div>
+    </div>
+
+    <style>
+        .create-store-container {
+            margin-top: 30px;
+            padding: 20px;
+            text-align: center;
+            border-top: 2px solid #ddd;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .new-store-input {
+            padding: 12px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            color: #374151;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            min-width: 250px;
+        }
+
+        .new-store-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .create-store-btn {
+            background-color: #007bff;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .create-store-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 123, 255, 0.3);
+        }
+
+        .create-store-btn:active {
+            background-color: #004085;
+            transform: translateY(0);
+        }
+
+        #storesContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .store-button {
+            padding: 25px 30px;
+            border-radius: 15px;
+            border: 2px solid #e5e7eb;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .store-button:hover {
+            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+            border-color: #dc2626;
+        }
+
+        .store-button:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+    </style>
+
+    <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
+        let currentUserId = null;
+        let allStores = [];
+
+        // Load user data
+        async function loadUserData() {
+            try {
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                if (!localDataResponse.ok) throw new Error(`HTTP error! status: ${localDataResponse.status}`);
+                const localData = await localDataResponse.json();
+                currentUserId = localData.currentlyLoggedInUserID;
+
+                const accountsResponse = await fetch('/json/accounts.json');
+                if (!accountsResponse.ok) throw new Error(`HTTP error! status: ${accountsResponse.status}`);
+                const accounts = await accountsResponse.json();
+
+                const currentUser = accounts.find(account => account.id === currentUserId);
+                const usernameElement = document.getElementById('username');
+                const balanceElement = document.getElementById('balance');
+
+                if (currentUser && currentUser.username) {
+                    usernameElement.textContent = currentUser.username;
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    balanceElement.textContent = `$${balanceNum.toFixed(2)}`;
+                } else {
+                    usernameElement.textContent = 'Guest User';
+                    balanceElement.textContent = '$0.00';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
+            }
+        }
+
+        async function loadStores(order = "default") {
+            const res = await fetch("/api/all-locations");
+            const data = await res.json();
+            let stores = data.locations;
+
+            // Sort stores based on selected order
+            if (order === "alphabetical") {
+                stores.sort((a, b) => a.name.localeCompare(b.name));
+            }
+
+            allStores = stores;
+            filterStores();
+        }
+
+        function filterStores() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filteredStores = allStores.filter(store => 
+                store.name.toLowerCase().includes(searchTerm)
+            );
+            renderStores(filteredStores);
+        }
+
+        async function visitStore(storeId, storeName) {
+            console.log(`Visiting store ${storeId}: ${storeName}`);
+            
+            // Call run-script endpoint with store ID
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/set_current_store/set_current_store.sh',
+                storeId.toString()
+            ];
+            
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                console.log('Script output:', text);
+                alert(text);
+            } catch (error) {
+                console.error('Error running script:', error);
+                alert('Error visiting store');
+            }
+
+            // Redirect to store
+            window.location.href = '/html/main_menu_options/items/store_items.html';
+        }
+
+        async function createNewStore() {
+            const storeName = document.getElementById('newStoreName').value.trim();
+            if (storeName === '') {
+                alert('Please enter a store name');
+                return;
+            }
+            
+            // Call run-script endpoint to create new store
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/add_location/add_location.sh',
+                storeName
+            ];
+            
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+                
+                // Clear input and reload stores after creation
+                document.getElementById('newStoreName').value = '';
+                await loadStores();
+            } catch (error) {
+                console.error('Error running script:', error);
+                alert('Error creating store');
+            }
+        }
+
+        function renderStores(stores) {
+            const container = document.getElementById("storesContainer");
+            container.innerHTML = "";
+
+            if (stores.length === 0) {
+                container.innerHTML = '<div class="no-items">No stores found.</div>';
+                return;
+            }
+
+            stores.forEach(store => {
+                const storeButton = document.createElement("button");
+                storeButton.className = "store-button";
+                storeButton.textContent = store.name;
+                storeButton.onclick = () => visitStore(store.id, store.name);
+
+                container.appendChild(storeButton);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUserData();
+            await loadStores();
+        });
+    </script>
+</body>
+</html>

@@ -10,7 +10,19 @@ Order of operations for each use case:
 3. Write your script (and html for forgot password)
 
 
+10/8/25
 
+For item comment html page, just make 1 html page, and make it so that if the item belongs to the 
+signed in user (if the comment's user id = currentlyLoggedInUserID), allow the user to delete all 
+comments. Otherwise, only the user who posted the comments can delete them
+
+Order of operations for each html function that runs a script AND redirects you to another page
+- run script
+- refresh
+- redirect
+If it just runs a script
+- run script
+- refresh
 
 
 
