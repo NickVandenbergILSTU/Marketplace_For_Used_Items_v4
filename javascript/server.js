@@ -298,11 +298,19 @@ app.get('/api/bookmarked-items', (req, res) => {
         const bookmarkedItems = allItems.filter(item => bookmarkedItemIds.includes(item.id));
 
         // For each bookmarked item, determine ownership
+        // Priority: Store > Current User > Other User
         const itemsWithOwnership = bookmarkedItems.map(item => {
             let ownership = { type: 'none', name: null, id: null };
 
-            // Check if item belongs to current user
-            if (userItemIds.includes(item.id)) {
+            // First check if item belongs to a store (highest priority)
+            const ownerStore = locations.find(loc => 
+                loc.storeItems && loc.storeItems.includes(item.id)
+            );
+            
+            if (ownerStore) {
+                ownership = { type: 'store', name: ownerStore.name, id: ownerStore.id };
+            } else if (userItemIds.includes(item.id)) {
+                // Check if item belongs to current user
                 ownership = { type: 'user', name: userAccount.username, id: currentUserId };
             } else {
                 // Check if item belongs to another user
@@ -312,15 +320,6 @@ app.get('/api/bookmarked-items', (req, res) => {
                 
                 if (ownerAccount) {
                     ownership = { type: 'other_user', name: ownerAccount.username, id: ownerAccount.id };
-                } else {
-                    // Check if item belongs to a store
-                    const ownerStore = locations.find(loc => 
-                        loc.storeItems && loc.storeItems.includes(item.id)
-                    );
-                    
-                    if (ownerStore) {
-                        ownership = { type: 'store', name: ownerStore.name, id: ownerStore.id };
-                    }
                 }
             }
 
