@@ -358,6 +358,38 @@ app.get('/api/bookmarked-items', (req, res) => {
     }
 });
 
+// API route to get order history for the logged-in user
+app.get('/api/order-history', (req, res) => {
+    try {
+        // Read local_data.json to get currentlyLoggedInUserID
+        const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
+        const currentUserId = localData.currentlyLoggedInUserID;
+
+        if (currentUserId === -1) {
+            return res.status(401).json({ error: 'No user logged in' });
+        }
+
+        // Read accounts.json to find the user account
+        const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
+        const accounts = JSON.parse(accountsData);
+        const userAccount = accounts.find(acc => acc.id === currentUserId);
+
+        if (!userAccount) {
+            return res.status(404).json({ error: 'User account not found' });
+        }
+
+        // Get the orderHistory array from the user account
+        const orderHistory = userAccount.orderHistory || [];
+
+        res.json({
+            orders: orderHistory
+        });
+    } catch (err) {
+        console.error('Error loading order history:', err);
+        res.status(500).json({ error: 'Failed to load order history' });
+    }
+});
+
 // API route to get accounts
 app.get('/api/accounts', (req, res) => {
     try {
