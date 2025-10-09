@@ -67,6 +67,7 @@
     </style>
 
     <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
         let userBookmarkedItems = [];
         let currentUserId = null;
         let allItems = [];
@@ -165,9 +166,27 @@
             }
         }
 
-        function createNewItem() {
-            // TODO: Implement create new item functionality
-            console.log('Create new item');
+        async function createNewItem() {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/_items/create_item/create_item.sh'
+            ];
+            
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+                
+                // Reload items after creation
+                await loadItems();
+            } catch (error) {
+                console.error('Error running script:', error);
+                alert('Error creating item');
+            }
         }
 
         function renderItems(items) {
