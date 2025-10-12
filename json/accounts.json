@@ -57,5 +57,26 @@
       2,
       3
     ]
+  },
+  {
+    "id": 13,
+    "username": "thaterickid",
+    "password": "dontLook5!",
+    "autoPushAndPullData": "false",
+    "accountBlance": 99.99,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
+    "securityAnswers": [
+      {
+        "id": 1,
+        "answer": "Jeff"
+      },
+      {
+        "id": 3,
+        "answer": "Good question"
+      }
+    ]
   }
 ]

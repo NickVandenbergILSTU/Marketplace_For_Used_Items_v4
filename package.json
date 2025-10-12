@@ -1,5 +1,23 @@
 {
   "dependencies": {
     "express": "^5.1.0"
-  }
+  },
+  "name": "marketplace_for_used_items_v4",
+  "version": "1.0.0",
+  "description": "WELCOME TO THE MARKETPLACE FOR USED ITEMS!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NickVandenbergILSTU/Marketplace_For_used_Items_v4.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NickVandenbergILSTU/Marketplace_For_used_Items_v4/issues"
+  },
+  "homepage": "https://github.com/NickVandenbergILSTU/Marketplace_For_used_Items_v4#readme"
 }
