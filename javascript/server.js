@@ -48,9 +48,9 @@ app.post('/run-script', (req, res) => {
 
     // Only replace " and $ with their literal forms, leave everything else untouched
     const safeParams = params
-        .map(p => 
+        .map(p =>
             p.replace(/"/g, '\\"')  // escape double quotes
-             .replace(/\$/g, '\\$') // escape dollar signs
+                .replace(/\$/g, '\\$') // escape dollar signs
         )
         .map(p => `'${p}'`) // wrap each param safely in single quotes
         .join(' ');
@@ -61,6 +61,49 @@ app.post('/run-script', (req, res) => {
         res.send(`Script output:\n${stdout}`);
     });
 });
+
+// ------------- Eric Added for forgot_password use-case ----------------
+app.post('/verify-username', (req, res) => {
+    // exec = spawn : require('child_process)
+    // 
+    //const pythonLocation = "C:\\Python\\python.exe"
+    const enteredUsername = req.body.username;
+    console.log(enteredUsername);
+
+    const pythonProcess = exec('python', ['../html/forgot_password/account_handler.py', enteredUsername]);
+
+    let pythonOutput = '';
+    pythonProcess.stdout.on('data', (data) => {
+        pythonOutput += data.toString();
+        console.log("Test inside stdout.on")
+    })
+    console.log("Made it past stdout")
+
+    pythonProcess.on('error', (err) => {
+        console.error('Failed to start Python process:', err);
+        // You should send a 500 status response back to the client here
+        // res.status(500).json({ success: false, message: 'Python execution failed.' }); 
+    });
+
+    pythonProcess.on('close', (code) => {
+        const result = pythonOutput.trim();
+
+        if (code == 0) {
+            const isVerified = result === 'Account verified';
+            res.json({
+                success: true,
+                message: result,
+                display: isVerified ? 'Account verified' : 'User Not Found'
+            })
+
+        } else {
+            res.status(500).json({ success: false, message: 'Python execution failed or encountered an internal error.' });
+        }
+
+    })
+
+
+})
 
 // API route to get items
 app.get('/api/items', (req, res) => {
@@ -303,10 +346,10 @@ app.get('/api/bookmarked-items', (req, res) => {
             let ownership = { type: 'none', name: null, id: null };
 
             // First check if item belongs to a store (highest priority)
-            const ownerStore = locations.find(loc => 
+            const ownerStore = locations.find(loc =>
                 loc.storeItems && loc.storeItems.includes(item.id)
             );
-            
+
             if (ownerStore) {
                 ownership = { type: 'store', name: ownerStore.name, id: ownerStore.id };
             } else if (userItemIds.includes(item.id)) {
@@ -314,10 +357,10 @@ app.get('/api/bookmarked-items', (req, res) => {
                 ownership = { type: 'user', name: userAccount.username, id: currentUserId };
             } else {
                 // Check if item belongs to another user
-                const ownerAccount = accounts.find(acc => 
+                const ownerAccount = accounts.find(acc =>
                     acc.myItems && acc.myItems.includes(item.id)
                 );
-                
+
                 if (ownerAccount) {
                     ownership = { type: 'other_user', name: ownerAccount.username, id: ownerAccount.id };
                 }
@@ -330,7 +373,7 @@ app.get('/api/bookmarked-items', (req, res) => {
         });
 
         // Filter out items that belong to other users
-        const filteredItems = itemsWithOwnership.filter(item => 
+        const filteredItems = itemsWithOwnership.filter(item =>
             item.ownership.type !== 'other_user'
         );
 
