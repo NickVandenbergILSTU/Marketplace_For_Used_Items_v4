@@ -70,7 +70,7 @@ app.post('/verify-username', (req, res) => {
     const enteredUsername = req.body.username;
     console.log(enteredUsername);
 
-    const pythonProcess = exec('python', ['../html/forgot_password/account_handler.py', enteredUsername]);
+    const pythonProcess = exec('python', ['html/forgot_password/account_handler.py', enteredUsername]);
 
     let pythonOutput = '';
     pythonProcess.stdout.on('data', (data) => {
