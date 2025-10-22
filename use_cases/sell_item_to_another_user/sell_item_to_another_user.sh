@@ -119,6 +119,5 @@ UPDATED_ACCOUNTS=$(echo "$ACCOUNTS" | jq "
 # Write updated accounts back to file
 echo "$UPDATED_ACCOUNTS" | jq '.' > "$ACCOUNTS_PATH"
 
-echo "✓ Sale completed successfully!"
 echo "✓ Item $ITEM_ID transferred from user $SELLER_ID to user $BUYER_ID"
 echo "✓ Item removed from all carts, bookmarks, and reserved lists"
