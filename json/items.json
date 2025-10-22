@@ -119,5 +119,33 @@
     "price": "$0.00",
     "ratings": [],
     "itemComments": []
+  },
+  {
+    "id": 10,
+    "name": "[NEW ITEM]",
+    "price": "$0.00",
+    "ratings": [],
+    "itemComments": []
+  },
+  {
+    "id": 11,
+    "name": "[NEW ITEM]",
+    "price": "$0.00",
+    "ratings": [],
+    "itemComments": []
+  },
+  {
+    "id": 12,
+    "name": "[NEW ITEM]",
+    "price": "$0.00",
+    "ratings": [],
+    "itemComments": []
+  },
+  {
+    "id": 13,
+    "name": "[NEW ITEM]",
+    "price": "$0.00",
+    "ratings": [],
+    "itemComments": []
   }
 ]
