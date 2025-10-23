@@ -5,9 +5,7 @@
     "password": "pass word",
     "autoPushAndPullData": "false",
     "accountBlanance": 10000.00,
-    "incomingSaleRequests": [
-      
-    ],
+    "incomingSaleRequests": [],
     "outgoingSaleRequests": [
       2
     ],
@@ -40,7 +38,7 @@
       }
     ]
   },
-    {
+  {
     "id": 42,
     "username": "user2",
     "password": "pass word",
@@ -57,7 +55,8 @@
       3,
       7,
       8,
-      9
+      9,
+      16
     ],
     "bookmarkedItems": [
       1,
