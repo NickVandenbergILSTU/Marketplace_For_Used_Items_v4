@@ -67,43 +67,40 @@ app.post('/verify-username', (req, res) => {
     // exec = spawn : require('child_process)
     // 
     //const pythonLocation = "C:\\Python\\python.exe"
+    const spawn = require("child_process").spawn;
+
     const enteredUsername = req.body.username;
-    console.log(enteredUsername);
+    //console.log(enteredUsername);
 
-    const pythonProcess = exec('python', ['../html/forgot_password/account_handler.py', enteredUsername]);
+    const pythonProcess = spawn('python', ['../html/forgot_password/account_handler.py', enteredUsername]);
+    try {
+        pythonProcess.stdout.on('data', (data) => {
+            const mystr = data.toString();
+            // myjson = JSON.parse(mystr);
+            // console.log("Data provided");
+            // console.log(myjson);
+            // res(mystr);
+            const dataObject = JSON.parse(mystr);
+            const responseValue = dataObject.response;
+            console.log(responseValue);
+            res.json({ response: responseValue });
+        })
+    } catch (err) {
+        console.log(err);
+    }
+    // try {
+    //     pythonProcess.stdout.on('data', (data) => {
+    //         mystr = data.toString();
+    //         console.log("Data provided: ");
+    //         console.log(data);
+    //     } 
+    // }  (err) {
 
-    let pythonOutput = '';
-    pythonProcess.stdout.on('data', (data) => {
-        pythonOutput += data.toString();
-        console.log("Test inside stdout.on")
-    })
-    console.log("Made it past stdout")
-
-    pythonProcess.on('error', (err) => {
-        console.error('Failed to start Python process:', err);
-        // You should send a 500 status response back to the client here
-        // res.status(500).json({ success: false, message: 'Python execution failed.' }); 
-    });
-
-    pythonProcess.on('close', (code) => {
-        const result = pythonOutput.trim();
-
-        if (code == 0) {
-            const isVerified = result === 'Account verified';
-            res.json({
-                success: true,
-                message: result,
-                display: isVerified ? 'Account verified' : 'User Not Found'
-            })
-
-        } else {
-            res.status(500).json({ success: false, message: 'Python execution failed or encountered an internal error.' });
-        }
-
-    })
+    // }
+});
 
 
-})
+
 
 // API route to get items
 app.get('/api/items', (req, res) => {
