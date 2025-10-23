@@ -30,18 +30,35 @@ def get_user_exist(username_to_check):
     if user_exists == False:
         print('User not found', flush=True)
         return False
+
+
+
+def test_communication(entered_username):
+    # first, open our accounts
+    with open('../json/accounts.json', 'r') as accounts:
+        data = json.load(accounts)
     
+    for key in data:
+        if (key['username'] == entered_username):
+            # if we found the username within our accounts.json
+            response = {
+                "response" : "Username was found",
+                "username": entered_username,
+            }
+            response_json = json.dumps(response)
+            print(response_json)
+            sys.stdout.flush()
     
-    
-    
-#username_to_check = sys.argv[1]
+username_to_check = sys.argv[1]
+#entered_username = "thaterickid"
+test_communication(username_to_check)
 #print(username_to_check)
 #getSecurityQuestion(username_to_check)
 #get_user_exist(username_to_check)
 #print(user_exists)
 
-if __name__ == "__main__":
-    # sys.argv[0] is the script name itself, sys.argv[1] is the first argument (the username)
-    if len(sys.argv) > 1:
-        entered_username = sys.argv[1]
-        get_user_exist(entered_username)
+# if __name__ == "__main__":
+#     # sys.argv[0] is the script name itself, sys.argv[1] is the first argument (the username)
+#     if len(sys.argv) > 1:
+#         entered_username = sys.argv[1]
+#         get_user_exist(entered_username)
