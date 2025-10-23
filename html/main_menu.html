@@ -276,6 +276,7 @@
                 <h2 class="column-title">Other</h2>
                 <button class="menu-button" onclick="openAIAssistant()">AI Assistant</button>
                 <button class="menu-button" onclick="autoPushPullData()">Push and Pull Data Settings</button>
+                <button class="menu-button" onclick="viewSalesWithOtherUsers()">Sales with Other Users</button>
             </div>
         </div>
     </div>
@@ -403,6 +404,10 @@
 
         function autoPushPullData() {
             window.location.href = '/data/sync';
+        }
+
+        function viewSalesWithOtherUsers() {
+            window.location.href = '/html/main_menu_options/items/sales_with_other_users.html';
         }
 
         // Load user data when page loads

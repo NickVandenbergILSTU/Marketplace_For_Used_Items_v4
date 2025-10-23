@@ -1,0 +1,253 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incoming Sale Requests</title>
+    <link rel="stylesheet" href="/html/css/items.css">
+</head>
+<body>
+    <div class="header-panel">
+        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
+        <div class="header-title">Incoming Sale Requests</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="sort-controls">
+            <label for="search">Search:</label>
+            <input type="text" id="search" class="search-input" placeholder="Search items..." oninput="filterItems()">
+            
+            <label for="sort">Sort by:</label>
+            <select id="sort" onchange="loadItems(this.value)">
+                <option value="default">Default Order</option>
+                <option value="alphabetical">Alphabetical</option>
+                <option value="rating">Rating</option>
+                <option value="price">Price</option>
+            </select>
+        </div>
+
+        <div id="itemsContainer"></div>
+    </div>
+
+    <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
+        let userBookmarkedItems = [];
+        let currentUserId = null;
+        let allItems = [];
+
+        async function loadUserData() {
+            try {
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                if (!localDataResponse.ok) {
+                    throw new Error(`HTTP error! status: ${localDataResponse.status}`);
+                }
+                const localData = await localDataResponse.json();
+                currentUserId = localData.currentlyLoggedInUserID;
+
+                const accountsResponse = await fetch('/json/accounts.json');
+                if (!accountsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${accountsResponse.status}`);
+                }
+                const accounts = await accountsResponse.json();
+
+                const currentUser = accounts.find(account => account.id === currentUserId);
+                
+                const usernameElement = document.getElementById('username');
+                const balanceElement = document.getElementById('balance');
+                
+                if (currentUser && currentUser.username) {
+                    usernameElement.textContent = currentUser.username;
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    balanceElement.textContent = `$${balanceNum.toFixed(2)}`;
+                } else {
+                    usernameElement.textContent = 'Guest User';
+                    balanceElement.textContent = '$0.00';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
+            }
+        }
+
+        async function loadItems(order = "default") {
+            try {
+                // Get local data
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                const localData = await localDataResponse.json();
+                currentUserId = localData.currentlyLoggedInUserID;
+
+                // Get accounts
+                const accountsResponse = await fetch('/json/accounts.json');
+                const accounts = await accountsResponse.json();
+                const currentUser = accounts.find(account => account.id === currentUserId);
+
+                if (!currentUser) {
+                    console.error('Current user not found');
+                    return;
+                }
+
+                // Get incoming sale request item IDs
+                const incomingSaleRequestIds = currentUser.incomingSaleRequests || [];
+                userBookmarkedItems = currentUser.bookmarkedItems || [];
+
+                // Get all items
+                const itemsResponse = await fetch('/json/items.json');
+                const allItemsData = await itemsResponse.json();
+
+                // Filter items to only those in incoming sale requests
+                let items = allItemsData.filter(item => incomingSaleRequestIds.includes(item.id));
+
+                // Calculate average ratings
+                items.forEach(item => {
+                    if (Array.isArray(item.ratings) && item.ratings.length > 0) {
+                        const sum = item.ratings.reduce((acc, r) => acc + r.rating, 0);
+                        item.avgRating = sum / item.ratings.length;
+                    } else {
+                        item.avgRating = 0;
+                    }
+                });
+
+                // Sort items
+                if (order === "alphabetical") {
+                    items.sort((a, b) => a.name.localeCompare(b.name));
+                } else if (order === "rating") {
+                    items.sort((a, b) => b.avgRating - a.avgRating);
+                } else if (order === "price") {
+                    items.sort((a, b) => {
+                        const parsePrice = str => parseFloat(str.replace(/[^0-9.]/g, ""));
+                        return parsePrice(b.price) - parsePrice(a.price);
+                    });
+                }
+
+                allItems = items;
+                filterItems();
+            } catch (error) {
+                console.error('Error loading items:', error);
+            }
+        }
+
+        function filterItems() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filteredItems = allItems.filter(item => 
+                item.name.toLowerCase().includes(searchTerm)
+            );
+            renderItems(filteredItems);
+        }
+
+        async function runUserScript(params) {
+            await fetch("/run-script", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ params })
+            });
+        }
+
+        function renderItems(items) {
+            const container = document.getElementById("itemsContainer");
+            container.innerHTML = "";
+
+            if (items.length === 0) {
+                container.innerHTML = '<div class="no-items">No incoming sale requests found.</div>';
+                return;
+            }
+
+            items.forEach(item => {
+                const itemBox = document.createElement("div");
+                itemBox.className = "item-box";
+
+                const isBookmarked = userBookmarkedItems.includes(item.id);
+
+                const nameContainer = document.createElement("div");
+                nameContainer.className = "item-name-container";
+                
+                const name = document.createElement("h3");
+                name.textContent = item.name;
+                nameContainer.appendChild(name);
+                
+                if (isBookmarked) {
+                    const bookmarkEmoji = document.createElement("span");
+                    bookmarkEmoji.className = "bookmark-emoji";
+                    bookmarkEmoji.textContent = "🔖";
+                    nameContainer.appendChild(bookmarkEmoji);
+                }
+
+                const price = document.createElement("p");
+                price.innerHTML = `<strong>Price:</strong> <span class="price-text">${item.price}</span>`;
+
+                const rating = document.createElement("p");
+                const stars = "⭐".repeat(Math.floor(item.avgRating));
+                rating.innerHTML = `<strong>Rating:</strong> <span class="rating-text">${item.avgRating.toFixed(1)} ${stars}</span>`;
+
+                const img = document.createElement("img");
+                img.className = "item-img";
+                img.alt = item.name;
+                img.src = `/images/items/${item.id}.png`;
+
+                const imgButtons = document.createElement("div");
+                imgButtons.className = "img-buttons";
+
+                img.onload = () => {
+                    imgButtons.innerHTML = ``;
+                };
+                img.onerror = () => {
+                    img.style.display = "none";
+                    imgButtons.innerHTML = ``;
+                };
+
+                const actions = document.createElement("div");
+                actions.className = "action-group";
+
+                const acceptBtn = document.createElement("button");
+                acceptBtn.textContent = "✅ Accept Sale Request";
+                acceptBtn.style.backgroundColor = "#28a745";
+                acceptBtn.onclick = () => {
+                    if (confirm(`Accept sale request for ${item.name}?`)) {
+                        runUserScript([HELPER_SCRIPT, './use_cases/accept_sale_request.py', item.id]);
+                    }
+                };
+
+                const rejectBtn = document.createElement("button");
+                rejectBtn.textContent = "❌ Reject Sale Request";
+                rejectBtn.style.backgroundColor = "#dc3545";
+                rejectBtn.onclick = () => {
+                    if (confirm(`Reject sale request for ${item.name}?`)) {
+                        runUserScript([HELPER_SCRIPT, './use_cases/reject_sale_request.py', item.id]);
+                    }
+                };
+
+                const bookmarkBtn = document.createElement("button");
+                bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
+                bookmarkBtn.onclick = () => runUserScript([HELPER_SCRIPT, './use_cases/bookmark.py', item.id]);
+
+                const commentsBtn = document.createElement("button");
+                commentsBtn.textContent = "💬 Comments";
+
+                actions.appendChild(acceptBtn);
+                actions.appendChild(rejectBtn);
+                actions.appendChild(bookmarkBtn);
+                actions.appendChild(commentsBtn);
+
+                itemBox.appendChild(nameContainer);
+                itemBox.appendChild(price);
+                itemBox.appendChild(rating);
+                itemBox.appendChild(img);
+                itemBox.appendChild(imgButtons);
+                itemBox.appendChild(actions);
+
+                container.appendChild(itemBox);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            loadItems();
+        });
+    </script>
+</body>
+</html>
