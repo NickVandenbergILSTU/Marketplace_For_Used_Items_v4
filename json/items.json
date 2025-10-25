@@ -15,12 +15,9 @@
     ],
     "itemComments": [
       {
-        "commentBody": "",
-        "commenterId": 41
-      },
-      {
-        "commentBody": "",
-        "commenterId": 42
+        "commentBody": "ab",
+        "commenterId": 42,
+        "commentId": 6
       }
     ]
   },
@@ -53,13 +50,7 @@
         "rating": 4
       }
     ],
-    "itemComments": [
-      {
-        "commentBody": "hello",
-        "commenterId": 41,
-        "commentId": 7
-      }
-    ]
+    "itemComments": []
   },
   {
     "id": 4,

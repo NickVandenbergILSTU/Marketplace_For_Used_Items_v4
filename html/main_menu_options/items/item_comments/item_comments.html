@@ -358,15 +358,18 @@
                 const text = await response.text();
                 console.log('Delete comment response:', text);
 
+                // Show the script response in an alert
+                alert(text);
+
                 if (response.ok) {
-                    // Reload comments
-                    await loadItemAndComments();
+                    // Reload the page after showing the notification
+                    window.location.reload();
                 } else {
-                    alert('Error deleting comment: ' + text);
+                    console.error('Error deleting comment:', text);
                 }
             } catch (error) {
                 console.error('Error deleting comment:', error);
-                alert('Error deleting comment');
+                alert('Error deleting comment: ' + error.message);
             }
         }
 
