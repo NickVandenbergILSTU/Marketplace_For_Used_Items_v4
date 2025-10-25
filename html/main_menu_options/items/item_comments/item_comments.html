@@ -257,7 +257,7 @@
                 return;
             }
 
-            comments.forEach((comment, index) => {
+            comments.forEach((comment) => {
                 const commenter = allAccounts.find(acc => acc.id === comment.commenterId);
                 const commenterName = commenter ? commenter.username : 'Unknown User';
                 const isCurrentUser = comment.commenterId === currentUserId;
@@ -274,11 +274,11 @@
 
                 commentHeader.appendChild(authorSpan);
 
-                if (isCurrentUser) {
+                if (isCurrentUser && comment.commentId) {
                     const deleteBtn = document.createElement('button');
                     deleteBtn.className = 'delete-comment-btn';
                     deleteBtn.textContent = '🗑️ Delete';
-                    deleteBtn.onclick = () => deleteComment(index);
+                    deleteBtn.onclick = () => deleteComment(comment.commentId);
                     commentHeader.appendChild(deleteBtn);
                 }
 
@@ -321,12 +321,15 @@
                     body: JSON.stringify({ params })
                 });
 
+                const text = await response.text();
+                console.log('Add comment response:', text);
+
                 if (response.ok) {
                     commentInput.value = '';
                     // Reload comments
                     await loadItemAndComments();
                 } else {
-                    alert('Error posting comment');
+                    alert('Error posting comment: ' + text);
                 }
             } catch (error) {
                 console.error('Error adding comment:', error);
@@ -342,7 +345,7 @@
             try {
                 const params = [
                     HELPER_SCRIPT,
-                    './use_cases/delete_item_comment/delete_comment.sh',
+                    'main.py',
                     commentId.toString()
                 ];
 
@@ -352,11 +355,14 @@
                     body: JSON.stringify({ params })
                 });
 
+                const text = await response.text();
+                console.log('Delete comment response:', text);
+
                 if (response.ok) {
                     // Reload comments
                     await loadItemAndComments();
                 } else {
-                    alert('Error deleting comment');
+                    alert('Error deleting comment: ' + text);
                 }
             } catch (error) {
                 console.error('Error deleting comment:', error);
