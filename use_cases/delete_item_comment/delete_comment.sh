@@ -1,0 +1,1 @@
+echo "Deleting comment with ID: $1"
