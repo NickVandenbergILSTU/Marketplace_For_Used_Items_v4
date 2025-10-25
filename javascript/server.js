@@ -72,7 +72,7 @@ app.post('/verify-username', (req, res) => {
     const enteredUsername = req.body.username;
     //console.log(enteredUsername);
 
-    const pythonProcess = spawn('python', ['../html/forgot_password/account_handler.py', enteredUsername]);
+    const pythonProcess = spawn('python', ['../html/forgot_password/verify_username.py', enteredUsername]);
     try {
         pythonProcess.stdout.on('data', (data) => {
             const mystr = data.toString();
@@ -85,22 +85,58 @@ app.post('/verify-username', (req, res) => {
             console.log(responseValue);
             res.json({ response: responseValue });
         })
+        // pythonProcess.on('close', (code) => {
+        // const result = pythonOutput.trim();
+
+        // if (code == 0) {
+        //     const isVerified = result === 'Account verified';
+        //     res.json({
+        //         success: true,
+        //         message: result,
+        //         display: isVerified ? 'Account verified' : 'User Not Found'
+        //     })
+
+        // } else {
+        //     res.status(500).json({ success: false, message: 'Python execution failed or encountered an internal error.' });
+        // }
+
+    //})
     } catch (err) {
         console.log(err);
     }
-    // try {
-    //     pythonProcess.stdout.on('data', (data) => {
-    //         mystr = data.toString();
-    //         console.log("Data provided: ");
-    //         console.log(data);
-    //     } 
-    // }  (err) {
-
-    // }
 });
 
+    
 
 
+app.post('/verify-security-answer', (req, res) => {
+    const spawn = require("child_process").spawn;
+
+    const username = req.body.username;
+    const sq_question = req.body.selected_sq
+    const sq_answer = req.body.sq_answer;
+    
+    const pythonProcess = spawn('python', ['../html/forgot_password/verify_security_answer.py',username, sq_question, sq_answer]);
+    try {
+        // gets response from python file
+        pythonProcess.stdout.on('data', (data) => {
+            const mystr = data.toString();
+            const dataObject = JSON.parse(mystr);
+            const responseValue = dataObject.response;
+            //console.log(responseValue);
+            res.json({response: responseValue});
+        })
+
+    
+    } catch (err) {
+        console.log(err);
+    }
+    
+
+
+})
+
+// ------------------- End of Eric's Additions --------------
 
 // API route to get items
 app.get('/api/items', (req, res) => {
