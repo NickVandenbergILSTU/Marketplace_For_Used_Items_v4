@@ -3,6 +3,8 @@
     "id": 41,
     "username": "nickvandy",
     "password": "pass word",
+    "securityQuestion": "What is your favorite color?",
+    "securityAnswer": "blue",
     "autoPushAndPullData": "false",
     "accountBlanance": 10000.00,
     "incomingSaleRequests": [
