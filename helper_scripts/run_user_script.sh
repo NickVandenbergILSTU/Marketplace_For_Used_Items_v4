@@ -7,8 +7,6 @@
 # - First param is the path of the script to run, subsequent params are parameters to that script
 # - If script involves reading or writing user data (json, user images, user ai convo history, etc.), look below for where to add it (either READ_ONLY_LIST or READ_AND_WRITE_LIST)
 
-echo "hello"
-
 SCRIPT_PATH=$1
 LOCAL_DATA_PATH="json/local/local_data.json"
 ACCOUNTS_JSON_PATH="json/accounts.json"
