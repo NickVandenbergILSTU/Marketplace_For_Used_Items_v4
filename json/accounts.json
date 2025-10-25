@@ -5,9 +5,16 @@
     "password": "pass word",
     "autoPushAndPullData": "false",
     "accountBlanance": 10000.00,
-    "incomingSaleRequests": [],
+    "incomingSaleRequests": [2],
     "outgoingSaleRequests": [
-      2
+      {
+        "userId": 42,
+        "itemId": 1
+      },
+      {
+        "userId": 41,
+        "itemId": 3
+      }
     ],
     "myItems": [
       1,
@@ -18,50 +25,6 @@
     ],
     "bookmarkedItems": [
       1,
-      2,
-      3
-    ],
-    "reservedItems": [
-      1,
-      2,
-      3
-    ],
-    "itemsInCart": [
-      1,
-      2
-    ],
-    "orderHistory": [
-      {
-        "id": 1,
-        "name": "TV",
-        "price": "$300.00"
-      }
-    ]
-  },
-  {
-    "id": 42,
-    "username": "user2",
-    "password": "pass word",
-    "autoPushAndPullData": "false",
-    "accountBlanance": 10000.00,
-    "incomingSaleRequests": [
-      1
-    ],
-    "outgoingSaleRequests": [
-      2
-    ],
-    "myItems": [
-      1,
-      3,
-      7,
-      8,
-      9,
-      16,
-      17
-    ],
-    "bookmarkedItems": [
-      1,
-      2,
       3
     ],
     "reservedItems": [
