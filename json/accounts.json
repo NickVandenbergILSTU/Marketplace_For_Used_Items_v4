@@ -68,15 +68,9 @@
     "bookmarkedItems": [],
     "reservedItems": [],
     "itemsInCart": [],
-    "security_q_a": [
-      {
-        "id": 1,
-        "answer": "Jeff"
-      },
-      {
-        "id": 3,
-        "answer": "Good question"
-      }
-    ]
+    "security_q_a": {
+        "1": "Jeff",
+        "3": "Good question"
+    } 
   }
 ]
