@@ -52,6 +52,20 @@
         "accountId": 42,
         "rating": 4
       }
+    ],
+    "itemComments": [
+      {
+        "commentBody": "hello",
+        "commenterId": 41
+      },
+      {
+        "commentBody": "hi",
+        "commenterId": 42
+      },
+      {
+        "commentBody": "This is a great microwave!",
+        "commenterId": 43
+      }
     ]
   },
   {

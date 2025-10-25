@@ -189,6 +189,32 @@
             }
         }
 
+        async function openComments(itemId) {
+            try {
+                // Update selectedItemCommentID in local_data.json
+                const params = [
+                    HELPER_SCRIPT,
+                    './use_cases/set_selected_item_comment.py',
+                    itemId.toString()
+                ];
+
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+
+                if (response.ok) {
+                    // Navigate to comments page
+                    window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
+                } else {
+                    console.error('Error setting selected item');
+                }
+            } catch (error) {
+                console.error('Error opening comments:', error);
+            }
+        }
+
         function renderItems(items) {
             const container = document.getElementById("itemsContainer");
             container.innerHTML = "";
@@ -338,6 +364,7 @@
 
                 const commentsBtn = document.createElement("button");
                 commentsBtn.textContent = "💬 Comments";
+                commentsBtn.onclick = () => openComments(item.id);
 
                 actions.appendChild(renameDiv);
                 actions.appendChild(rateDiv);
