@@ -82,31 +82,15 @@ app.post('/verify-username', (req, res) => {
             // res(mystr);
             const dataObject = JSON.parse(mystr);
             const responseValue = dataObject.response;
-            console.log(responseValue);
             res.json({ response: responseValue });
         })
-        // pythonProcess.on('close', (code) => {
-        // const result = pythonOutput.trim();
 
-        // if (code == 0) {
-        //     const isVerified = result === 'Account verified';
-        //     res.json({
-        //         success: true,
-        //         message: result,
-        //         display: isVerified ? 'Account verified' : 'User Not Found'
-        //     })
-
-        // } else {
-        //     res.status(500).json({ success: false, message: 'Python execution failed or encountered an internal error.' });
-        // }
-
-    //})
     } catch (err) {
         console.log(err);
     }
 });
 
-    
+
 
 
 app.post('/verify-security-answer', (req, res) => {
@@ -115,23 +99,40 @@ app.post('/verify-security-answer', (req, res) => {
     const username = req.body.username;
     const sq_question = req.body.selected_sq
     const sq_answer = req.body.sq_answer;
-    
-    const pythonProcess = spawn('python', ['../html/forgot_password/verify_security_answer.py',username, sq_question, sq_answer]);
-    try {
-        // gets response from python file
-        pythonProcess.stdout.on('data', (data) => {
-            const mystr = data.toString();
-            const dataObject = JSON.parse(mystr);
-            const responseValue = dataObject.response;
-            //console.log(responseValue);
-            res.json({response: responseValue});
-        })
+    let accumulatedData = '';
 
-    
-    } catch (err) {
-        console.log(err);
-    }
-    
+    const pythonProcess = spawn('python', ['C:/Users/harbo/Desktop/Marketplace_For_Used_Items/Marketplace_For_Used_Items_v4/html/forgot_password/verify_security_answer.py', username, sq_question, sq_answer]);
+    pythonProcess.stdout.on('data', (data) => {
+
+        accumulatedData += data.toString();
+        // myjson = JSON.parse(mystr);
+        // console.log("Data provided");
+        // console.log(myjson);
+        // res(mystr);
+
+    })
+
+    pythonProcess.on('close', (code) => {
+        if (code != 0) {
+            console.error(`Python script exited iwth code ${code}`);
+            return res.status(500).json({ response: "Server error: python script failed" });
+        }
+        try {
+            const dataObject = JSON.parse(accumulatedData);
+            const responseValue = dataObject.result;
+            console.log(responseValue); // prints the Success
+            res.json({ result: responseValue });
+        } catch (err) {
+            console.error('Json parsing error:', err.message);
+            res.status(500).json({ response: "Server Error: Invalid data received from source" });
+
+        }
+
+
+    })
+
+
+
 
 
 })
