@@ -100,18 +100,11 @@ app.post('/verify-security-answer', (req, res) => {
 
     const pythonProcess = spawn('python', ['C:/Users/harbo/Desktop/Marketplace_For_Used_Items/Marketplace_For_Used_Items_v4/html/forgot_password/verify_security_answer.py', username, sq_question, sq_answer]);
     pythonProcess.stdout.on('data', (data) => {
-
         accumulatedData += data.toString();
-        // myjson = JSON.parse(mystr);
-        // console.log("Data provided");
-        // console.log(myjson);
-        // res(mystr);
-
     })
-
     pythonProcess.on('close', (code) => {
         if (code != 0) {
-            console.error(`Python script exited iwth code ${code}`);
+            console.error(`Python script exited with code ${code}`);
             return res.status(500).json({ response: "Server error: python script failed" });
         }
         try {
@@ -124,27 +117,56 @@ app.post('/verify-security-answer', (req, res) => {
             res.status(500).json({ response: "Server Error: Invalid data received from source" });
 
         }
-
-
     })
-
-
-
-
-
 })
 
 app.post('/verify-password', (req, res) => {
-
+    username = req.body.username;
     password = req.body.password;
 
     exec(`bash C:/Users/harbo/Desktop/Marketplace_For_Used_Items/Marketplace_For_Used_Items_v4/use_cases/check_password_requirements/check_password_requirements.sh ${password}`, (error, stdout, stderr) => {
-        if stdout.includes("at least 8 characters") {
-            
-        }
-    } )
+        // if (stdout.includes("8 characters")) {
+        //     console.log(stdout);
+        //     res.json({ result: stdout });
+        // }
+        console.log(`Output message: ${stdout}`);
+        let errorMessage1 = "Error: Password parameter is required.";
+        let errorMessage2 = "Error: Password must be at least 8 characters long.";
+        let errorMessage3 = "Error: Password must contain at least 1 uppercase letter.";
+        let errorMessage4 = "Error: Password must contain at least 1 digit.";
+        let errorCode = "Er0";
 
-})
+        switch (true) {
+
+            case stdout.includes(errorMessage1): errorCode = "Er1"; break;
+            case stdout.includes(errorMessage2): errorCode = "Er2"; break;
+            case stdout.includes(errorMessage3): errorCode = "Er3"; break;
+            case stdout.includes(errorMessage4): errorCode = "Er4"; break;
+            default: break;
+
+        }
+        if (errorCode = "Er0") {
+            // read the accounts file for our specific account
+            let accumulatedData = '';
+            const spawn = require("child_process").spawn;
+            console.log("Er0, changing password!")
+
+            const pythonProcess = spawn('python', ['C:/Users/harbo/Desktop/Marketplace_For_Used_Items/Marketplace_For_Used_Items_v4/html/forgot_password/change_password.py', username, password]);
+            pythonProcess.stdout.on('data', (data) => {
+                accumulatedData += data.toString();
+
+            })
+
+            pythonProcess.stdout.on('close', (code) => {
+                const dataObject = JSON.parse(accumulatedData);
+                const responseValue = dataObject.result;
+                console.log(`Response value: ${responseValue}`); // prints the Success
+                res.json({ "result": responseValue });
+            })
+
+        }
+    });
+});
 // ------------------- End of Eric's Additions --------------
 
 // API route to get items
