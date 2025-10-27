@@ -90,9 +90,6 @@ app.post('/verify-username', (req, res) => {
     }
 });
 
-
-
-
 app.post('/verify-security-answer', (req, res) => {
     const spawn = require("child_process").spawn;
 
@@ -137,6 +134,17 @@ app.post('/verify-security-answer', (req, res) => {
 
 })
 
+app.post('/verify-password', (req, res) => {
+
+    password = req.body.password;
+
+    exec(`bash C:/Users/harbo/Desktop/Marketplace_For_Used_Items/Marketplace_For_Used_Items_v4/use_cases/check_password_requirements/check_password_requirements.sh ${password}`, (error, stdout, stderr) => {
+        if stdout.includes("at least 8 characters") {
+            
+        }
+    } )
+
+})
 // ------------------- End of Eric's Additions --------------
 
 // API route to get items
