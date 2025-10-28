@@ -15,13 +15,12 @@
 
 # take the parameters, and add an account to the array in accounts.json
 # parameters should be (in any order)
-# - email
 # - password
 # - username
 # - security question
 # - security answer
 
-# randomly generate account id
+#  generate account id by taking max and adding 1(if none set to 0)
 # initialize all other fields from accounts part of json_structure.md as empty variables
 # set currentlyLoggedInUserID in local_data.json to that user's id
 
