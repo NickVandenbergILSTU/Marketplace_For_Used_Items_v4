@@ -70,16 +70,12 @@ app.post('/verify-username', (req, res) => {
     const spawn = require("child_process").spawn;
 
     const enteredUsername = req.body.username;
-    //console.log(enteredUsername);
 
-    const pythonProcess = spawn('python', ['../html/forgot_password/verify_username.py', enteredUsername]);
+    const pythonProcess = spawn('python', ['C:\\Users\\harbo\\Desktop\\Marketplace_For_Used_Items\\Marketplace_For_Used_Items_v4\\html\\forgot_password\\verify_username.py', enteredUsername]);
     try {
+
         pythonProcess.stdout.on('data', (data) => {
             const mystr = data.toString();
-            // myjson = JSON.parse(mystr);
-            // console.log("Data provided");
-            // console.log(myjson);
-            // res(mystr);
             const dataObject = JSON.parse(mystr);
             const responseValue = dataObject.response;
             res.json({ response: responseValue });
@@ -124,47 +120,49 @@ app.post('/verify-password', (req, res) => {
     username = req.body.username;
     password = req.body.password;
 
-    exec(`bash C:/Users/harbo/Desktop/Marketplace_For_Used_Items/Marketplace_For_Used_Items_v4/use_cases/check_password_requirements/check_password_requirements.sh ${password}`, (error, stdout, stderr) => {
+    exec(`bash C:\\Users\\harbo\\Desktop\\Marketplace_For_Used_Items\\Marketplace_For_Used_Items_v4\\use_cases\\check_password_requirements\\check_password_requirements.sh ${password}`, (error, stdout, stderr) => {
         // if (stdout.includes("8 characters")) {
         //     console.log(stdout);
         //     res.json({ result: stdout });
         // }
-        console.log(`Output message: ${stdout}`);
-        let errorMessage1 = "Error: Password parameter is required.";
-        let errorMessage2 = "Error: Password must be at least 8 characters long.";
-        let errorMessage3 = "Error: Password must contain at least 1 uppercase letter.";
-        let errorMessage4 = "Error: Password must contain at least 1 digit.";
+        console.log(stdout);
+        const errorMessage1 = "Error: Password parameter is required.";
+        const errorMessage2 = "Error: Password must be at least 8 characters long.";
+        const errorMessage3 = "Error: Password must contain at least 1 uppercase letter.";
+        const errorMessage4 = "Error: Password must contain at least 1 digit.";
         let errorCode = "Er0";
 
         switch (true) {
-
             case stdout.includes(errorMessage1): errorCode = "Er1"; break;
             case stdout.includes(errorMessage2): errorCode = "Er2"; break;
             case stdout.includes(errorMessage3): errorCode = "Er3"; break;
             case stdout.includes(errorMessage4): errorCode = "Er4"; break;
             default: break;
-
         }
-        if (errorCode = "Er0") {
+        if (errorCode !== "Er0") {
+
+            res.send({ response: errorCode });
+        } else {
             // read the accounts file for our specific account
             let accumulatedData = '';
             const spawn = require("child_process").spawn;
-            console.log("Er0, changing password!")
 
             const pythonProcess = spawn('python', ['C:/Users/harbo/Desktop/Marketplace_For_Used_Items/Marketplace_For_Used_Items_v4/html/forgot_password/change_password.py', username, password]);
             pythonProcess.stdout.on('data', (data) => {
                 accumulatedData += data.toString();
-
             })
 
             pythonProcess.stdout.on('close', (code) => {
+                console.log(`Accumulated Data: ${accumulatedData}`);
                 const dataObject = JSON.parse(accumulatedData);
                 const responseValue = dataObject.result;
                 console.log(`Response value: ${responseValue}`); // prints the Success
-                res.json({ "result": responseValue });
+                res.json({ result: responseValue });
             })
 
         }
+
+
     });
 });
 // ------------------- End of Eric's Additions --------------
