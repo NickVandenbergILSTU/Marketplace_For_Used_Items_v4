@@ -25,3 +25,42 @@
 # set currentlyLoggedInUserID in local_data.json to that user's id
 
 # redirect user to main menu when script is done
+
+file="accounts.json"
+
+read -p "Enter a username: " username
+
+# Step 2: Check if it already exists
+exists=$(jq --arg u "$username" '[.[] | select(.username == $u)] | length' "$file")
+
+if [ "$exists" -gt 0 ]; then
+  echo "❌ Username '$username' is already taken."
+  exit 1
+fi
+
+read -p "Enter a password: " password
+read -p "Enter security question: " securityQuestion
+read -p "Enter security answer: " securityAnswer
+
+last_id=$(jq '.[-1].id // 0' "$file")
+new_id=$((last_id + 1))
+
+tmp=$(mktemp)
+jq --arg id "$new_id" \
+   --arg username "$username" \
+   --arg password "$password" \
+   --argjson balance "$balance" \
+   '. += [{
+     id: ($id|tonumber),
+     username: $username,
+     password: $password,
+     autoPushAndPullData: "false",
+     accountBlanance: 0.00,
+     myItems: [],
+     bookmarkedItems: [],
+     reservedItems: [],
+     itemsInCart: [],
+     orderHistory: []
+   }]' "$file" > "$tmp" && mv "$tmp" "$file"
+
+echo "New user '$username' added successfully!"
