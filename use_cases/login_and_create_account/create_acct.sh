@@ -38,6 +38,14 @@ if [ "$exists" -gt 0 ]; then
   exit 1
 fi
 
+read -p "Enter a email: " email
+exists=$(jq --arg e "$email" '[.[] | select(.email == $e)] | length' "$file")
+
+if [ "$exists" -gt 0 ]; then
+  echo "❌ Email '$email' is already taken."
+  exit 1
+fi
+
 read -p "Enter a password: " password
 read -p "Enter security question: " securityQuestion
 read -p "Enter security answer: " securityAnswer
@@ -54,6 +62,9 @@ jq --arg id "$new_id" \
      id: ($id|tonumber),
      username: $username,
      password: $password,
+     email: $email,
+     securityQuestion: $securityQuestion,
+     securityAnswer: $securityAnswer,
      autoPushAndPullData: "false",
      accountBlanance: 0.00,
      myItems: [],
@@ -63,4 +74,4 @@ jq --arg id "$new_id" \
      orderHistory: []
    }]' "$file" > "$tmp" && mv "$tmp" "$file"
 
-echo "New user '$username' added successfully!"
+echo "New account for '$username' created successfully!"
