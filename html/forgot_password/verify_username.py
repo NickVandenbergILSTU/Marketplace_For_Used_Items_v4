@@ -3,7 +3,7 @@ import sys
 
 def verify_username(entered_username):
     # first, open our accounts
-    with open('../json/accounts.json', 'r') as accounts:
+    with open('C:\\Users\\harbo\\Desktop\\Marketplace_For_Used_Items\\Marketplace_For_Used_Items_v4\\json\\accounts.json', 'r') as accounts:
         data = json.load(accounts)
     
     for key in data:
@@ -16,6 +16,14 @@ def verify_username(entered_username):
             response_json = json.dumps(response)
             print(response_json)
             sys.stdout.flush()
+            return
+        
+    response = {
+        "response" : "Username not found"
+    }
+    response_json = json.dumps(response)
+    print(response_json)
+    sys.stdout.flush()
         
 username_to_check = sys.argv[1]
 
