@@ -26,7 +26,8 @@
 
 # redirect user to main menu when script is done
 
-file="accounts.json"
+file="./json/accounts.json"
+
 
 read -p "Enter a username: " username
 
@@ -57,9 +58,11 @@ tmp=$(mktemp)
 jq --arg id "$new_id" \
    --arg username "$username" \
    --arg password "$password" \
-   --argjson balance "$balance" \
+   --arg email "$email" \
+   --arg securityQuestion "$securityQuestion" \
+   --arg securityAnswer "$securityAnswer" \
    '. += [{
-     id: ($id|tonumber),
+     id: ($id | tonumber),
      username: $username,
      password: $password,
      email: $email,
