@@ -11,49 +11,50 @@
 # use the script ./use_cases/check_password_requirements/check_password_requirements.sh
 # to check the password, print error and exit if not
 
-# ACTIONS:
 
-# take the parameters, and add an account to the array in accounts.json
-# parameters should be (in any order)
-# - password
-# - username
-# - security question
-# - security answer
-
-#  generate account id by taking max and adding 1(if none set to 0)
-# initialize all other fields from accounts part of json_structure.md as empty variables
 # set currentlyLoggedInUserID in local_data.json to that user's id
 
 # redirect user to main menu when script is done
 
 file="./json/accounts.json"
 
-
+#username input and checks if taken
 read -p "Enter a username: " username
-
-# Step 2: Check if it already exists
 exists=$(jq --arg u "$username" '[.[] | select(.username == $u)] | length' "$file")
-
 if [ "$exists" -gt 0 ]; then
   echo "❌ Username '$username' is already taken."
   exit 1
 fi
 
+#email input and checks if taken
 read -p "Enter a email: " email
 exists=$(jq --arg e "$email" '[.[] | select(.email == $e)] | length' "$file")
-
 if [ "$exists" -gt 0 ]; then
   echo "❌ Email '$email' is already taken."
   exit 1
 fi
 
+#password input and checks requirements
 read -p "Enter a password: " password
+./use_cases/check_password_requirements/check_password_requirements.sh "$password"
+if [ $? -ne 0 ]; then
+    echo "❌ Password does not meet requirements. Please try again."
+    exit 1
+fi
+
+
+
+
+
+
 read -p "Enter security question: " securityQuestion
 read -p "Enter security answer: " securityAnswer
 
+#generate new id
 last_id=$(jq '.[-1].id // 0' "$file")
 new_id=$((last_id + 1))
 
+#append new account to accounts.json
 tmp=$(mktemp)
 jq --arg id "$new_id" \
    --arg username "$username" \
