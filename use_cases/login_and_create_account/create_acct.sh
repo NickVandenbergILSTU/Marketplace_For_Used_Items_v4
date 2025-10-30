@@ -34,7 +34,11 @@ if [ $? -ne 0 ]; then
     echo "❌ Password does not meet requirements. Please try again."
     exit 1
 fi
-
+#check password confirmation
+if [ "$password" != "$password2" ]; then
+    echo "❌ Passwords do not match. Please try again."
+    exit 1
+fi
 
 
 
