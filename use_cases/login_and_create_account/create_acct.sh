@@ -2,24 +2,17 @@
 
 # CHECKS:
 
-# Check whether this script was called with the right num of parameters, print an error message
-# and exit if not
-
-# check whether the email or username are taken
-# if so, print error and exit
-
-# use the script ./use_cases/check_password_requirements/check_password_requirements.sh
-# to check the password, print error and exit if not
-
-
 # set currentlyLoggedInUserID in local_data.json to that user's id
 
 # redirect user to main menu when script is done
 
 file="./json/accounts.json"
 
+username="$1"
+password="$2"
+email="$3"
 #username input and checks if taken
-read -p "Enter a username: " username
+#read -p "Enter a username: " username
 exists=$(jq --arg u "$username" '[.[] | select(.username == $u)] | length' "$file")
 if [ "$exists" -gt 0 ]; then
   echo "❌ Username '$username' is already taken."
@@ -27,15 +20,15 @@ if [ "$exists" -gt 0 ]; then
 fi
 
 #email input and checks if taken
-read -p "Enter a email: " email
+#read -p "Enter a email: " email
 exists=$(jq --arg e "$email" '[.[] | select(.email == $e)] | length' "$file")
 if [ "$exists" -gt 0 ]; then
   echo "❌ Email '$email' is already taken."
   exit 1
 fi
 
-#password input and checks requirements
-read -p "Enter a password: " password
+#password input and checks requirements (should have user reenter to confirm password)
+#read -p "Enter a password: " password
 ./use_cases/check_password_requirements/check_password_requirements.sh "$password"
 if [ $? -ne 0 ]; then
     echo "❌ Password does not meet requirements. Please try again."
@@ -45,10 +38,8 @@ fi
 
 
 
-
-
-read -p "Enter security question: " securityQuestion
-read -p "Enter security answer: " securityAnswer
+#read -p "Enter security question: " securityQuestion
+#read -p "Enter security answer: " securityAnswer
 
 #generate new id
 last_id=$(jq '.[-1].id // 0' "$file")
