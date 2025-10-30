@@ -10,9 +10,11 @@ file="./json/accounts.json"
 
 username="$1"
 password="$2"
-email="$3"
+password2="$3"
+email="$4"
+
+
 #username input and checks if taken
-#read -p "Enter a username: " username
 exists=$(jq --arg u "$username" '[.[] | select(.username == $u)] | length' "$file")
 if [ "$exists" -gt 0 ]; then
   echo "❌ Username '$username' is already taken."
@@ -20,7 +22,6 @@ if [ "$exists" -gt 0 ]; then
 fi
 
 #email input and checks if taken
-#read -p "Enter a email: " email
 exists=$(jq --arg e "$email" '[.[] | select(.email == $e)] | length' "$file")
 if [ "$exists" -gt 0 ]; then
   echo "❌ Email '$email' is already taken."
@@ -28,7 +29,6 @@ if [ "$exists" -gt 0 ]; then
 fi
 
 #password input and checks requirements (should have user reenter to confirm password)
-#read -p "Enter a password: " password
 ./use_cases/check_password_requirements/check_password_requirements.sh "$password"
 if [ $? -ne 0 ]; then
     echo "❌ Password does not meet requirements. Please try again."

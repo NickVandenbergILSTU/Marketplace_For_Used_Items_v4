@@ -94,6 +94,7 @@
 
         <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
+        <input type="password" id="password2" placeholder="Confirm Password">
         <input type="email" id="email" placeholder="Email">
         <button class="create" id="createBtn">Create Account</button>
 
@@ -120,6 +121,7 @@
         document.getElementById('createBtn').addEventListener('click', async () => {
             const user = document.getElementById('username').value || "";
             const pass = document.getElementById('password').value || "";
+            const pass2 = document.getElementById('password2').value || "";
             const email = document.getElementById('email').value || "";
 
             const params = [HELPER_SCRIPT, create_script, user, pass, email];
