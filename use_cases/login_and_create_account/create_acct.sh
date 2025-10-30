@@ -12,7 +12,8 @@ username="$1"
 password="$2"
 password2="$3"
 email="$4"
-
+securityQuestion="$5"
+securityAnswer="$6"
 
 #username input and checks if taken
 exists=$(jq --arg u "$username" '[.[] | select(.username == $u)] | length' "$file")
@@ -44,8 +45,16 @@ fi
 
 
 
-#read -p "Enter security question: " securityQuestion
-#read -p "Enter security answer: " securityAnswer
+#security question id to question
+case $securityQuestion in
+    ("1")
+        securityQuestion="What is the name of your first pet."
+        ;;
+    (*)
+        echo "❌ Invalid security question selected."
+        exit 1
+        ;;
+esac
 
 #generate new id
 last_id=$(jq '.[-1].id // 0' "$file")

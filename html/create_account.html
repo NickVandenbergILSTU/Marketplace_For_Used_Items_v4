@@ -85,6 +85,16 @@
         #goMainMenuBtn:hover {
             background: #1976D2;
         }
+        .security_questions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 30px;
+            margin-left: 100px;
+        }
+        #sq_answer {
+            width: 250px;
+        }
     </style>
 </head>
 <body>
@@ -94,9 +104,20 @@
 
         <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
-        <input type="password2" id="password2" placeholder="Confirm Password">
+        <input type="password" id="password2" placeholder="Confirm Password">
         <input type="email" id="email" placeholder="Email">
+        <div class="security_questions">
+            <select name="SQ_dropdown" id="SQ_dropdown"
+                placeholder="Please select a security question.">
+                <option value="0" disabled selected>Please select a security question.</option>
+                <option value="1">What is the name of your first pet.</option>
+            </select>
+            <input type="text" id="sq_answer" name="sq_answer"
+                placeholder="Please enter your answer here.">
+        </div>
         <button class="create" id="createBtn">Create Account</button>
+
+        
 
         <!-- Display the user ID -->
         <p id="userStatus"></p>
@@ -123,8 +144,10 @@
             const pass = document.getElementById('password').value || "";
             const pass2 = document.getElementById('password2').value || "";
             const email = document.getElementById('email').value || "";
+            const sq_dropdown = document.getElementById('SQ_dropdown');
+            const sq_answer = document.getElementById('sq_answer').value || "";
 
-            const params = [HELPER_SCRIPT, create_script, user, pass, pass2, email];
+            const params = [HELPER_SCRIPT, create_script, user, pass, pass2, email, sq_dropdown.value, sq_answer];
             const text = await runScript(params);
             alert(text);
 
