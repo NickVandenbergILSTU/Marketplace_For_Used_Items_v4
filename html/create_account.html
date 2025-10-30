@@ -94,7 +94,7 @@
 
         <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
-        <input type="password" id="password2" placeholder="Confirm Password">
+        <input type="password2" id="password2" placeholder="Confirm Password">
         <input type="email" id="email" placeholder="Email">
         <button class="create" id="createBtn">Create Account</button>
 
@@ -124,7 +124,7 @@
             const pass2 = document.getElementById('password2').value || "";
             const email = document.getElementById('email').value || "";
 
-            const params = [HELPER_SCRIPT, create_script, user, pass, email];
+            const params = [HELPER_SCRIPT, create_script, user, pass, pass2, email];
             const text = await runScript(params);
             alert(text);
 
