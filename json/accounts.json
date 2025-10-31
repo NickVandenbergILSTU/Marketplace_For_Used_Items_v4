@@ -8,15 +8,18 @@
     "autoPushAndPullData": "false",
     "accountBlanance": 10000.00,
     "incomingSaleRequests": [
-      2
+      {
+        "sourceUserId": 42,
+        "itemId": 2
+      }
     ],
     "outgoingSaleRequests": [
       {
-        "userId": 42,
+        "targetUserId": 42,
         "itemId": 1
       },
       {
-        "userId": 41,
+        "targetUserId": 41,
         "itemId": 3
       }
     ],

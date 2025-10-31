@@ -38,6 +38,7 @@
         let userBookmarkedItems = [];
         let currentUserId = null;
         let allItems = [];
+        let accountsData = [];
 
         async function loadUserData() {
             try {
@@ -85,6 +86,7 @@
                 // Get accounts
                 const accountsResponse = await fetch('/json/accounts.json');
                 const accounts = await accountsResponse.json();
+                accountsData = accounts;
                 const currentUser = accounts.find(account => account.id === currentUserId);
 
                 if (!currentUser) {
@@ -92,16 +94,26 @@
                     return;
                 }
 
-                // Get incoming sale request item IDs
-                const incomingSaleRequestIds = currentUser.incomingSaleRequests || [];
+                // Get incoming sale requests (now objects with sourceUserId and itemId)
+                const incomingSaleRequests = currentUser.incomingSaleRequests || [];
                 userBookmarkedItems = currentUser.bookmarkedItems || [];
 
                 // Get all items
                 const itemsResponse = await fetch('/json/items.json');
                 const allItemsData = await itemsResponse.json();
 
-                // Filter items to only those in incoming sale requests
-                let items = allItemsData.filter(item => incomingSaleRequestIds.includes(item.id));
+                // Filter items and add source user info
+                let items = incomingSaleRequests.map(request => {
+                    const item = allItemsData.find(i => i.id === request.itemId);
+                    if (item) {
+                        // Add source user info to the item
+                        return {
+                            ...item,
+                            sourceUserId: request.sourceUserId
+                        };
+                    }
+                    return null;
+                }).filter(item => item !== null);
 
                 // Calculate average ratings
                 items.forEach(item => {
@@ -189,6 +201,10 @@
 
                 const isBookmarked = userBookmarkedItems.includes(item.id);
 
+                // Get source user name
+                const sourceUser = accountsData.find(acc => acc.id === item.sourceUserId);
+                const sourceUsername = sourceUser ? sourceUser.username : `User ${item.sourceUserId}`;
+
                 const nameContainer = document.createElement("div");
                 nameContainer.className = "item-name-container";
                 
@@ -202,6 +218,9 @@
                     bookmarkEmoji.textContent = "🔖";
                     nameContainer.appendChild(bookmarkEmoji);
                 }
+
+                const requestFrom = document.createElement("p");
+                requestFrom.innerHTML = `<strong>Request from:</strong> <span style="color: #007bff;">${sourceUsername}</span>`;
 
                 const price = document.createElement("p");
                 price.innerHTML = `<strong>Price:</strong> <span class="price-text">${item.price}</span>`;
@@ -261,6 +280,7 @@
                 actions.appendChild(commentsBtn);
 
                 itemBox.appendChild(nameContainer);
+                itemBox.appendChild(requestFrom);
                 itemBox.appendChild(price);
                 itemBox.appendChild(rating);
                 itemBox.appendChild(img);
