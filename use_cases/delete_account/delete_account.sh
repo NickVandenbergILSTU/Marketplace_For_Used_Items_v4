@@ -7,6 +7,7 @@ JSON_FILE="accounts.json"
 
 
 # Temp Login function  
+#if user is not logged in then you will be required to login
 login() {
     if [ -z "$ACCOUNT_ID" ]; then
         echo "No account is currently logged in."
