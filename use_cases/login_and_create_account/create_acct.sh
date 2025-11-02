@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# CHECKS:
-
-# set currentlyLoggedInUserID in local_data.json to that user's id
 
 # redirect user to main menu when script is done
 
@@ -96,3 +93,19 @@ jq --arg id "$new_id" \
    }]' "$file" > "$tmp" && mv "$tmp" "$file"
 
 echo "New account for '$username' created successfully!"
+
+
+
+mkdir -p ./json/local
+if [ ! -f "$local_data" ]; then
+  echo '{"currentlyLoggedInUserID": -1}' > "$local_data"
+fi
+
+# Log in new user (only if creation succeeded)
+jq --arg id "$new_id" '.currentlyLoggedInUserID = ($id | tonumber)' "$local_data" > tmp.$$.json && mv tmp.$$.json "$local_data"
+
+echo "✅ User '$username' is now logged in."
+
+# --- REDIRECT TO MAIN MENU (only if creation succeeded) ---
+xdg-open "./html/main_menu.html" >/dev/null 2>&1 &
+exit 0

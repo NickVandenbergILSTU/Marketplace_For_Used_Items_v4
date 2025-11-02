@@ -74,5 +74,20 @@
       "1": "Jeff",
       "3": "Good question"
     }
+  },
+  {
+    "id": 14,
+    "username": "Joshua11",
+    "password": "Password1",
+    "email": "student@school.org",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "Kim",
+    "autoPushAndPullData": "false",
+    "accountBlanance": 0.00,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
+    "orderHistory": []
   }
 ]
