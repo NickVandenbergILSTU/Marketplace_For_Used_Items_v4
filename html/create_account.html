@@ -87,10 +87,21 @@
         }
         .security_questions {
             display: flex;
-            gap: 10px;
+            justify-content: center;
             align-items: center;
-            margin-top: 30px;
-            margin-left: 100px;
+            gap: 10px; /* spacing between dropdown and answer box */
+            margin: 15px auto;
+            width: 520px; /* matches the combined width of both inputs */
+        }
+
+        #SQ_dropdown, #sq_answer {
+            flex: 1;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: white;
+            appearance: none; /* makes the select box match input boxes visually */
         }
         #sq_answer {
             width: 250px;
@@ -110,7 +121,9 @@
             <select name="SQ_dropdown" id="SQ_dropdown"
                 placeholder="Please select a security question.">
                 <option value="0" disabled selected>Please select a security question.</option>
-                <option value="1">What is the name of your first pet.</option>
+                <option value="1">What is the name of your first pet?</option>
+                <option value="2">What university did you study at?</option>
+                <option value="3">What was the name of your elementary school?</option>
             </select>
             <input type="text" id="sq_answer" name="sq_answer"
                 placeholder="Please enter your answer here.">
