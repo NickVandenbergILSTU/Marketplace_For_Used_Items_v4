@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "TV",
-    "price": "$300.00",
+    "price": "a",
     "ratings": [
       {
         "accountId": 41,
@@ -39,7 +39,7 @@
   {
     "id": 3,
     "name": "aa",
-    "price": "$50.00",
+    "price": "$1.67",
     "ratings": [
       {
         "accountId": 41,
@@ -99,9 +99,14 @@
   },
   {
     "id": 7,
-    "name": "[NEW ITEM]",
+    "name": "item 3",
     "price": "$0.00",
-    "ratings": [],
+    "ratings": [
+      {
+        "userId": 41,
+        "rating": 3
+      }
+    ],
     "itemComments": []
   },
   {

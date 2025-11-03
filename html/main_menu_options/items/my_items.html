@@ -154,6 +154,72 @@
             });
         }
 
+        async function rateItem(itemId, rating) {
+            if (!rating) {
+                alert('Please select a rating');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/rate_item/rate_item.sh',
+                itemId.toString(),
+                rating.toString()
+            ];
+
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error rating item:', error);
+                alert('Error rating item');
+
+                // Reload page
+                window.location.reload();
+            }
+        }
+
+        async function setItemPrice(itemId, newPrice) {
+            if (!newPrice || newPrice.trim() === '') {
+                alert('Please enter a new price');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/set_item_price/set_item_price.sh',
+                itemId.toString(),
+                newPrice.trim()
+            ];
+
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error setting price:', error);
+                alert('Error setting price');
+
+                // Reload page
+                window.location.reload();
+            }
+        }
+
         async function renameItem(itemId, newName) {
             if (!newName || newName.trim() === '') {
                 alert('Please enter a new name');
@@ -378,7 +444,7 @@
                 }
                 const rateBtn = document.createElement("button");
                 rateBtn.textContent = "Rate";
-                rateBtn.onclick = () => runUserScript(rateSelect.value);
+                rateBtn.onclick = () => rateItem(item.id, rateSelect.value);
                 rateDiv.appendChild(rateSelect);
                 rateDiv.appendChild(rateBtn);
 
@@ -389,7 +455,7 @@
                 priceInput.placeholder = "New Price";
                 const priceBtn = document.createElement("button");
                 priceBtn.textContent = "Set Price";
-                priceBtn.onclick = () => runUserScript(priceInput.value);
+                priceBtn.onclick = () => setItemPrice(item.id, priceInput.value);
                 priceDiv.appendChild(priceInput);
                 priceDiv.appendChild(priceBtn);
 
