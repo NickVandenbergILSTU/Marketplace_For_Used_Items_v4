@@ -189,6 +189,36 @@
             }
         }
 
+        async function addOrReplaceImage(itemId) {
+            const message = "Please drop the desired image (PNG) in the folder _ITEM_IMAGE_DROPBOX, then click OK.";
+            
+            if (confirm(message)) {
+                const params = [
+                    HELPER_SCRIPT,
+                    './use_cases/add_item_image/add_item_image.sh',
+                    itemId.toString()
+                ];
+                
+                try {
+                    const response = await fetch("/run-script", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ params })
+                    });
+                    const text = await response.text();
+                    alert(text);
+                    
+                    // Reload items to show new image
+                    await loadItems();
+                } catch (error) {
+                    console.error('Error adding/replacing image:', error);
+                    alert('Error adding/replacing image');
+                }
+            }
+            // reload page
+            window.location.reload();
+        }
+
         async function openComments(itemId) {
             try {
                 // Update selectedItemCommentID in local_data.json
@@ -261,13 +291,13 @@
 
                 img.onload = () => {
                     imgButtons.innerHTML = `
-                        <button>Replace Image</button>
+                        <button onclick="addOrReplaceImage(${item.id})">Replace Image</button>
                         <button>Delete Image</button>
                     `;
                 };
                 img.onerror = () => {
                     img.style.display = "none";
-                    imgButtons.innerHTML = `<button>Add Image</button>`;
+                    imgButtons.innerHTML = `<button onclick="addOrReplaceImage(${item.id})">Add Image</button>`;
                 };
 
                 const actions = document.createElement("div");
