@@ -94,15 +94,13 @@ jq --arg id "$new_id" \
 
 echo "New account for '$username' created successfully!"
 
+local_data="./json/local/local_data.json"
 
 
-mkdir -p ./json/local
-if [ ! -f "$local_data" ]; then
-  echo '{"currentlyLoggedInUserID": -1}' > "$local_data"
-fi
+
 
 # Log in new user (only if creation succeeded)
-jq --arg id "$new_id" '.currentlyLoggedInUserID = ($id | tonumber)' "$local_data" > tmp.$$.json && mv tmp.$$.json "$local_data"
+    jq --argjson id "$new_id" '.currentlyLoggedInUserID = $id' "$local_data" > tmp.$$.json && mv tmp.$$.json "$local_data"
 
 echo "✅ User '$username' is now logged in."
 

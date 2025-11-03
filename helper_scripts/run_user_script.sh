@@ -21,6 +21,7 @@ if [ "$(jq -r '.currentlyLoggedInUserID' "$LOCAL_DATA_PATH")" == "-1" ] && \
    [ "$SCRIPT_PATH" != "./use_cases/login_and_create_account/login.sh" ] && \
    [ "$SCRIPT_PATH" != "./use_cases/login_and_create_account/create_account.sh" ]; then
   echo "Error: No user is currently logged in. Please log out and log in in to continue."
+  #question that it should be error if nobody logged in is -1
   exit 1
 fi
 
