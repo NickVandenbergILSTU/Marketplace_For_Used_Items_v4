@@ -23,7 +23,7 @@
   },
   {
     "id": 2,
-    "name": "Laptop",
+    "name": "item2",
     "price": "$200.00",
     "ratings": [
       {
@@ -38,7 +38,7 @@
   },
   {
     "id": 3,
-    "name": "Microwave",
+    "name": "aa",
     "price": "$50.00",
     "ratings": [
       {
@@ -113,7 +113,7 @@
   },
   {
     "id": 9,
-    "name": "[NEW ITEM]",
+    "name": "a",
     "price": "$0.00",
     "ratings": [],
     "itemComments": []

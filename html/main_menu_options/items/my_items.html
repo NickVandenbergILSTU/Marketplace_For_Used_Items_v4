@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html>  
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +20,7 @@
         <div class="sort-controls">
             <label for="search">Search:</label>
             <input type="text" id="search" class="search-input" placeholder="Search items..." oninput="filterItems()">
-
+            
             <label for="sort">Sort by:</label>
             <select id="sort" onchange="loadItems(this.value)">
                 <option value="default">Default Order</option>
@@ -88,10 +88,10 @@
                 const accounts = await accountsResponse.json();
 
                 const currentUser = accounts.find(account => account.id === currentUserId);
-
+                
                 const usernameElement = document.getElementById('username');
                 const balanceElement = document.getElementById('balance');
-
+                
                 if (currentUser && currentUser.username) {
                     usernameElement.textContent = currentUser.username;
                     const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
@@ -140,7 +140,7 @@
 
         function filterItems() {
             const searchTerm = document.getElementById('search').value.toLowerCase();
-            const filteredItems = allItems.filter(item =>
+            const filteredItems = allItems.filter(item => 
                 item.name.toLowerCase().includes(searchTerm)
             );
             renderItems(filteredItems);
@@ -154,9 +154,37 @@
             });
         }
 
-        function renameItem(itemId, newName) {
-            // TODO: Implement rename item functionality
-            console.log(`Rename item ${itemId} to: ${newName}`);
+        async function renameItem(itemId, newName) {
+            if (!newName || newName.trim() === '') {
+                alert('Please enter a new name');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/rename_item/rename_item.sh',
+                itemId.toString(),
+                newName.trim()
+            ];
+
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error renaming item:', error);
+                alert('Error renaming item');
+
+                // Reload page
+                window.location.reload();
+            }
         }
 
         function deleteItem(itemId) {
@@ -171,7 +199,7 @@
                 HELPER_SCRIPT,
                 './use_cases/create_item/main.py'
             ];
-
+            
             try {
                 const response = await fetch("/run-script", {
                     method: "POST",
@@ -180,7 +208,7 @@
                 });
                 const text = await response.text();
                 alert(text);
-
+                
                 // Reload items after creation
                 await loadItems();
             } catch (error) {
@@ -191,14 +219,14 @@
 
         async function addOrReplaceImage(itemId) {
             const message = "Please drop the desired image (PNG) in the folder _ITEM_IMAGE_DROPBOX, then click OK.";
-
+            
             if (confirm(message)) {
                 const params = [
                     HELPER_SCRIPT,
                     './use_cases/add_item_image/add_item_image.sh',
                     itemId.toString()
                 ];
-
+                
                 try {
                     const response = await fetch("/run-script", {
                         method: "POST",
@@ -207,19 +235,12 @@
                     });
                     const text = await response.text();
                     alert(text);
-
+                    
                     // Reload items to show new image
                     await loadItems();
-
-                    // reload page
-                    window.location.reload();
-
                 } catch (error) {
                     console.error('Error adding/replacing image:', error);
                     alert('Error adding/replacing image');
-
-                    // reload page
-                    window.location.reload();
                 }
             }
         }
@@ -231,7 +252,7 @@
                     './use_cases/remove_item_image/remove_item_image.sh',
                     itemId.toString()
                 ];
-
+                
                 try {
                     const response = await fetch("/run-script", {
                         method: "POST",
@@ -240,21 +261,13 @@
                     });
                     const text = await response.text();
                     alert(text);
-
+                    
                     // Reload items to reflect removed image
                     await loadItems();
-
-                    // reload page
-                    window.location.reload();
                 } catch (error) {
                     console.error('Error removing image:', error);
                     alert('Error removing image');
-
-                    // reload page
-                    window.location.reload();
                 }
-
-                
             }
         }
 
@@ -301,11 +314,11 @@
 
                 const nameContainer = document.createElement("div");
                 nameContainer.className = "item-name-container";
-
+                
                 const name = document.createElement("h3");
                 name.textContent = item.name;
                 nameContainer.appendChild(name);
-
+                
                 if (isBookmarked) {
                     const bookmarkEmoji = document.createElement("span");
                     bookmarkEmoji.className = "bookmark-emoji";
