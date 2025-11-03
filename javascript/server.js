@@ -70,8 +70,10 @@ app.post('/verify-username', (req, res) => {
     const spawn = require("child_process").spawn;
 
     const enteredUsername = req.body.username;
-
-    const pythonProcess = spawn('python', ['C:\\Users\\harbo\\Desktop\\Marketplace_For_Used_Items\\Marketplace_For_Used_Items_v4\\html\\forgot_password\\verify_username.py', enteredUsername]);
+    const script_path = path.join(__dirname, '../use_cases/forgot_password/verify_username.py');
+    console.log(script_path);
+    //const pythonProcess = spawn('python', ['C:\\Users\\harbo\\Desktop\\Marketplace_For_Used_Items\\Marketplace_For_Used_Items_v4\\use_cases\\forgot_password\\verify_username.py', enteredUsername]);
+    const pythonProcess = spawn('python', [script_path, enteredUsername]);
     try {
 
         pythonProcess.stdout.on('data', (data) => {
@@ -94,7 +96,9 @@ app.post('/verify-security-answer', (req, res) => {
     const sq_answer = req.body.sq_answer;
     let accumulatedData = '';
 
-    const pythonProcess = spawn('python', ['C:/Users/harbo/Desktop/Marketplace_For_Used_Items/Marketplace_For_Used_Items_v4/html/forgot_password/verify_security_answer.py', username, sq_question, sq_answer]);
+    const script_path = path.join(__dirname, '../use_cases/forgot_password/verify_security_answer.py');
+
+    const pythonProcess = spawn('python', [script_path, username, sq_question, sq_answer]);
     pythonProcess.stdout.on('data', (data) => {
         accumulatedData += data.toString();
     })
@@ -120,7 +124,10 @@ app.post('/verify-password', (req, res) => {
     username = req.body.username;
     password = req.body.password;
 
-    exec(`bash C:\\Users\\harbo\\Desktop\\Marketplace_For_Used_Items\\Marketplace_For_Used_Items_v4\\use_cases\\check_password_requirements\\check_password_requirements.sh ${password}`, (error, stdout, stderr) => {
+    const bash_script = path.join(__dirname, '../use_cases/check_password_requirements/check_password_requirements.sh')
+    const python_script = path.join(__dirname, '../use_cases/forgot_password/change_password.py')
+
+    exec(`bash ${bash_script} ${password}`, (error, stdout, stderr) => {
         // if (stdout.includes("8 characters")) {
         //     console.log(stdout);
         //     res.json({ result: stdout });
@@ -147,7 +154,7 @@ app.post('/verify-password', (req, res) => {
             let accumulatedData = '';
             const spawn = require("child_process").spawn;
 
-            const pythonProcess = spawn('python', ['C:/Users/harbo/Desktop/Marketplace_For_Used_Items/Marketplace_For_Used_Items_v4/html/forgot_password/change_password.py', username, password]);
+            const pythonProcess = spawn('python', [python_script, username, password]);
             pythonProcess.stdout.on('data', (data) => {
                 accumulatedData += data.toString();
             })
