@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "TV",
+    "name": "Telivision",
     "price": "a",
     "ratings": [
       {
@@ -96,18 +96,6 @@
         "rating": 4
       }
     ]
-  },
-  {
-    "id": 7,
-    "name": "item 3",
-    "price": "$0.00",
-    "ratings": [
-      {
-        "userId": 41,
-        "rating": 3
-      }
-    ],
-    "itemComments": []
   },
   {
     "id": 8,
