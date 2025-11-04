@@ -6,56 +6,59 @@ import traceback
 
 def add_to_cart(item_id):
 
-    #load the account.json
+    #load paths
     python_script = Path(__file__).resolve()
-    #print(f'Python Script location: {python_script}')
+    
     script_directory = python_script.parent
-    #print(f'Python script directory: {script_directory}')
     accounts_path = script_directory.parent.parent /'json'/'accounts.json'
     local_data_path = script_directory.parent.parent / 'json' / 'local' / 'local_data.json'
-    #print(f'Local data location: {local_data}')
-    
-    #pull the current logged in account
+
+    local_data_dict = {}
+    account_id = None
+    data_from_accounts = []
+
+    # attempt to open and edit the account file
     try:
-        local_data_dict = {}
-        account_id = None
         
+        #open local data file
         with open(local_data_path, 'r') as local_data_file:
             local_data_dict = json.load(local_data_file)
         
         
-        #print(f'Local data:\n {local_data_dict}')
-        # for key, data in local_data_dict:
-        #     if (key == 'currentlyLoggedInUserID'):
-        #         account_id = data
-
+        #attempt to find the account_id (will always come back true)
         for key in local_data_dict:
             if key == 'currentlyLoggedInUserID':
                 account_id = local_data_dict[key]
-                print(f'User ID: {account_id}')
         
-        selected_account = None
-        data = []
-        cart = []
-
-    
+        #attempt to open the accounts and load into local variable
+        
         with open(accounts_path, 'r') as accounts:
-            data = json.load(accounts)
+            data_from_accounts = json.load(accounts)
 
-
-        for user in data:
+        #find the account with the matching account_id
+        #if found: verify item isn't already in shopping cart
+        for user in data_from_accounts:
             if user.get('id') == account_id:
-                print(f'User cart: {user.get('itemsInCart')}')
+                if item_id in user.get('itemsInCart'):
+                    print("Item alredy in cart")
+                    return 0
+                
                 user.get('itemsInCart').append(item_id)
-                print(f'Cart after: {user.get('itemsInCart')}')
-
-
-        with open(accounts_path, 'w') as accounts_file:
-            json.dump(data, accounts_file, indent=4)
-        
+                break
+                
     
     except Exception:
         print(traceback.format_exc())
+
+    #attempt to edit the accounts.json file
+    try:
+        with open(accounts_path, 'w') as accounts_file:
+            json.dump(data_from_accounts, accounts_file, indent=4)
+
+        print("Item added to cart")
+    except Exception:
+        print(traceback.format_exc())
+    
 
 item_id = int(sys.argv[1])
 add_to_cart(item_id)
