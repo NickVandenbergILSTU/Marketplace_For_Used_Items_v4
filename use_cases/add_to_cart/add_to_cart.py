@@ -1,20 +1,44 @@
 import json
 import sys
 from pathlib import Path
+import traceback
 
 
-def add_to_cart(account_id, item_id):
+def add_to_cart(item_id):
 
     #load the account.json
     python_script = Path(__file__).resolve()
+    #print(f'Python Script location: {python_script}')
     script_directory = python_script.parent
+    #print(f'Python script directory: {script_directory}')
     accounts_path = script_directory.parent.parent /'json'/'accounts.json'
-
-    selected_account = None
-    data = []
-    cart = []
-
+    local_data_path = script_directory.parent.parent / 'json' / 'local' / 'local_data.json'
+    #print(f'Local data location: {local_data}')
+    
+    #pull the current logged in account
     try:
+        local_data_dict = {}
+        account_id = None
+        
+        with open(local_data_path, 'r') as local_data_file:
+            local_data_dict = json.load(local_data_file)
+        
+        
+        #print(f'Local data:\n {local_data_dict}')
+        # for key, data in local_data_dict:
+        #     if (key == 'currentlyLoggedInUserID'):
+        #         account_id = data
+
+        for key in local_data_dict:
+            if key == 'currentlyLoggedInUserID':
+                account_id = local_data_dict[key]
+                print(f'User ID: {account_id}')
+        
+        selected_account = None
+        data = []
+        cart = []
+
+    
         with open(accounts_path, 'r') as accounts:
             data = json.load(accounts)
 
@@ -30,9 +54,8 @@ def add_to_cart(account_id, item_id):
             json.dump(data, accounts_file, indent=4)
         
     
-    except:
-        print("Error occurred")
+    except Exception:
+        print(traceback.format_exc())
 
-account_id = int(sys.argv[1])
-item_id= int(sys.argv[2])
-add_to_cart(account_id, item_id)
+item_id = int(sys.argv[1])
+add_to_cart(item_id)
