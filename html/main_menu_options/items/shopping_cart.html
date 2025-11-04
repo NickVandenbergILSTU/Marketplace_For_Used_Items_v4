@@ -266,8 +266,6 @@
 
                 const cartBtn = document.createElement("button");
                 cartBtn.textContent = "🛒 Remove from Cart";
-                //currentUserId = localData.currentlyLoggedInUserID;
-
                 cartBtn.onclick = () => removeFromCart(item.id,currentUserId);
 
                 async function removeFromCart(itemId, userId) {
@@ -286,6 +284,7 @@
                         alert("Failed to remove item from cart.");
                     }
                 }
+                
                 const commentsBtn = document.createElement("button");
                 commentsBtn.textContent = "💬 Comments";
                 commentsBtn.onclick = () => openComments(item.id);

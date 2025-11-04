@@ -67,10 +67,7 @@
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
-    "itemsInCart": [
-      3,
-      4
-    ],
+    "itemsInCart": [],
     "orderHistory": []
   }
 ]
