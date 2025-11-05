@@ -32,13 +32,15 @@
         "name": "TV",
         "price": "$300.00"
       }
-    ],
-    "security_q_a": {}
+    ]
   },
   {
     "id": 42,
     "username": "john-smith",
     "password": "password",
+    "email": "email@email.com",
+    "securityQuestion": "None",
+    "securityAnswer": "NA",
     "autoPushAndPullData": "false",
     "accountBlanance": 10.00,
     "myItems": [
@@ -58,21 +60,36 @@
       2,
       3
     ],
-    "security_q_a": {}
+    "orderHistory": []
   },
   {
     "id": 13,
     "username": "thaterickid",
     "password": "dontLook5!",
+    "email": "eric@email.com",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "Sassy",
     "autoPushAndPullData": "false",
     "accountBlance": 99.99,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
     "itemsInCart": [],
-    "security_q_a": {
-      "1": "Jeff",
-      "3": "Good question"
-    }
+    "orderHistory": []
+  },
+  {
+    "id": 14,
+    "username": "Joshua11",
+    "password": "Password1",
+    "email": "student@school.org",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "Kim",
+    "autoPushAndPullData": "false",
+    "accountBlanance": 0.00,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
+    "orderHistory": []
   }
 ]
