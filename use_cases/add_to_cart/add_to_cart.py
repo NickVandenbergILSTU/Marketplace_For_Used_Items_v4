@@ -40,7 +40,7 @@ def add_to_cart(item_id):
         for user in data_from_accounts:
             if user.get('id') == account_id:
                 if item_id in user.get('itemsInCart'):
-                    print("Item alredy in cart")
+                    print("Item already in cart")
                     return 0
                 
                 user.get('itemsInCart').append(item_id)
