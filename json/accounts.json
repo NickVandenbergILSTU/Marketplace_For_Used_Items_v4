@@ -53,6 +53,77 @@
         "name": "TV",
         "price": "$300.00"
       }
-    ]
+    ],
+    "security_q_a": {}
+  },
+  {
+    "id": 42,
+    "username": "john-smith",
+    "password": "password",
+    "autoPushAndPullData": "false",
+    "accountBlanance": 10.00,
+    "myItems": [
+      1,
+      2,
+      6
+    ],
+    "bookmarkedItems": [
+      1,
+      2
+    ],
+    "reservedItems": [
+      3
+    ],
+    "itemsInCart": [
+      1,
+      2,
+      3
+    ],
+    "security_q_a": {}
+  },
+  {
+    "id": 13,
+    "username": "thaterickid",
+    "password": "dontLook5!",
+    "autoPushAndPullData": "false",
+    "accountBlance": 99.99,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
+    "security_q_a": {
+      "1": "Jeff",
+      "3": "Good question"
+    }
+  },
+  {
+    "id": 14,
+    "username": "Joshua11",
+    "password": "Password1",
+    "email": "student@school.org",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "Kim",
+    "autoPushAndPullData": "false",
+    "accountBlanance": 0.00,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
+    "orderHistory": []
+  },
+  {
+    "id": 15,
+    "username": "nick",
+    "password": "Password1",
+    "email": "nick@gmail.com",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "a",
+    "autoPushAndPullData": "false",
+    "accountBlanance": 0.00,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
+    "orderHistory": []
   }
 ]
