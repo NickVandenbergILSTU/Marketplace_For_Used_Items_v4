@@ -1,8 +1,8 @@
 [
   {
     "id": 1,
-    "name": "Telivision",
-    "price": "a",
+    "name": "tv",
+    "price": "$1.00",
     "ratings": [
       {
         "accountId": 41,
@@ -11,6 +11,10 @@
       {
         "accountId": 42,
         "rating": 4
+      },
+      {
+        "userId": 41,
+        "rating": 5
       }
     ],
     "itemComments": [
@@ -38,7 +42,7 @@
   },
   {
     "id": 3,
-    "name": "aa",
+    "name": "a",
     "price": "$1.67",
     "ratings": [
       {

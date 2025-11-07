@@ -35,7 +35,6 @@
       22
     ],
     "bookmarkedItems": [
-      1,
       3
     ],
     "reservedItems": [
@@ -79,7 +78,9 @@
       2,
       3
     ],
-    "security_q_a": {}
+    "security_q_a": {},
+    "incomingSaleRequests": [],
+    "outgoingSaleRequests": []
   },
   {
     "id": 13,
@@ -94,7 +95,9 @@
     "security_q_a": {
       "1": "Jeff",
       "3": "Good question"
-    }
+    },
+    "incomingSaleRequests": [],
+    "outgoingSaleRequests": []
   },
   {
     "id": 14,
@@ -109,7 +112,9 @@
     "bookmarkedItems": [],
     "reservedItems": [],
     "itemsInCart": [],
-    "orderHistory": []
+    "orderHistory": [],
+    "incomingSaleRequests": [],
+    "outgoingSaleRequests": []
   },
   {
     "id": 15,
@@ -124,6 +129,8 @@
     "bookmarkedItems": [],
     "reservedItems": [],
     "itemsInCart": [],
-    "orderHistory": []
+    "orderHistory": [],
+    "incomingSaleRequests": [],
+    "outgoingSaleRequests": []
   }
 ]
