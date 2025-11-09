@@ -15,14 +15,6 @@
     ],
     "outgoingSaleRequests": [
       {
-        "targetUserId": 42,
-        "itemId": 1
-      },
-      {
-        "targetUserId": 41,
-        "itemId": 3
-      },
-      {
         "targetUserId": 13,
         "itemId": 1
       }
@@ -91,7 +83,7 @@
     "username": "thaterickid",
     "password": "dontLook5!",
     "autoPushAndPullData": "false",
-    "accountBlance": 99.99,
+    "accountBlanance": 99.99,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
