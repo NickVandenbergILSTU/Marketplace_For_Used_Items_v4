@@ -23,7 +23,9 @@
                 
                 <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
                     <p style="margin: 10px 0;"><strong>Username:</strong> <span id="displayUsername">Loading...</span></p>
+                    <p style="margin: 10px 0;"><strong>Email:</strong> <span id="displayEmail">Loading...</span></p>
                     <p style="margin: 10px 0;"><strong>Password:</strong> <span id="displayPassword">Loading...</span></p>
+
                     <p style="margin: 10px 0;"><strong>Account Balance:</strong> <span id="displayBalance">$0.00</span></p>
                     <p style="margin: 10px 0;"><strong>Security Question:</strong> <span id="displaySecurityQuestion">Loading...</span></p>
                     <p style="margin: 10px 0;"><strong>Security Answer:</strong> <span id="displaySecurityAnswer">Loading...</span></p>
@@ -38,9 +40,15 @@
                     </div>
 
                     <div class="action-row">
+                        <input type="text" id="newEmail" placeholder="New Email" style="flex: 1;">
+                        <button onclick="changeEmail()">Change Email</button>
+                    </div>
+
+                    <div class="action-row">
                         <input type="text" id="newPassword" placeholder="New Password" style="flex: 1;">
                         <button onclick="changePassword()">Change Password</button>
                     </div>
+                    
 
                     <div class="action-row">
                         <input type="text" id="newBalance" placeholder="New Balance (e.g., 100.00)" style="flex: 1;">
@@ -97,6 +105,7 @@
                     // Update display fields
                     document.getElementById('displayUsername').textContent = currentUser.username || 'N/A';
                     document.getElementById('displayPassword').textContent = currentUser.password || 'N/A';
+                    document.getElementById('displayEmail').textContent = currentUser.email || 'N/A';
                     document.getElementById('displayBalance').textContent = `$${balanceNum.toFixed(2)}`;
                     document.getElementById('displaySecurityQuestion').textContent = currentUser.securityQuestion || 'N/A';
                     document.getElementById('displaySecurityAnswer').textContent = currentUser.securityAnswer || 'N/A';
@@ -112,26 +121,41 @@
         }
 
         async function runUserScript(params) {
-            await fetch("/run-script", {
+            const response = await fetch("/run-script", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ params })
             });
+            return await response.text(); // return output
+
         }
 
-        function changeUsername() {
+        async function changeUsername() {
             const newUsername = document.getElementById('newUsername').value.trim();
             if (!newUsername) {
                 alert('Please enter a new username');
                 return;
             }
-            if (confirm(`Change username to "${newUsername}"?`)) {
-                runUserScript([HELPER_SCRIPT, './use_cases/change_username.py', newUsername]);
-                setTimeout(() => {
-                    loadUserData();
-                    document.getElementById('newUsername').value = '';
-                }, 500);
+
+            // Get logged-in user ID
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+            const change_username = "./use_cases/update_account_info/change_username.sh";
+
+            const params = [HELPER_SCRIPT,change_username,userId,newUsername];
+
+            
+            
+            const text = await runUserScript(params);  
+            alert(text);
+            if (text.includes("already taken")) {
+                alert("That username is already in use. Please choose another.");
+            } else {
+                alert("Username updated successfully!");
+                document.getElementById('newUsername').value = '';
+                loadUserData();
             }
+            
         }
 
         function changePassword() {
