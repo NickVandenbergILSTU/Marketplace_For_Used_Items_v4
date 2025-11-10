@@ -20,5 +20,5 @@ jq --arg uid "$userID" --arg pass "$newPassword" '
   map(if .id == ($uid | tonumber) then .password = $pass else . end)
 ' "$accountFile" > "$tmp" && mv "$tmp" "$accountFile"
 
-echo "Username updated successfully."
+echo "password updated successfully."
 exit 0

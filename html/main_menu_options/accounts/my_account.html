@@ -51,12 +51,20 @@
                     
 
                     <div class="action-row">
-                        <input type="text" id="newBalance" placeholder="New Balance (e.g., 100.00)" style="flex: 1;">
-                        <button onclick="updateBalance()">Update Balance</button>
+                        <input type="text" id="addFunds" placeholder="add Funds (e.g., 100.00)" style="flex: 1;">
+                        <button onclick="updateBalance()">add Funds</button>
                     </div>
 
                     <div class="action-row">
-                        <input type="text" id="newSecurityQuestion" placeholder="New Security Question" style="flex: 1;">
+                        <div class="security_questions">
+                            <select name="SQ_dropdown" id="SQ_dropdown"
+                                placeholder="Please select a security question.">
+                                <option value="0" disabled selected>Please select a security question.</option>
+                                <option value="1">What is the name of your first pet?</option>
+                                <option value="2">What university did you study at?</option>
+                                <option value="3">What was the name of your elementary school?</option>
+                            </select>
+                        </div>
                         <button onclick="changeSecurityQuestion()">Change Security Question</button>
                     </div>
 

@@ -104,7 +104,7 @@
     "username": "joshua",
     "password": "Password34",
     "email": "johndoe@example.com",
-    "securityQuestion": "What is the name of your first pet?",
+    "securityQuestion": "What university did you study at?",
     "securityAnswer": "Kim",
     "autoPushAndPullData": "false",
     "accountBlanance": 0.00,
