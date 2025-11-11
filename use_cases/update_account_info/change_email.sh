@@ -1,5 +1,4 @@
 #!/bin/bash
-# Usage: change_username.sh <userId> <newUsername>
 
 accountFile="./json/accounts.json"
 userID="$1"

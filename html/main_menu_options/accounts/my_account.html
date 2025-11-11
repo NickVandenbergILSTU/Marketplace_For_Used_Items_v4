@@ -151,8 +151,6 @@
             const change_username = "./use_cases/update_account_info/change_username.sh";
 
             const params = [HELPER_SCRIPT,change_username,userId,newUsername];
-
-            
             
             const text = await runUserScript(params);  
             alert(text);
