@@ -13,7 +13,7 @@ ACCOUNTS_JSON="./json/accounts.json"
 
 # Validate parameters
 if [ -z "$ACTION" ] || [ -z "$ITEM_ID" ]; then
-    echo "Error: Missing required parameters. Usage: ./handle_sale_request.sh <accept|reject> <item_id>"
+    echo "Error: Missing required parameters. Usage: handle_sale_request.sh <accept|reject> <item_id>"
     exit 1
 fi
 
@@ -58,6 +58,33 @@ jq --arg suid "$SOURCE_USER_ID" --arg tid "$CURRENT_USER_ID" --arg iid "$ITEM_ID
 
 # If action is "accept", add the item to the logged in user's myItems array
 if [ "$ACTION" == "accept" ]; then
+    # Get item price for the transaction
+    ITEM_PRICE=$(jq -r --arg iid "$ITEM_ID" \
+        '.[] | select(.id == ($iid | tonumber)) | .price' \
+        "./json/items.json")
+    
+    # Remove currency symbols and extract numeric value
+    NUMERIC_PRICE=$(echo "$ITEM_PRICE" | sed 's/[^0-9.]//g')
+    
+    
+    # Get buyer's current balance
+    BUYER_BALANCE=$(jq -r --arg uid "$CURRENT_USER_ID" \
+        '.[] | select(.id == ($uid | tonumber)) | 
+        if .accountBalance then .accountBalance else .accountBlanance end' \
+        "$ACCOUNTS_JSON")
+    
+    # Check if buyer has sufficient funds
+    BUYER_BALANCE_NUM=$(echo "$BUYER_BALANCE" | sed 's/[^0-9.]//g')
+    if ! [[ "$BUYER_BALANCE_NUM" =~ ^[0-9]+\.?[0-9]*$ ]]; then
+        BUYER_BALANCE_NUM=0
+    fi
+    
+    # Compare balances using bc for floating point arithmetic
+    if (( $(echo "$BUYER_BALANCE_NUM < $NUMERIC_PRICE" | bc -l) )); then
+        echo "Error: Insufficient funds. You need \$NUMERIC_PRICE but only have \$BUYER_BALANCE_NUM."
+        exit 1
+    fi
+    
     # Check if user already owns the item
     ALREADY_OWNS=$(jq --arg uid "$CURRENT_USER_ID" --arg iid "$ITEM_ID" \
         '.[] | select(.id == ($uid | tonumber)) | .myItems | contains([($iid | tonumber)])' \
@@ -79,12 +106,34 @@ if [ "$ACTION" == "accept" ]; then
         else . end)' \
         "$ACCOUNTS_JSON" > "${ACCOUNTS_JSON}.tmp" && mv "${ACCOUNTS_JSON}.tmp" "$ACCOUNTS_JSON"
     
+    # Deduct price from buyer's account
+    jq --arg uid "$CURRENT_USER_ID" --arg price "$NUMERIC_PRICE" \
+        'map(if .id == ($uid | tonumber) then 
+            if .accountBalance then 
+                .accountBalance = ((.accountBalance | tonumber) - ($price | tonumber))
+            else 
+                .accountBlanance = ((.accountBlanance | tonumber) - ($price | tonumber))
+            end
+        else . end)' \
+        "$ACCOUNTS_JSON" > "${ACCOUNTS_JSON}.tmp" && mv "${ACCOUNTS_JSON}.tmp" "$ACCOUNTS_JSON"
+    
+    # Add price to seller's account
+    jq --arg suid "$SOURCE_USER_ID" --arg price "$NUMERIC_PRICE" \
+        'map(if .id == ($suid | tonumber) then 
+            if .accountBalance then 
+                .accountBalance = ((.accountBalance | tonumber) + ($price | tonumber))
+            else 
+                .accountBlanance = ((.accountBlanance | tonumber) + ($price | tonumber))
+            end
+        else . end)' \
+        "$ACCOUNTS_JSON" > "${ACCOUNTS_JSON}.tmp" && mv "${ACCOUNTS_JSON}.tmp" "$ACCOUNTS_JSON"
+    
     # Get item name for success message
     ITEM_NAME=$(jq -r --arg iid "$ITEM_ID" \
         '.[] | select(.id == ($iid | tonumber)) | .name' \
         "./json/items.json")
     
-    echo "Success: Sale request accepted. Item '${ITEM_NAME}' has been added to your items."
+    echo "Success: Sale request accepted. Item '${ITEM_NAME}' has been added to your items. You paid \$NUMERIC_PRICE."
 else
     # Get item name for rejection message
     ITEM_NAME=$(jq -r --arg iid "$ITEM_ID" \

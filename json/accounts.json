@@ -7,12 +7,7 @@
     "securityAnswer": "blue",
     "autoPushAndPullData": "false",
     "accountBlanance": 10000.00,
-    "incomingSaleRequests": [
-      {
-        "sourceUserId": 42,
-        "itemId": 2
-      }
-    ],
+    "incomingSaleRequests": [],
     "outgoingSaleRequests": [
       {
         "targetUserId": 13,
