@@ -144,17 +144,15 @@
                 alert('Please enter a new username');
                 return;
             }
-
             // Get logged-in user ID
             const localData = await fetch('/json/local/local_data.json').then(r => r.json());
             const userId = localData.currentlyLoggedInUserID;
             const change_username = "./use_cases/update_account_info/change_username.sh";
-
             const params = [HELPER_SCRIPT,change_username,userId,newUsername];
             
             const text = await runUserScript(params);  
             alert(text);
-            if (text.includes("already taken")) {
+            if (text.includes("is already taken")) {
                 alert("That username is already in use. Please choose another.");
             } else {
                 alert("Username updated successfully!");
@@ -164,19 +162,27 @@
             
         }
 
-        function changePassword() {
+        async function changePassword() {
             const newPassword = document.getElementById('newPassword').value.trim();
             if (!newPassword) {
                 alert('Please enter a new password');
                 return;
             }
-            if (confirm('Change your password?')) {
-                runUserScript([HELPER_SCRIPT, './use_cases/change_password.py', newPassword]);
-                setTimeout(() => {
-                    loadUserData();
-                    document.getElementById('newPassword').value = '';
-                }, 500);
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+            const change_password = "./use_cases/update_account_info/change_password.sh";
+            const params = [HELPER_SCRIPT,change_password,userId,newPassword];
+
+            const text = await runUserScript(params);  
+            alert(text);
+            if (text.includes("not meet requirements")) {
+                alert("That password does not meet requirements.");
+            } else {
+                alert("Password updated successfully!");
+                document.getElementById('newPassword').value = '';
+                loadUserData();
             }
+            
         }
 
         function updateBalance() {

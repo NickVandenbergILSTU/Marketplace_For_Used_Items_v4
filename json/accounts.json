@@ -102,16 +102,24 @@
   {
     "id": 14,
     "username": "josh",
-    "password": "Password34",
+    "password": "Password1",
     "email": "johndoe@example.com",
     "securityQuestion": "What university did you study at?",
     "securityAnswer": "Kim",
     "autoPushAndPullData": "false",
     "accountBlanance": 0.00,
-    "myItems": [],
-    "bookmarkedItems": [],
-    "reservedItems": [],
-    "itemsInCart": [],
+    "myItems": [
+      1
+    ],
+    "bookmarkedItems": [
+      2
+    ],
+    "reservedItems": [
+      3
+    ],
+    "itemsInCart": [
+      4
+    ],
     "orderHistory": [],
     "incomingSaleRequests": [],
     "outgoingSaleRequests": []
@@ -132,5 +140,20 @@
     "orderHistory": [],
     "incomingSaleRequests": [],
     "outgoingSaleRequests": []
+  },
+  {
+    "id": 16,
+    "username": "lolikujyhgj",
+    "password": "Password1",
+    "email": "email@dfdfgdf.cdij",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "fido",
+    "autoPushAndPullData": "false",
+    "accountBlanance": 0.00,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
+    "orderHistory": []
   }
 ]

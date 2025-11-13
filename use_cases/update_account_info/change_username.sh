@@ -1,5 +1,4 @@
 #!/bin/bash
-# Usage: change_username.sh <userId> <newUsername>
 
 accountFile="./json/accounts.json"
 userID="$1"
@@ -15,8 +14,8 @@ fi
 # Check if username already exists
 exists=$(jq --arg name "$newUsername" '[.[] | select(.username == $name)] | length' "$accountFile")
 if [ "$exists" -gt 0 ]; then
-  echo "Error: Username '$newUsername' is already taken." >&2
-  exit 2
+  echo "Username '$newUsername' is already taken."
+  exit 1
 fi
 
 # Update the username
