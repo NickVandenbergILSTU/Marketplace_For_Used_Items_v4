@@ -153,14 +153,37 @@
             const text = await runUserScript(params);  
             alert(text);
             if (text.includes("is already taken")) {
-                alert("That username is already in use. Please choose another.");
+                //alert("That username is already in use. Please choose another.");
             } else {
-                alert("Username updated successfully!");
+                //alert("Username updated successfully!");
                 document.getElementById('newUsername').value = '';
                 loadUserData();
             }
             
         }
+
+        async function changeEmail(){
+            const newEmail = document.getElementById('newEmail').value.trim();
+            if (!newEmail) {
+                alert('Please enter a new email');
+                return;
+            }
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+            const change_email = "./use_cases/update_account_info/change_email.sh";
+            const params = [HELPER_SCRIPT,change_email,userId,newEmail];
+
+            const text = await runUserScript(params);  
+            alert(text);
+            if (text.includes("Error:")) {
+                alert("That email does not meet requirements.");
+            } else {
+                alert("Email updated successfully!");
+                document.getElementById('newEmail').value = '';
+                loadUserData();
+            }
+        }
+
 
         async function changePassword() {
             const newPassword = document.getElementById('newPassword').value.trim();
@@ -220,19 +243,20 @@
             }
         }
 
-        function changeSecurityAnswer() {
+        async function changeSecurityAnswer() {
             const newAnswer = document.getElementById('newSecurityAnswer').value.trim();
             if (!newAnswer) {
                 alert('Please enter a new security answer');
                 return;
             }
-            if (confirm('Change your security answer?')) {
-                runUserScript([HELPER_SCRIPT, './use_cases/change_security_answer.py', newAnswer]);
-                setTimeout(() => {
-                    loadUserData();
-                    document.getElementById('newSecurityAnswer').value = '';
-                }, 500);
-            }
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+            const change_password = "./use_cases/update_account_info/change_security_answer.sh";
+            const params = [HELPER_SCRIPT,change_password,userId,newAnswer];
+
+            await runUserScript(params);
+            document.getElementById('newSecurityAnswer').value = '';
+            loadUserData();
         }
 
         function deleteAccount() {

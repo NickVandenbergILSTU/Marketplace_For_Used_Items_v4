@@ -6,16 +6,21 @@ newEmail="$2"
 
 # Validate args
 if [ -z "$userID" ] || [ -z "$newEmail" ]; then
-  echo "Error: Must provide <userId> and <newEmail>" >&2
+  echo "Error: Must provide <userId> and <newEmail>"
   exit 1
 fi
 
 
 # Check if email already exists
-exists=$(jq --arg email "$newEmail" '[.[] | select(.email == $email)] | length' "$accountFile")
+exists=$(jq --arg e "$newEmail" '[.[] | select(.email == $e)] | length' "$accountFile")
 if [ "$exists" -gt 0 ]; then
-  echo "Error: Email '$newEmail' is already taken." >&2
-  exit 2
+  echo "Error: Email '$newEmail' is already taken."
+  exit 1
+fi
+
+if [[ ! "$newEmail" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
+  echo "Error: Invalid email format. Please enter a valid email address."
+  exit 1
 fi
 
 # Update the email
