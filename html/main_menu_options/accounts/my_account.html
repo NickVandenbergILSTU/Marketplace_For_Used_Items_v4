@@ -52,7 +52,7 @@
 
                     <div class="action-row">
                         <input type="text" id="addFunds" placeholder="add Funds (e.g., 100.00)" style="flex: 1;">
-                        <button onclick="updateBalance()">add Funds</button>
+                        <button onclick="addFunds()">add Funds</button>
                     </div>
 
                     <div class="action-row">
@@ -208,23 +208,36 @@
             
         }
 
-        function updateBalance() {
-            const newBalance = document.getElementById('newBalance').value.trim();
-            if (!newBalance) {
-                alert('Please enter a new balance');
+        async function addFunds() {
+            const amount = document.getElementById('addFunds').value.trim();
+            if (!amount) {
+                alert("Enter an amount to add.");
                 return;
             }
-            const balanceNum = parseFloat(newBalance);
-            if (isNaN(balanceNum)) {
-                alert('Please enter a valid number');
+
+            if (isNaN(parseFloat(amount))) {
+                alert("Amount must be a valid number.");
                 return;
             }
-            if (confirm(`Update balance to $${balanceNum.toFixed(2)}?`)) {
-                runUserScript([HELPER_SCRIPT, './use_cases/update_balance.py', newBalance]);
-                setTimeout(() => {
-                    loadUserData();
-                    document.getElementById('newBalance').value = '';
-                }, 500);
+
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/update_account_info/add_funds.sh',
+                userId.toString(),
+                amount
+            ];
+
+            const responseText = await runUserScript(params);
+
+            if (responseText.includes("Funds added successfully")) {
+                alert("Funds added!");
+                document.getElementById("amountToAdd").value = "";
+                loadUserData();
+            } else {
+                alert("Failed to add funds:\n" + responseText);
             }
         }
 

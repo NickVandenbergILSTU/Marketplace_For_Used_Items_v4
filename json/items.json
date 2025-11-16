@@ -1,35 +1,5 @@
 [
   {
-    "id": 1,
-    "name": "tv",
-    "price": "$461468146.00",
-    "ratings": [
-      {
-        "accountId": 41,
-        "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
-      },
-      {
-        "userId": 41,
-        "rating": 5
-      },
-      {
-        "userId": 14,
-        "rating": 1
-      }
-    ],
-    "itemComments": [
-      {
-        "commentBody": "ab",
-        "commenterId": 42,
-        "commentId": 6
-      }
-    ]
-  },
-  {
     "id": 2,
     "name": "item2",
     "price": "$200.00",
@@ -41,8 +11,13 @@
       {
         "accountId": 42,
         "rating": 4
+      },
+      {
+        "userId": 17,
+        "rating": 4
       }
-    ]
+    ],
+    "itemComments": []
   },
   {
     "id": 3,
