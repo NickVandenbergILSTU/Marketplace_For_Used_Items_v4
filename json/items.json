@@ -23,7 +23,8 @@
         "commenterId": 42,
         "commentId": 6
       }
-    ]
+    ],
+    "reservedBy": 41
   },
   {
     "id": 2,
@@ -38,7 +39,8 @@
         "accountId": 42,
         "rating": 4
       }
-    ]
+    ],
+    "reservedBy": 41
   },
   {
     "id": 3,
@@ -54,7 +56,8 @@
         "rating": 4
       }
     ],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": 41
   },
   {
     "id": 4,
@@ -69,7 +72,8 @@
         "accountId": 42,
         "rating": 4
       }
-    ]
+    ],
+    "reservedBy": -1
   },
   {
     "id": 5,
@@ -84,7 +88,8 @@
         "accountId": 42,
         "rating": 5
       }
-    ]
+    ],
+    "reservedBy": -1
   },
   {
     "id": 6,
@@ -99,111 +104,127 @@
         "accountId": 42,
         "rating": 4
       }
-    ]
+    ],
+    "reservedBy": -1
   },
   {
     "id": 8,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 9,
     "name": "a",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 10,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 11,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 12,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 13,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 14,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 15,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 16,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 17,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": 13
   },
   {
     "id": 18,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 19,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 20,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 21,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   },
   {
     "id": 22,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
-    "itemComments": []
+    "itemComments": [],
+    "reservedBy": -1
   }
 ]
