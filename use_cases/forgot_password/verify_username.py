@@ -1,9 +1,14 @@
 import json
 import sys
+from pathlib import Path
+
 
 def verify_username(entered_username):
+    python_script = Path(__file__).resolve()
+    script_directory = python_script.parent
+    accounts_path = script_directory.parent.parent /'json'/'accounts.json'
     # first, open our accounts
-    with open('C:\\Users\\harbo\\Desktop\\Marketplace_For_Used_Items\\Marketplace_For_Used_Items_v4\\json\\accounts.json', 'r') as accounts:
+    with open(accounts_path, 'r') as accounts:
         data = json.load(accounts)
     
     for key in data:
