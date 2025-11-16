@@ -4,7 +4,7 @@
     "username": "nickvandy",
     "password": "pass word",
     "autoPushAndPullData": "false",
-    "accountBlanance": 10000.00,
+    "accountBalance": 10000.00,
     "myItems": [
       1,
       3,
@@ -19,8 +19,7 @@
     ],
     "reservedItems": [
       1,
-      2,
-      3
+      2
     ],
     "itemsInCart": [
       1,
@@ -40,12 +39,8 @@
     "username": "john-smith",
     "password": "password",
     "autoPushAndPullData": "false",
-    "accountBlanance": 10.00,
-    "myItems": [
-      1,
-      2,
-      6
-    ],
+    "accountBalanance": 10.00,
+    "myItems": [],
     "bookmarkedItems": [
       1,
       2
@@ -65,11 +60,16 @@
     "username": "thaterickid",
     "password": "dontLook5!",
     "autoPushAndPullData": "false",
-    "accountBlance": 99.99,
+    "accountBalance": 99.99,
     "myItems": [],
     "bookmarkedItems": [],
-    "reservedItems": [],
-    "itemsInCart": [],
+    "reservedItems": [
+      6
+    ],
+    "itemsInCart": [
+      3,
+      6
+    ],
     "security_q_a": {
       "1": "Jeff",
       "3": "Good question"
