@@ -55,7 +55,7 @@ if not len(reservedItems) == 0:
     print(f'The following items are on reserve by others: {reservedItems} ')
     #exit(1)
 
-# Step 2: if all items are good to go, make sure they have enough money in their account
+# Step 2: calculate the total of all items in shopping cart
 total_cost = 0.00
 for item in local_items:
     for item_in_cart in shopping_cart:
@@ -65,3 +65,43 @@ for item in local_items:
 
 print(total_cost)
 
+# Step 3: verify that the user has enough money on their account
+if selected_account.get('accountBalance') < total_cost:
+    print('You do not have enough money to cover this balance.')
+
+# Step 4: if all checks have gone through, update the account balance, item owner, remove from store
+
+#update account balance
+selected_account['accountBalance'] = selected_account['accountBalance'] - total_cost
+
+# remove items from each store
+with open(STORE_PATH, 'r') as stores_file:
+    stores = json.load(stores_file)
+
+for store in stores:
+    #print(store)
+    #print(f'Store stock before update: {store['storeItems']}')
+    for item in shopping_cart:
+        if item in store['storeItems']:
+            store['storeItems'].remove(item) # successfully updates the store
+    
+    #print(f'Store stock after update: {store['storeItems']}')
+
+for user in local_accounts:
+    print(f'{user['username']} items before update: {user['myItems']}')
+    for item in shopping_cart:
+        if item in user['myItems'] and not user['id'] == account_id:
+            user['myItems'].remove(item)
+        if user['id'] == account_id:
+            user['myItems'].append(item)
+
+    print(f'{user['username']} items after update: {user['myItems']}\n')
+
+
+#finally, update each json file to reflect the new items
+
+### Accounts ####
+
+
+
+                
