@@ -1,3 +1,4 @@
+
 #### ASSUMPTIONS
 ### 1. the user has enough money in their account
 ### 2. the user enters the correct address
@@ -6,6 +7,51 @@
 # user (preferably the object)
 # their shopping cart
 # 
+import sys
+import json
+from pathlib import Path
+
+#account_id = sys.argv[1]
+account_id = 13
+
+python_script = Path(__file__).resolve()
+script_directory = python_script.parent
+ITEM_PATH = script_directory.parent.parent /'json'/'items.json'
+ACCOUNT_PATH = script_directory.parent.parent /'json'/'accounts.json'
+STORE_PATH = script_directory.parent.parent / 'json'/'locations.json'
 
 #1. Make sure each item in the shopping cart isn't reserved by someone else
-ITEM_JSON = 
+# if it is, return error with what item is reserved
+local_accounts = None
+selected_account = None
+with open(ACCOUNT_PATH, 'r') as accounts:
+    local_accounts = json.load(accounts)
+
+for user in local_accounts:
+    if user.get("id") == account_id:
+        #account_id = user.get("id")
+        selected_account = user
+        break
+
+shopping_cart = selected_account['itemsInCart']
+print(f'Items in your shopping cart: {shopping_cart}')
+
+local_items = None
+with open(ITEM_PATH, 'r') as items:
+    local_items = json.load(items)
+    
+reservedItems = []
+
+for item in local_items:
+    for item_in_cart in shopping_cart:
+        #print(f'Item in cart: {item_in_cart}')
+        #total_cost += item_in_cart
+        if item.get("id") == item_in_cart:
+            if not item.get("reservedBy") == account_id:
+            # check if the item is reserved
+                reservedItems.append(item.get("id"))
+
+if not len(reservedItems) == 0:
+    print(f'The following items are on reserve by others: {reservedItems} ')
+    #exit(1)
+
