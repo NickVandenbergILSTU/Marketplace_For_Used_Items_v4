@@ -55,3 +55,13 @@ if not len(reservedItems) == 0:
     print(f'The following items are on reserve by others: {reservedItems} ')
     #exit(1)
 
+# Step 2: if all items are good to go, make sure they have enough money in their account
+total_cost = 0.00
+for item in local_items:
+    for item_in_cart in shopping_cart:
+        if item['id'] == item_in_cart:
+            item_cost = float(item['price'].replace("$",""))
+            total_cost += item_cost
+
+print(total_cost)
+
