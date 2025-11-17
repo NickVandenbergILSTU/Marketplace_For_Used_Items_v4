@@ -1,0 +1,218 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account</title>
+    <link rel="stylesheet" href="/html/css/items.css">
+</head>
+<body>
+    <div class="header-panel">
+        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
+        <div class="header-title">My Account</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div id="accountContainer">
+            <div class="item-box" style="max-width: 800px; margin: 20px auto;">
+                <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Account Information</h2>
+                
+                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+                    <p style="margin: 10px 0;"><strong>Username:</strong> <span id="displayUsername">Loading...</span></p>
+                    <p style="margin: 10px 0;"><strong>Password:</strong> <span id="displayPassword">Loading...</span></p>
+                    <p style="margin: 10px 0;"><strong>Account Balance:</strong> <span id="displayBalance">$0.00</span></p>
+                    <p style="margin: 10px 0;"><strong>Security Question:</strong> <span id="displaySecurityQuestion">Loading...</span></p>
+                    <p style="margin: 10px 0;"><strong>Security Answer:</strong> <span id="displaySecurityAnswer">Loading...</span></p>
+                </div>
+
+                <div class="action-group" style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #555;">Account Actions</h3>
+
+                    <div class="action-row">
+                        <input type="text" id="newUsername" placeholder="New Username" style="flex: 1;">
+                        <button onclick="changeUsername()">Change Username</button>
+                    </div>
+
+                    <div class="action-row">
+                        <input type="text" id="newPassword" placeholder="New Password" style="flex: 1;">
+                        <button onclick="changePassword()">Change Password</button>
+                    </div>
+
+                    <div class="action-row">
+                        <input type="text" id="newBalance" placeholder="New Balance (e.g., 100.00)" style="flex: 1;">
+                        <button onclick="updateBalance()">Update Balance</button>
+                    </div>
+
+                    <div class="action-row">
+                        <input type="text" id="newSecurityQuestion" placeholder="New Security Question" style="flex: 1;">
+                        <button onclick="changeSecurityQuestion()">Change Security Question</button>
+                    </div>
+
+                    <div class="action-row">
+                        <input type="text" id="newSecurityAnswer" placeholder="New Security Answer" style="flex: 1;">
+                        <button onclick="changeSecurityAnswer()">Change Security Answer</button>
+                    </div>
+
+                    <button onclick="deleteAccount()" style="background-color: #dc3545; width: 100%; margin-top: 20px;">
+                        🗑️ Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
+        let currentUserId = null;
+        let currentUser = null;
+
+        async function loadUserData() {
+            try {
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                if (!localDataResponse.ok) {
+                    throw new Error(`HTTP error! status: ${localDataResponse.status}`);
+                }
+                const localData = await localDataResponse.json();
+                currentUserId = localData.currentlyLoggedInUserID;
+
+                const accountsResponse = await fetch('/json/accounts.json');
+                if (!accountsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${accountsResponse.status}`);
+                }
+                const accounts = await accountsResponse.json();
+
+                currentUser = accounts.find(account => account.id === currentUserId);
+                
+                if (currentUser) {
+                    // Update header
+                    document.getElementById('username').textContent = currentUser.username || 'Guest User';
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    document.getElementById('balance').textContent = `$${balanceNum.toFixed(2)}`;
+
+                    // Update display fields
+                    document.getElementById('displayUsername').textContent = currentUser.username || 'N/A';
+                    document.getElementById('displayPassword').textContent = currentUser.password || 'N/A';
+                    document.getElementById('displayBalance').textContent = `$${balanceNum.toFixed(2)}`;
+                    document.getElementById('displaySecurityQuestion').textContent = currentUser.securityQuestion || 'N/A';
+                    document.getElementById('displaySecurityAnswer').textContent = currentUser.securityAnswer || 'N/A';
+                } else {
+                    document.getElementById('username').textContent = 'Guest User';
+                    document.getElementById('balance').textContent = '$0.00';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
+            }
+        }
+
+        async function runUserScript(params) {
+            await fetch("/run-script", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ params })
+            });
+        }
+
+        function changeUsername() {
+            const newUsername = document.getElementById('newUsername').value.trim();
+            if (!newUsername) {
+                alert('Please enter a new username');
+                return;
+            }
+            if (confirm(`Change username to "${newUsername}"?`)) {
+                runUserScript([HELPER_SCRIPT, './use_cases/change_username.py', newUsername]);
+                setTimeout(() => {
+                    loadUserData();
+                    document.getElementById('newUsername').value = '';
+                }, 500);
+            }
+        }
+
+        function changePassword() {
+            const newPassword = document.getElementById('newPassword').value.trim();
+            if (!newPassword) {
+                alert('Please enter a new password');
+                return;
+            }
+            if (confirm('Change your password?')) {
+                runUserScript([HELPER_SCRIPT, './use_cases/change_password.py', newPassword]);
+                setTimeout(() => {
+                    loadUserData();
+                    document.getElementById('newPassword').value = '';
+                }, 500);
+            }
+        }
+
+        function updateBalance() {
+            const newBalance = document.getElementById('newBalance').value.trim();
+            if (!newBalance) {
+                alert('Please enter a new balance');
+                return;
+            }
+            const balanceNum = parseFloat(newBalance);
+            if (isNaN(balanceNum)) {
+                alert('Please enter a valid number');
+                return;
+            }
+            if (confirm(`Update balance to $${balanceNum.toFixed(2)}?`)) {
+                runUserScript([HELPER_SCRIPT, './use_cases/update_balance.py', newBalance]);
+                setTimeout(() => {
+                    loadUserData();
+                    document.getElementById('newBalance').value = '';
+                }, 500);
+            }
+        }
+
+        function changeSecurityQuestion() {
+            const newQuestion = document.getElementById('newSecurityQuestion').value.trim();
+            if (!newQuestion) {
+                alert('Please enter a new security question');
+                return;
+            }
+            if (confirm('Change your security question?')) {
+                runUserScript([HELPER_SCRIPT, './use_cases/change_security_question.py', newQuestion]);
+                setTimeout(() => {
+                    loadUserData();
+                    document.getElementById('newSecurityQuestion').value = '';
+                }, 500);
+            }
+        }
+
+        function changeSecurityAnswer() {
+            const newAnswer = document.getElementById('newSecurityAnswer').value.trim();
+            if (!newAnswer) {
+                alert('Please enter a new security answer');
+                return;
+            }
+            if (confirm('Change your security answer?')) {
+                runUserScript([HELPER_SCRIPT, './use_cases/change_security_answer.py', newAnswer]);
+                setTimeout(() => {
+                    loadUserData();
+                    document.getElementById('newSecurityAnswer').value = '';
+                }, 500);
+            }
+        }
+
+        function deleteAccount() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone!')) {
+                if (confirm('Are you REALLY sure? All your data will be permanently deleted!')) {
+                    runUserScript([HELPER_SCRIPT, './use_cases/delete_account.py', currentUserId]);
+                    setTimeout(() => {
+                        window.location.href = '/html/login.html';
+                    }, 1000);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+        });
+    </script>
+</body>
+</html>

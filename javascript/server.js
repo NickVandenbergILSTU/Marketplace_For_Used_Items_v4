@@ -1,6 +1,6 @@
 const express = require('express');
 const fs = require('fs');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 const path = require('path');
 const app = express();
 
@@ -37,6 +37,8 @@ app.get('/', (req, res) => {
 });
 
 app.post('/run-script', (req, res) => {
+    console.log('Received run-script POST:', req.body);
+    
     let { params } = req.body;
     if (!Array.isArray(params)) params = [];
 
@@ -46,18 +48,28 @@ app.post('/run-script', (req, res) => {
 
     const absoluteScriptPath = path.resolve(path.join(__dirname, '../', scriptPath));
 
-    // Only replace " and $ with their literal forms, leave everything else untouched
-    const safeParams = params
-        .map(p => 
-            p.replace(/"/g, '\\"')  // escape double quotes
-             .replace(/\$/g, '\\$') // escape dollar signs
-        )
-        .map(p => `'${p}'`) // wrap each param safely in single quotes
-        .join(' ');
+    // Prepare argument array
+    const args = params;
 
-    exec(`bash "${absoluteScriptPath}" ${safeParams}`, (error, stdout, stderr) => {
-        if (error) return res.status(500).send(`Error: ${error.message}`);
-        if (stderr) console.error(stderr);
+    // Use spawn to avoid shell quoting issues
+    const child = spawn('bash', [absoluteScriptPath, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+
+    let stdout = '';
+    let stderr = '';
+
+    child.stdout.on('data', (data) => {
+        stdout += data;
+    });
+
+    child.stderr.on('data', (data) => {
+        stderr += data;
+    });
+
+    child.on('close', (code) => {
+        if (code !== 0) {
+            console.error(stderr);
+            return res.status(500).send(`Error: ${stderr || 'Script exited with code ' + code}`);
+        }
         res.send(`Script output:\n${stdout}`);
     });
 });
@@ -159,6 +171,61 @@ app.get('/api/cart-items', (req, res) => {
     }
 });
 
+// API route to get reserved items for the logged-in user
+app.get('/api/reserved-items', (req, res) => {
+    try {
+        // Read local_data.json to get currentlyLoggedInUserID
+        const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
+        const currentUserId = localData.currentlyLoggedInUserID;
+
+        if (currentUserId === -1) {
+            return res.status(401).json({ error: 'No user logged in' });
+        }
+
+        // Read accounts.json to find the user account
+        const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
+        const accounts = JSON.parse(accountsData);
+        const userAccount = accounts.find(acc => acc.id === currentUserId);
+
+        if (!userAccount) {
+            return res.status(404).json({ error: 'User account not found' });
+        }
+
+        // Get the reservedItems array from the user account
+        const reservedItemIds = userAccount.reservedItems || [];
+        const bookmarkedItems = userAccount.bookmarkedItems || [];
+        const cartItemIds = userAccount.itemsInCart || [];
+
+        // Read items.json
+        const itemsData = fs.readFileSync(ITEMS_PATH, 'utf8');
+        const allItems = JSON.parse(itemsData);
+
+        // Filter items whose id matches values in reservedItems array
+        const reservedItems = allItems.filter(item => reservedItemIds.includes(item.id));
+
+        // Build map of all reserved items across all accounts
+        const allReservedItems = {};
+        accounts.forEach(account => {
+            if (Array.isArray(account.reservedItems)) {
+                account.reservedItems.forEach(itemId => {
+                    allReservedItems[itemId] = account.id;
+                });
+            }
+        });
+
+        res.json({
+            items: reservedItems,
+            bookmarkedItems: bookmarkedItems,
+            reservedItems: reservedItemIds,
+            itemsInCart: cartItemIds,
+            allReservedItems: allReservedItems
+        });
+    } catch (err) {
+        console.error('Error loading reserved items:', err);
+        res.status(500).json({ error: 'Failed to load reserved items' });
+    }
+});
+
 // API route to get store items based on currentStore in local_data.json
 app.get('/api/store-items', (req, res) => {
     try {
@@ -202,6 +269,151 @@ app.get('/api/store-items', (req, res) => {
     } catch (err) {
         console.error('Error loading store items:', err);
         res.status(500).json({ error: 'Failed to load store items' });
+    }
+});
+
+// API route to get bookmarked items for the logged-in user
+app.get('/api/bookmarked-items', (req, res) => {
+    try {
+        // Read local_data.json to get currentlyLoggedInUserID
+        const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
+        const currentUserId = localData.currentlyLoggedInUserID;
+
+        if (currentUserId === -1) {
+            return res.status(401).json({ error: 'No user logged in' });
+        }
+
+        // Read accounts.json to find the user account
+        const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
+        const accounts = JSON.parse(accountsData);
+        const userAccount = accounts.find(acc => acc.id === currentUserId);
+
+        if (!userAccount) {
+            return res.status(404).json({ error: 'User account not found' });
+        }
+
+        // Get the bookmarkedItems array from the user account
+        const bookmarkedItemIds = userAccount.bookmarkedItems || [];
+        const userItemIds = userAccount.myItems || [];
+        const reservedItems = userAccount.reservedItems || [];
+        const cartItemIds = userAccount.itemsInCart || [];
+
+        // Read items.json
+        const itemsData = fs.readFileSync(ITEMS_PATH, 'utf8');
+        const allItems = JSON.parse(itemsData);
+
+        // Read locations.json
+        const locationsData = fs.readFileSync(LOCATIONS_PATH, 'utf8');
+        const locations = JSON.parse(locationsData);
+
+        // Filter items whose id matches values in bookmarkedItems array
+        const bookmarkedItems = allItems.filter(item => bookmarkedItemIds.includes(item.id));
+
+        // For each bookmarked item, determine ownership
+        // Priority: Store > Current User > Other User
+        const itemsWithOwnership = bookmarkedItems.map(item => {
+            let ownership = { type: 'none', name: null, id: null };
+
+            // First check if item belongs to a store (highest priority)
+            const ownerStore = locations.find(loc => 
+                loc.storeItems && loc.storeItems.includes(item.id)
+            );
+            
+            if (ownerStore) {
+                ownership = { type: 'store', name: ownerStore.name, id: ownerStore.id };
+            } else if (userItemIds.includes(item.id)) {
+                // Check if item belongs to current user
+                ownership = { type: 'user', name: userAccount.username, id: currentUserId };
+            } else {
+                // Check if item belongs to another user
+                const ownerAccount = accounts.find(acc => 
+                    acc.myItems && acc.myItems.includes(item.id)
+                );
+                
+                if (ownerAccount) {
+                    ownership = { type: 'other_user', name: ownerAccount.username, id: ownerAccount.id };
+                }
+            }
+
+            return {
+                ...item,
+                ownership
+            };
+        });
+
+        // Filter out items that belong to other users
+        const filteredItems = itemsWithOwnership.filter(item => 
+            item.ownership.type !== 'other_user'
+        );
+
+        // Build map of all reserved items across all accounts
+        const allReservedItems = {};
+        accounts.forEach(account => {
+            if (Array.isArray(account.reservedItems)) {
+                account.reservedItems.forEach(itemId => {
+                    allReservedItems[itemId] = account.id;
+                });
+            }
+        });
+
+        res.json({
+            items: filteredItems,
+            bookmarkedItems: bookmarkedItemIds,
+            reservedItems: reservedItems,
+            itemsInCart: cartItemIds,
+            allReservedItems: allReservedItems,
+            userItemIds: userItemIds
+        });
+    } catch (err) {
+        console.error('Error loading bookmarked items:', err);
+        res.status(500).json({ error: 'Failed to load bookmarked items' });
+    }
+});
+
+// API route to get order history for the logged-in user
+app.get('/api/order-history', (req, res) => {
+    try {
+        // Read local_data.json to get currentlyLoggedInUserID
+        const localData = JSON.parse(fs.readFileSync(LOCAL_DATA_PATH, 'utf8'));
+        const currentUserId = localData.currentlyLoggedInUserID;
+
+        if (currentUserId === -1) {
+            return res.status(401).json({ error: 'No user logged in' });
+        }
+
+        // Read accounts.json to find the user account
+        const accountsData = fs.readFileSync(ACCOUNTS_PATH, 'utf8');
+        const accounts = JSON.parse(accountsData);
+        const userAccount = accounts.find(acc => acc.id === currentUserId);
+
+        if (!userAccount) {
+            return res.status(404).json({ error: 'User account not found' });
+        }
+
+        // Get the orderHistory array from the user account
+        const orderHistory = userAccount.orderHistory || [];
+
+        res.json({
+            orders: orderHistory
+        });
+    } catch (err) {
+        console.error('Error loading order history:', err);
+        res.status(500).json({ error: 'Failed to load order history' });
+    }
+});
+
+// API route to get all locations
+app.get('/api/all-locations', (req, res) => {
+    try {
+        const locationsData = fs.readFileSync(LOCATIONS_PATH, 'utf8');
+        const locations = JSON.parse(locationsData);
+
+        res.json({
+            locations: locations
+        });
+    } catch (err) {
+        console.error('Error loading locations:', err);
+        res.status(500).json({ error: 'Failed to load locations' });
     }
 });
 

@@ -1,10 +1,10 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Items</title>
-    <link rel="stylesheet" href="/html/main_menu_options/items/items.css">
+    <link rel="stylesheet" href="/html/css/items.css">
 </head>
 <body>
     <div class="header-panel">
@@ -20,7 +20,7 @@
         <div class="sort-controls">
             <label for="search">Search:</label>
             <input type="text" id="search" class="search-input" placeholder="Search items..." oninput="filterItems()">
-            
+
             <label for="sort">Sort by:</label>
             <select id="sort" onchange="loadItems(this.value)">
                 <option value="default">Default Order</option>
@@ -67,6 +67,7 @@
     </style>
 
     <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
         let userBookmarkedItems = [];
         let currentUserId = null;
         let allItems = [];
@@ -87,10 +88,10 @@
                 const accounts = await accountsResponse.json();
 
                 const currentUser = accounts.find(account => account.id === currentUserId);
-                
+
                 const usernameElement = document.getElementById('username');
                 const balanceElement = document.getElementById('balance');
-                
+
                 if (currentUser && currentUser.username) {
                     usernameElement.textContent = currentUser.username;
                     const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
@@ -139,7 +140,7 @@
 
         function filterItems() {
             const searchTerm = document.getElementById('search').value.toLowerCase();
-            const filteredItems = allItems.filter(item => 
+            const filteredItems = allItems.filter(item =>
                 item.name.toLowerCase().includes(searchTerm)
             );
             renderItems(filteredItems);
@@ -153,21 +154,279 @@
             });
         }
 
-        function renameItem(itemId, newName) {
-            // TODO: Implement rename item functionality
-            console.log(`Rename item ${itemId} to: ${newName}`);
-        }
+        async function rateItem(itemId, rating) {
+            if (!rating) {
+                alert('Please select a rating');
+                return;
+            }
 
-        function deleteItem(itemId) {
-            if (confirm('Are you sure you want to delete this item?')) {
-                // TODO: Implement delete item functionality
-                console.log(`Delete item ${itemId}`);
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/rate_item/rate_item.sh',
+                itemId.toString(),
+                rating.toString()
+            ];
+
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error rating item:', error);
+                alert('Error rating item');
+
+                // Reload page
+                window.location.reload();
             }
         }
 
-        function createNewItem() {
-            // TODO: Implement create new item functionality
-            console.log('Create new item');
+        async function setItemPrice(itemId, newPrice) {
+            if (!newPrice || newPrice.trim() === '') {
+                alert('Please enter a new price');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/set_item_price/set_item_price.sh',
+                itemId.toString(),
+                newPrice.trim()
+            ];
+
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error setting price:', error);
+                alert('Error setting price');
+
+                // Reload page
+                window.location.reload();
+            }
+        }
+
+        async function bookmarkItem(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/bookmark_and_unbookmark_item/bookmark_item.sh',
+                itemId.toString()
+            ];
+
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error bookmarking item:', error);
+                alert('Error bookmarking item');
+
+                // Reload page
+                window.location.reload();
+            }
+        }
+
+        async function deleteItemFunction(itemId) {
+            if (!confirm('Are you sure you want to delete this item?')) {
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/delete_item/delete_item.sh',
+                itemId.toString()
+            ];
+
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error deleting item:', error);
+                alert('Error deleting item');
+
+                // Reload page
+                window.location.reload();
+            }
+        }
+
+        async function renameItem(itemId, newName) {
+            if (!newName || newName.trim() === '') {
+                alert('Please enter a new name');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/rename_item/rename_item.sh',
+                itemId.toString(),
+                newName.trim()
+            ];
+
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error renaming item:', error);
+                alert('Error renaming item');
+
+                // Reload page
+                window.location.reload();
+            }
+        }
+
+        async function createNewItem() {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/create_item/main.py'
+            ];
+
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload items after creation
+                await loadItems();
+            } catch (error) {
+                console.error('Error running script:', error);
+                alert('Error creating item');
+            }
+        }
+
+        async function addOrReplaceImage(itemId) {
+            const message = "Please drop the desired image (PNG) in the folder _ITEM_IMAGE_DROPBOX, then click OK.";
+
+            if (confirm(message)) {
+                const params = [
+                    HELPER_SCRIPT,
+                    './use_cases/add_item_image/add_item_image.sh',
+                    itemId.toString()
+                ];
+
+                try {
+                    const response = await fetch("/run-script", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ params })
+                    });
+                    const text = await response.text();
+                    alert(text);
+
+                    // Reload items to show new image
+                    await loadItems();
+
+                    // reload page
+                    window.location.reload();
+
+                } catch (error) {
+                    console.error('Error adding/replacing image:', error);
+                    alert('Error adding/replacing image');
+
+                    // reload page
+                    window.location.reload();
+                }
+            }
+        }
+
+        async function removeImage(itemId) {
+            if (confirm("Click OK to confirm you want this image deleted")) {
+                const params = [
+                    HELPER_SCRIPT,
+                    './use_cases/remove_item_image/remove_item_image.sh',
+                    itemId.toString()
+                ];
+
+                try {
+                    const response = await fetch("/run-script", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ params })
+                    });
+                    const text = await response.text();
+                    alert(text);
+
+                    // Reload items to reflect removed image
+                    await loadItems();
+
+                    // reload page
+                    window.location.reload();
+                } catch (error) {
+                    console.error('Error removing image:', error);
+                    alert('Error removing image');
+
+                    // reload page
+                    window.location.reload();
+                }
+
+                
+            }
+        }
+
+        async function openComments(itemId) {
+            try {
+                // Update selectedItemCommentID in local_data.json
+                const params = [
+                    HELPER_SCRIPT,
+                    './use_cases/select_item_comment/select_item_comment.sh',
+                    itemId.toString()
+                ];
+
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+
+                if (response.ok) {
+                    // Navigate to comments page
+                    window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
+                } else {
+                    console.error('Error setting selected item');
+                }
+            } catch (error) {
+                console.error('Error opening comments:', error);
+            }
         }
 
         function renderItems(items) {
@@ -187,11 +446,11 @@
 
                 const nameContainer = document.createElement("div");
                 nameContainer.className = "item-name-container";
-                
+
                 const name = document.createElement("h3");
                 name.textContent = item.name;
                 nameContainer.appendChild(name);
-                
+
                 if (isBookmarked) {
                     const bookmarkEmoji = document.createElement("span");
                     bookmarkEmoji.className = "bookmark-emoji";
@@ -216,13 +475,13 @@
 
                 img.onload = () => {
                     imgButtons.innerHTML = `
-                        <button>Replace Image</button>
-                        <button>Delete Image</button>
+                        <button onclick="addOrReplaceImage(${item.id})">Replace Image</button>
+                        <button onclick="removeImage(${item.id})">Delete Image</button>
                     `;
                 };
                 img.onerror = () => {
                     img.style.display = "none";
-                    imgButtons.innerHTML = `<button>Add Image</button>`;
+                    imgButtons.innerHTML = `<button onclick="addOrReplaceImage(${item.id})">Add Image</button>`;
                 };
 
                 const actions = document.createElement("div");
@@ -251,7 +510,7 @@
                 }
                 const rateBtn = document.createElement("button");
                 rateBtn.textContent = "Rate";
-                rateBtn.onclick = () => runUserScript(rateSelect.value);
+                rateBtn.onclick = () => rateItem(item.id, rateSelect.value);
                 rateDiv.appendChild(rateSelect);
                 rateDiv.appendChild(rateBtn);
 
@@ -262,18 +521,18 @@
                 priceInput.placeholder = "New Price";
                 const priceBtn = document.createElement("button");
                 priceBtn.textContent = "Set Price";
-                priceBtn.onclick = () => runUserScript(priceInput.value);
+                priceBtn.onclick = () => setItemPrice(item.id, priceInput.value);
                 priceDiv.appendChild(priceInput);
                 priceDiv.appendChild(priceBtn);
 
                 const bookmarkBtn = document.createElement("button");
                 bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
-                bookmarkBtn.onclick = () => runUserScript("bookmark");
+                bookmarkBtn.onclick = () => bookmarkItem(item.id);
 
                 const deleteBtn = document.createElement("button");
                 deleteBtn.textContent = "🗑️ Delete Item";
                 deleteBtn.style.backgroundColor = "#dc3545";
-                deleteBtn.onclick = () => deleteItem(item.id);
+                deleteBtn.onclick = () => deleteItemFunction(item.id);
 
                 const sellUserDiv = document.createElement("div");
                 sellUserDiv.className = "action-row";
@@ -319,6 +578,7 @@
 
                 const commentsBtn = document.createElement("button");
                 commentsBtn.textContent = "💬 Comments";
+                commentsBtn.onclick = () => openComments(item.id);
 
                 actions.appendChild(renameDiv);
                 actions.appendChild(rateDiv);
