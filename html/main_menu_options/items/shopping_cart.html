@@ -287,9 +287,44 @@
             });
         }
 
-        function checkoutCart() {
-            runUserScript("checkout");
+        async function checkoutCart() {
+    
+            const checkoutBtn = document.querySelector('.checkout-btn');
+            
+
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        params: ["use_cases/track_bal/track_bal.sh"] 
+                    })
+                });
+
+                if (response.ok) {
+                    const resultText = await response.text();
+
+                    alert(resultText);
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    const errorText = await response.text();
+        
+                    alert("Checkout Failed\n\n" + errorText);
+                    
+
+                    checkoutBtn.textContent = originalText;
+                   
+                }
+            } catch (error) {
+                
+            }
+
+
         }
+
 
         document.addEventListener('DOMContentLoaded', async () => {
             await loadUserData();
