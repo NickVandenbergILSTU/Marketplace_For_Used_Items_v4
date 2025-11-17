@@ -33,29 +33,5 @@
         "price": "$300.00"
       }
     ]
-  },
-  {
-    "id": 42,
-    "username": "john-smith",
-    "password": "password",
-    "autoPushAndPullData": "false",
-    "accountBlanance": 10.00,
-    "myItems": [
-      1,
-      2,
-      6
-    ],
-    "bookmarkedItems": [
-      1,
-      2
-    ],
-    "reservedItems": [
-      3
-    ],
-    "itemsInCart": [
-      1,
-      2,
-      3
-    ]
   }
 ]
