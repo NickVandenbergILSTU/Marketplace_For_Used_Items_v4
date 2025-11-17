@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# if local_data.json does not exist
+# if jwon/local orlocal_data.json does not exist
 # mkdir and copy default local_data.json
 # 
 
