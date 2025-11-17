@@ -284,7 +284,7 @@
         let userData = null;
 
         // Reusable function to run user scripts
-        async function runUserScript(params) {
+        async function runUserScript(...params) {
             await fetch("/run-script", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
