@@ -148,13 +148,13 @@
   },
   {
     "id": 17,
-    "username": "josh",
-    "password": "Password60",
-    "email": "test@gmail.com",
-    "securityQuestion": "What is the name of your first pet?",
-    "securityAnswer": "bash",
+    "username": "Joshua",
+    "password": "Password1",
+    "email": "email@dfdf.cdij",
+    "securityQuestion": "What university did you study at?",
+    "securityAnswer": "no",
     "autoPushAndPullData": "false",
-    "accountBalance": 0.00,
+    "accountBalance": 4,
     "myItems": [
       2,
       3

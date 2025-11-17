@@ -174,10 +174,7 @@
 
             const text = await runUserScript(params);  
             alert(text);
-            if (text.includes("Error:")) {
-                alert("That email does not meet requirements.");
-            } else {
-                alert("Email updated successfully!");
+            if (text.includes("successfully")) {
                 document.getElementById('newEmail').value = '';
                 loadUserData();
             }
@@ -197,10 +194,7 @@
 
             const text = await runUserScript(params);  
             alert(text);
-            if (text.includes("not meet requirements")) {
-                alert("That password does not meet requirements.");
-            } else {
-                alert("Password updated successfully!");
+            if (text.includes("successfully!")) {
                 document.getElementById('newPassword').value = '';
                 loadUserData();
             }
