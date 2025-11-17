@@ -6,7 +6,7 @@
     "securityQuestion": "What is your favorite color?",
     "securityAnswer": "blue",
     "autoPushAndPullData": "false",
-    "accountBlanance": 10000.00,
+    "accountBalance": 10000.00,
     "incomingSaleRequests": [
       {
         "sourceUserId": 42,
@@ -53,7 +53,7 @@
     "username": "john-smith",
     "password": "password",
     "autoPushAndPullData": "false",
-    "accountBlanance": 10.00,
+    "accountBalance": 10.00,
     "myItems": [
       2,
       6
@@ -77,7 +77,7 @@
     "username": "thaterickid",
     "password": "dontLook5!",
     "autoPushAndPullData": "false",
-    "accountBlance": 99.99,
+    "accountBalance": 99.99,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
@@ -97,7 +97,7 @@
     "securityQuestion": "What university did you study at?",
     "securityAnswer": "Kim",
     "autoPushAndPullData": "false",
-    "accountBlanance": 0.00,
+    "accountBalance": 60,
     "myItems": [],
     "bookmarkedItems": [
       2
@@ -110,8 +110,7 @@
     ],
     "orderHistory": [],
     "incomingSaleRequests": [],
-    "outgoingSaleRequests": [],
-    "accountBalance": 30
+    "outgoingSaleRequests": []
   },
   {
     "id": 15,
@@ -121,7 +120,7 @@
     "securityQuestion": "What is the name of your first pet?",
     "securityAnswer": "a",
     "autoPushAndPullData": "false",
-    "accountBlanance": 0.00,
+    "accountBalance": 0.00,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
@@ -138,7 +137,7 @@
     "securityQuestion": "What is the name of your first pet?",
     "securityAnswer": "fido",
     "autoPushAndPullData": "false",
-    "accountBlanance": 0.00,
+    "accountBalance": 0.00,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
@@ -155,7 +154,7 @@
     "securityQuestion": "What is the name of your first pet?",
     "securityAnswer": "bash",
     "autoPushAndPullData": "false",
-    "accountBlanance": 0.00,
+    "accountBalance": 0.00,
     "myItems": [
       2,
       3
@@ -165,7 +164,6 @@
     "itemsInCart": [],
     "orderHistory": [],
     "incomingSaleRequests": [],
-    "outgoingSaleRequests": [],
-    "accountBalance": 14
+    "outgoingSaleRequests": []
   }
 ]

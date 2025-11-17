@@ -1,8 +1,8 @@
 #!/bin/bash
 
 accountFile="./json/accounts.json"
-userID="14"
-amount="30.00"
+userID="$1"
+amount="$2"
 
 # Validate args
 if [ -z "$userID" ] || [ -z "$amount" ]; then

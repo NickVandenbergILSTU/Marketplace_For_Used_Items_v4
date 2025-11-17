@@ -57,8 +57,7 @@
 
                     <div class="action-row">
                         <div class="security_questions">
-                            <select name="SQ_dropdown" id="SQ_dropdown"
-                                placeholder="Please select a security question.">
+                            <select name="SQ_dropdown" id="SQ_dropdown">
                                 <option value="0" disabled selected>Please select a security question.</option>
                                 <option value="1">What is the name of your first pet?</option>
                                 <option value="2">What university did you study at?</option>
@@ -241,18 +240,34 @@
             }
         }
 
-        function changeSecurityQuestion() {
-            const newQuestion = document.getElementById('newSecurityQuestion').value.trim();
-            if (!newQuestion) {
-                alert('Please enter a new security question');
+        async function changeSecurityQuestion() {
+            const dropdown = document.getElementById('SQ_dropdown');  // FIXED ID
+            const selectedValue = dropdown.value;
+
+            if (selectedValue === "0") {
+                alert("Please select a security question.");
                 return;
             }
-            if (confirm('Change your security question?')) {
-                runUserScript([HELPER_SCRIPT, './use_cases/change_security_question.py', newQuestion]);
-                setTimeout(() => {
-                    loadUserData();
-                    document.getElementById('newSecurityQuestion').value = '';
-                }, 500);
+
+            // Get logged-in user ID
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/update_account_info/change_security_question.sh',
+                userId.toString(),
+                selectedValue.toString()
+            ];
+
+            const result = await runUserScript(params);
+
+            if (result.includes("Invalid")) {
+                alert("Invalid selection. Try again.");
+            } else {
+                alert("Security question updated!");
+                dropdown.value = "0";
+                loadUserData();
             }
         }
 
