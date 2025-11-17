@@ -42,4 +42,4 @@ jq "
   )
 " "$ITEMS_PATH" > "$ITEMS_PATH.tmp" && mv "$ITEMS_PATH.tmp" "$ITEMS_PATH"
 
-echo "Account deletion complete!"
+echo "Account deletion complete"
