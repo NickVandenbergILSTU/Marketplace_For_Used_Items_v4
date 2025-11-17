@@ -15,6 +15,10 @@
       {
         "userId": 41,
         "rating": 5
+      },
+      {
+        "userId": 42,
+        "rating": 3
       }
     ],
     "itemComments": [
