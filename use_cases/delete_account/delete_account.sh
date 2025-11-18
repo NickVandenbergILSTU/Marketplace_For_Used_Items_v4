@@ -43,3 +43,6 @@ jq "
 " "$ITEMS_PATH" > "$ITEMS_PATH.tmp" && mv "$ITEMS_PATH.tmp" "$ITEMS_PATH"
 
 echo "Account deletion complete"
+
+# Log out the user:
+./use_cases/log_out_user/log_out_user.sh
