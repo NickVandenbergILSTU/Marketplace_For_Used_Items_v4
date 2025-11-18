@@ -1,12 +1,12 @@
 [
   {
     "id": 41,
-    "username": "nickvandy",
-    "password": "pass word",
-    "securityQuestion": "What is your favorite color?",
-    "securityAnswer": "blue",
+    "username": "nick v",
+    "password": "PassWORD1",
+    "securityQuestion": "What was the name of your elementary school?",
+    "securityAnswer": "stuff",
     "autoPushAndPullData": "false",
-    "accountBalance": 10000.00,
+    "accountBalance": 10002,
     "incomingSaleRequests": [
       {
         "sourceUserId": 42,
@@ -46,7 +46,8 @@
         "price": "$300.00"
       }
     ],
-    "security_q_a": {}
+    "security_q_a": {},
+    "email": "nickvandy@gmail.com"
   },
   {
     "id": 42,

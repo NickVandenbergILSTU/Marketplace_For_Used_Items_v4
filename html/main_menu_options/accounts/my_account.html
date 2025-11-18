@@ -51,8 +51,8 @@
                     
 
                     <div class="action-row">
-                        <input type="text" id="addFunds" placeholder="add Funds (e.g., 100.00)" style="flex: 1;">
-                        <button onclick="addFunds()">add Funds</button>
+                        <input type="text" id="addFunds" placeholder="Add Funds (e.g., 100.00)" style="flex: 1;">
+                        <button onclick="addFunds()">Add Funds</button>
                     </div>
 
                     <div class="action-row">
@@ -156,7 +156,7 @@
             } else {
                 //alert("Username updated successfully!");
                 document.getElementById('newUsername').value = '';
-                loadUserData();
+                window.location.reload();
             }
             
         }
@@ -176,7 +176,7 @@
             alert(text);
             if (text.includes("successfully")) {
                 document.getElementById('newEmail').value = '';
-                loadUserData();
+                window.location.reload();
             }
         }
 
@@ -196,7 +196,7 @@
             alert(text);
             if (text.includes("successfully!")) {
                 document.getElementById('newPassword').value = '';
-                loadUserData();
+                window.location.reload();
             }
             
         }
@@ -227,8 +227,8 @@
 
             if (responseText.includes("Funds added successfully")) {
                 alert("Funds added!");
-                document.getElementById("amountToAdd").value = "";
-                loadUserData();
+                document.getElementById("addFunds").value = "";
+                window.location.reload();
             } else {
                 alert("Failed to add funds:\n" + responseText);
             }
@@ -261,7 +261,7 @@
             } else {
                 alert("Security question updated!");
                 dropdown.value = "0";
-                loadUserData();
+                window.location.reload();
             }
         }
 
@@ -277,14 +277,15 @@
             const params = [HELPER_SCRIPT,change_password,userId,newAnswer];
 
             await runUserScript(params);
+            alert("Security answer updated successfully!");
             document.getElementById('newSecurityAnswer').value = '';
-            loadUserData();
+            window.location.reload();
         }
 
         function deleteAccount() {
             if (confirm('Are you sure you want to delete your account? This action cannot be undone!')) {
                 if (confirm('Are you REALLY sure? All your data will be permanently deleted!')) {
-                    runUserScript([HELPER_SCRIPT, './use_cases/delete_account.py', currentUserId]);
+                    runUserScript([HELPER_SCRIPT, './use_cases/delete_account.sh', currentUserId]);
                     setTimeout(() => {
                         window.location.href = '/html/login.html';
                     }, 1000);
