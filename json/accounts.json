@@ -1,12 +1,12 @@
 [
   {
     "id": 41,
-    "username": "nickvandy",
-    "password": "pass word",
-    "securityQuestion": "What is your favorite color?",
-    "securityAnswer": "blue",
+    "username": "nick v",
+    "password": "PassWORD1",
+    "securityQuestion": "What was the name of your elementary school?",
+    "securityAnswer": "stuff",
     "autoPushAndPullData": "false",
-    "accountBlanance": 10000.00,
+    "accountBalance": 10002,
     "incomingSaleRequests": [
       {
         "sourceUserId": 42,
@@ -15,16 +15,11 @@
     ],
     "outgoingSaleRequests": [
       {
-        "targetUserId": 42,
-        "itemId": 1
-      },
-      {
         "targetUserId": 41,
         "itemId": 3
       }
     ],
     "myItems": [
-      1,
       3,
       8,
       9,
@@ -38,12 +33,10 @@
       3
     ],
     "reservedItems": [
-      1,
       2,
       3
     ],
     "itemsInCart": [
-      1,
       2
     ],
     "orderHistory": [
@@ -53,28 +46,26 @@
         "price": "$300.00"
       }
     ],
-    "security_q_a": {}
+    "security_q_a": {},
+    "email": "nickvandy@gmail.com"
   },
   {
     "id": 42,
     "username": "john-smith",
     "password": "password",
     "autoPushAndPullData": "false",
-    "accountBlanance": 10.00,
+    "accountBalance": 10.00,
     "myItems": [
-      1,
       2,
       6
     ],
     "bookmarkedItems": [
-      1,
       2
     ],
     "reservedItems": [
       3
     ],
     "itemsInCart": [
-      1,
       2,
       3
     ],
@@ -87,7 +78,7 @@
     "username": "thaterickid",
     "password": "dontLook5!",
     "autoPushAndPullData": "false",
-    "accountBlance": 99.99,
+    "accountBalance": 99.99,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
@@ -101,17 +92,23 @@
   },
   {
     "id": 14,
-    "username": "Joshua11",
-    "password": "Password1",
-    "email": "student@school.org",
-    "securityQuestion": "What is the name of your first pet?",
+    "username": "joshua",
+    "password": "YouWillNeverGuessThis1",
+    "email": "johndoe@example.com",
+    "securityQuestion": "What university did you study at?",
     "securityAnswer": "Kim",
     "autoPushAndPullData": "false",
-    "accountBlanance": 0.00,
+    "accountBalance": 60,
     "myItems": [],
-    "bookmarkedItems": [],
-    "reservedItems": [],
-    "itemsInCart": [],
+    "bookmarkedItems": [
+      2
+    ],
+    "reservedItems": [
+      3
+    ],
+    "itemsInCart": [
+      4
+    ],
     "orderHistory": [],
     "incomingSaleRequests": [],
     "outgoingSaleRequests": []
@@ -124,8 +121,45 @@
     "securityQuestion": "What is the name of your first pet?",
     "securityAnswer": "a",
     "autoPushAndPullData": "false",
-    "accountBlanance": 0.00,
+    "accountBalance": 0.00,
     "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
+    "orderHistory": [],
+    "incomingSaleRequests": [],
+    "outgoingSaleRequests": []
+  },
+  {
+    "id": 16,
+    "username": "lolikujyhgj",
+    "password": "Password1",
+    "email": "email@dfdfgdf.cdij",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "fido",
+    "autoPushAndPullData": "false",
+    "accountBalance": 0.00,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
+    "orderHistory": [],
+    "incomingSaleRequests": [],
+    "outgoingSaleRequests": []
+  },
+  {
+    "id": 17,
+    "username": "Joshua",
+    "password": "Password1",
+    "email": "email@dfdf.cdij",
+    "securityQuestion": "What university did you study at?",
+    "securityAnswer": "no",
+    "autoPushAndPullData": "false",
+    "accountBalance": 4,
+    "myItems": [
+      2,
+      3
+    ],
     "bookmarkedItems": [],
     "reservedItems": [],
     "itemsInCart": [],

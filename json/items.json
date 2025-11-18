@@ -41,8 +41,13 @@
       {
         "accountId": 42,
         "rating": 4
+      },
+      {
+        "userId": 17,
+        "rating": 4
       }
-    ]
+    ],
+    "itemComments": []
   },
   {
     "id": 3,

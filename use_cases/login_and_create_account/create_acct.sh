@@ -84,7 +84,7 @@ jq --arg id "$new_id" \
      securityQuestion: $securityQuestion,
      securityAnswer: $securityAnswer,
      autoPushAndPullData: "false",
-     accountBlanance: 0.00,
+     accountBalance: 0.00,
      myItems: [],
      bookmarkedItems: [],
      reservedItems: [],

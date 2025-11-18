@@ -23,7 +23,9 @@
                 
                 <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
                     <p style="margin: 10px 0;"><strong>Username:</strong> <span id="displayUsername">Loading...</span></p>
+                    <p style="margin: 10px 0;"><strong>Email:</strong> <span id="displayEmail">Loading...</span></p>
                     <p style="margin: 10px 0;"><strong>Password:</strong> <span id="displayPassword">Loading...</span></p>
+
                     <p style="margin: 10px 0;"><strong>Account Balance:</strong> <span id="displayBalance">$0.00</span></p>
                     <p style="margin: 10px 0;"><strong>Security Question:</strong> <span id="displaySecurityQuestion">Loading...</span></p>
                     <p style="margin: 10px 0;"><strong>Security Answer:</strong> <span id="displaySecurityAnswer">Loading...</span></p>
@@ -38,17 +40,30 @@
                     </div>
 
                     <div class="action-row">
+                        <input type="text" id="newEmail" placeholder="New Email" style="flex: 1;">
+                        <button onclick="changeEmail()">Change Email</button>
+                    </div>
+
+                    <div class="action-row">
                         <input type="text" id="newPassword" placeholder="New Password" style="flex: 1;">
                         <button onclick="changePassword()">Change Password</button>
                     </div>
+                    
 
                     <div class="action-row">
-                        <input type="text" id="newBalance" placeholder="New Balance (e.g., 100.00)" style="flex: 1;">
-                        <button onclick="updateBalance()">Update Balance</button>
+                        <input type="text" id="addFunds" placeholder="Add Funds (e.g., 100.00)" style="flex: 1;">
+                        <button onclick="addFunds()">Add Funds</button>
                     </div>
 
                     <div class="action-row">
-                        <input type="text" id="newSecurityQuestion" placeholder="New Security Question" style="flex: 1;">
+                        <div class="security_questions">
+                            <select name="SQ_dropdown" id="SQ_dropdown">
+                                <option value="0" disabled selected>Please select a security question.</option>
+                                <option value="1">What is the name of your first pet?</option>
+                                <option value="2">What university did you study at?</option>
+                                <option value="3">What was the name of your elementary school?</option>
+                            </select>
+                        </div>
                         <button onclick="changeSecurityQuestion()">Change Security Question</button>
                     </div>
 
@@ -97,6 +112,7 @@
                     // Update display fields
                     document.getElementById('displayUsername').textContent = currentUser.username || 'N/A';
                     document.getElementById('displayPassword').textContent = currentUser.password || 'N/A';
+                    document.getElementById('displayEmail').textContent = currentUser.email || 'N/A';
                     document.getElementById('displayBalance').textContent = `$${balanceNum.toFixed(2)}`;
                     document.getElementById('displaySecurityQuestion').textContent = currentUser.securityQuestion || 'N/A';
                     document.getElementById('displaySecurityAnswer').textContent = currentUser.securityAnswer || 'N/A';
@@ -112,97 +128,164 @@
         }
 
         async function runUserScript(params) {
-            await fetch("/run-script", {
+            const response = await fetch("/run-script", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ params })
             });
+            return await response.text(); // return output
+
         }
 
-        function changeUsername() {
+        async function changeUsername() {
             const newUsername = document.getElementById('newUsername').value.trim();
             if (!newUsername) {
                 alert('Please enter a new username');
                 return;
             }
-            if (confirm(`Change username to "${newUsername}"?`)) {
-                runUserScript([HELPER_SCRIPT, './use_cases/change_username.py', newUsername]);
-                setTimeout(() => {
-                    loadUserData();
-                    document.getElementById('newUsername').value = '';
-                }, 500);
+            // Get logged-in user ID
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+            const change_username = "./use_cases/update_account_info/change_username.sh";
+            const params = [HELPER_SCRIPT,change_username,userId,newUsername];
+            
+            const text = await runUserScript(params);  
+            alert(text);
+            if (text.includes("is already taken")) {
+                //alert("That username is already in use. Please choose another.");
+            } else {
+                //alert("Username updated successfully!");
+                document.getElementById('newUsername').value = '';
+                window.location.reload();
+            }
+            
+        }
+
+        async function changeEmail(){
+            const newEmail = document.getElementById('newEmail').value.trim();
+            if (!newEmail) {
+                alert('Please enter a new email');
+                return;
+            }
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+            const change_email = "./use_cases/update_account_info/change_email.sh";
+            const params = [HELPER_SCRIPT,change_email,userId,newEmail];
+
+            const text = await runUserScript(params);  
+            alert(text);
+            if (text.includes("successfully")) {
+                document.getElementById('newEmail').value = '';
+                window.location.reload();
             }
         }
 
-        function changePassword() {
+
+        async function changePassword() {
             const newPassword = document.getElementById('newPassword').value.trim();
             if (!newPassword) {
                 alert('Please enter a new password');
                 return;
             }
-            if (confirm('Change your password?')) {
-                runUserScript([HELPER_SCRIPT, './use_cases/change_password.py', newPassword]);
-                setTimeout(() => {
-                    loadUserData();
-                    document.getElementById('newPassword').value = '';
-                }, 500);
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+            const change_password = "./use_cases/update_account_info/change_password.sh";
+            const params = [HELPER_SCRIPT,change_password,userId,newPassword];
+
+            const text = await runUserScript(params);  
+            alert(text);
+            if (text.includes("successfully!")) {
+                document.getElementById('newPassword').value = '';
+                window.location.reload();
+            }
+            
+        }
+
+        async function addFunds() {
+            const amount = document.getElementById('addFunds').value.trim();
+            if (!amount) {
+                alert("Enter an amount to add.");
+                return;
+            }
+
+            if (isNaN(parseFloat(amount))) {
+                alert("Amount must be a valid number.");
+                return;
+            }
+
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/update_account_info/add_funds.sh',
+                userId.toString(),
+                amount
+            ];
+
+            const responseText = await runUserScript(params);
+
+            if (responseText.includes("Funds added successfully")) {
+                alert("Funds added!");
+                document.getElementById("addFunds").value = "";
+                window.location.reload();
+            } else {
+                alert("Failed to add funds:\n" + responseText);
             }
         }
 
-        function updateBalance() {
-            const newBalance = document.getElementById('newBalance').value.trim();
-            if (!newBalance) {
-                alert('Please enter a new balance');
+        async function changeSecurityQuestion() {
+            const dropdown = document.getElementById('SQ_dropdown');  // FIXED ID
+            const selectedValue = dropdown.value;
+
+            if (selectedValue === "0") {
+                alert("Please select a security question.");
                 return;
             }
-            const balanceNum = parseFloat(newBalance);
-            if (isNaN(balanceNum)) {
-                alert('Please enter a valid number');
-                return;
-            }
-            if (confirm(`Update balance to $${balanceNum.toFixed(2)}?`)) {
-                runUserScript([HELPER_SCRIPT, './use_cases/update_balance.py', newBalance]);
-                setTimeout(() => {
-                    loadUserData();
-                    document.getElementById('newBalance').value = '';
-                }, 500);
+
+            // Get logged-in user ID
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/update_account_info/change_security_question.sh',
+                userId.toString(),
+                selectedValue.toString()
+            ];
+
+            const result = await runUserScript(params);
+
+            if (result.includes("Invalid")) {
+                alert("Invalid selection. Try again.");
+            } else {
+                alert("Security question updated!");
+                dropdown.value = "0";
+                window.location.reload();
             }
         }
 
-        function changeSecurityQuestion() {
-            const newQuestion = document.getElementById('newSecurityQuestion').value.trim();
-            if (!newQuestion) {
-                alert('Please enter a new security question');
-                return;
-            }
-            if (confirm('Change your security question?')) {
-                runUserScript([HELPER_SCRIPT, './use_cases/change_security_question.py', newQuestion]);
-                setTimeout(() => {
-                    loadUserData();
-                    document.getElementById('newSecurityQuestion').value = '';
-                }, 500);
-            }
-        }
-
-        function changeSecurityAnswer() {
+        async function changeSecurityAnswer() {
             const newAnswer = document.getElementById('newSecurityAnswer').value.trim();
             if (!newAnswer) {
                 alert('Please enter a new security answer');
                 return;
             }
-            if (confirm('Change your security answer?')) {
-                runUserScript([HELPER_SCRIPT, './use_cases/change_security_answer.py', newAnswer]);
-                setTimeout(() => {
-                    loadUserData();
-                    document.getElementById('newSecurityAnswer').value = '';
-                }, 500);
-            }
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+            const change_password = "./use_cases/update_account_info/change_security_answer.sh";
+            const params = [HELPER_SCRIPT,change_password,userId,newAnswer];
+
+            await runUserScript(params);
+            alert("Security answer updated successfully!");
+            document.getElementById('newSecurityAnswer').value = '';
+            window.location.reload();
         }
 
         function deleteAccount() {
             if (confirm('Are you sure you want to delete your account? This action cannot be undone!')) {
                 if (confirm('Are you REALLY sure? All your data will be permanently deleted!')) {
-                    runUserScript([HELPER_SCRIPT, './use_cases/delete_account.py', currentUserId]);
+                    runUserScript([HELPER_SCRIPT, './use_cases/delete_account.sh', currentUserId]);
                     setTimeout(() => {
                         window.location.href = '/html/login.html';
                     }, 1000);
