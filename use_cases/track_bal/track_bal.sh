@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# ===================================================
+echo "This script had errors, refactored changes into track_balance.py"
+exit 1
+# ===================================================
+
 LOCAL_DATA_FILE="json/local/local_data.json"
 ACCOUNTS_FILE="json/accounts.json"
 ITEMS_FILE="json/items.json"
