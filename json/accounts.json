@@ -6,7 +6,7 @@
     "securityQuestion": "What was the name of your elementary school?",
     "securityAnswer": "stuff",
     "autoPushAndPullData": "false",
-    "accountBalance": 10002,
+    "accountBlanance": 200.00,
     "incomingSaleRequests": [
       {
         "sourceUserId": 42,
