@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Verifies that the total price of items in the cart does not exceed the user's account balance.
 
 import json
 import sys
@@ -49,8 +50,8 @@ if user_account is None:
     print(f"Error: User with ID {current_user_id} not found")
     sys.exit(1)
 
-# Get account balance and cart items
-account_balance = user_account.get('accountBalance', 0)
+# Get account balance and cart items (handle typo in JSON: accountBlanance)
+account_balance = user_account.get('accountBalance') or user_account.get('accountBlanance') or user_account.get('accountBlance', 0)
 cart_items = user_account.get('itemsInCart', [])
 
 if not cart_items:
@@ -62,7 +63,7 @@ if not cart_items:
 # Calculate total price
 total = 0.0
 print("Items in cart:")
-print("-" * 40)
+print("")
 
 for item_id in cart_items:
     # Find the item in items.json
@@ -85,14 +86,14 @@ for item_id in cart_items:
     print(f"  - {item_name}: ${item_price:.2f}")
     total += item_price
 
-print("-" * 40)
+print("")
 print(f"Total: ${total:.2f}")
 print(f"Account Balance: ${account_balance:.2f}")
-print("-" * 40)
+print("")
 
 # Check if total exceeds balance
 if total > account_balance:
-    print("\nError: Cart total exceeds account balance!")
+    print("\nError: Cart total exceeds account balance")
     sys.exit(1)
 else:
     print("Sufficient funds available")
