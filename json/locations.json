@@ -3,6 +3,7 @@
     "id": 5,
     "name": "Nick's Store",
     "storeItems": [
+      1,
       2
     ]
   },

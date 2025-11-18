@@ -9,17 +9,23 @@ SELLER_ID=$1
 ITEM_ID=$2
 STORE_ID=$3
 
-# Get the directory where the script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 # Path to JSON files in the json directory
-LOCATIONS_FILE="$SCRIPT_DIR/../../json/locations.json"
-ITEMS_FILE="$SCRIPT_DIR/../../json/items.json"
-ACCOUNTS_FILE="$SCRIPT_DIR/../../json/accounts.json"
+LOCATIONS_FILE="json/locations.json"
+ITEMS_FILE="json/items.json"
+ACCOUNTS_FILE="json/accounts.json"
+
+# Path to Python script
+PYTHON_SCRIPT="helper_scripts/add_numbers.py"
 
 # Check if jq is installed
 if ! command -v jq &> /dev/null; then
     echo "Error: jq is required but not installed. Please install jq to continue."
+    exit 1
+fi
+
+# Check if Python is installed
+if ! command -v python &> /dev/null; then
+    echo "Error: python is required but not installed. Please install python to continue."
     exit 1
 fi
 
@@ -36,6 +42,11 @@ fi
 
 if [[ ! -f "$ACCOUNTS_FILE" ]]; then
     echo "Error: accounts.json not found at $ACCOUNTS_FILE"
+    exit 1
+fi
+
+if [[ ! -f "$PYTHON_SCRIPT" ]]; then
+    echo "Error: add_numbers.py not found at $PYTHON_SCRIPT"
     exit 1
 fi
 
@@ -112,12 +123,8 @@ SELLER_BALANCE=$(jq -r --argjson id "$SELLER_ID" '.[] | select(.id == $id) | .ac
 # Balance is already a number in the JSON, no need to remove $
 SELLER_BALANCE_NUM="$SELLER_BALANCE"
 
-# Calculate new balance (balance is stored as number, not string)
-NEW_BALANCE=$(echo "$SELLER_BALANCE_NUM + $ITEM_PRICE_NUM" | bc)
-
-#echo "Seller current balance: \$(printf "%.2f" "$SELLER_BALANCE")"
-#echo "Seller new balance: \$(printf "%.2f" "$NEW_BALANCE")"
-#echo ""
+# Calculate new balance using Python script
+NEW_BALANCE=$(python "$PYTHON_SCRIPT" "$SELLER_BALANCE_NUM" "$ITEM_PRICE_NUM")
 
 
 # Remove item from seller's myItems array and update balance
@@ -134,9 +141,3 @@ jq --argjson storeId "$STORE_ID" --argjson itemId "$ITEM_ID" '
         .storeItems = ((.storeItems // []) + [$itemId] | unique)
     else . end)
 ' "$LOCATIONS_FILE" > "$LOCATIONS_FILE.tmp" && mv "$LOCATIONS_FILE.tmp" "$LOCATIONS_FILE"
-
-#echo ""
-#echo "✓ Transaction completed successfully!"
-#echo "  Item ID $ITEM_ID transferred from seller to store ID $STORE_ID"
-#echo "  Seller account ID $SELLER_ID credited with $ITEM_PRICE"
-#echo "  New balance: \$(printf "%.2f" "$NEW_BALANCE")"
