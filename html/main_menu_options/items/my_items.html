@@ -3,13 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Items</title>
-    <link rel="stylesheet" href="/html/css/items.css">
+    <title>Main Menu - Marketplace for Used Items</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .header-panel {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+            position: relative;
+        }
+
+        .header-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            pointer-events: none;
+        }
+
+        .header-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .username {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .balance {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-content {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .menu-column {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-column:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .column-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 25px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #dc2626;
+            position: relative;
+        }
+
+        .column-title::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            border-radius: 2px;
+        }
+
+        .menu-button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid #e5e7eb;
+            color: #374151;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .menu-button:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border-color: #dc2626;
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .menu-button:hover::before {
+            left: 100%;
+        }
+
+        .menu-button:last-child {
+            margin-bottom: 0;
+        }
+
+        .menu-button:active {
+            transform: translateX(3px) scale(0.98);
+        }
+
+        /* Special styling for the untitled column */
+        .untitled-column .column-title {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
+        }
+
+        .untitled-column .column-title::after {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+        }
+
+        .untitled-column .menu-button:hover {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            border-color: #6366f1;
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header-panel {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-title {
+                position: static;
+                transform: none;
+                font-size: 2em;
+            }
+
+            .user-info {
+                align-items: center;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .menu-column {
+                padding: 25px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="header-panel">
-        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
-        <div class="header-title">My Items</div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+        <div class="header-title">Main Menu</div>
         <div class="user-info">
             <div class="username" id="username">Loading...</div>
             <div class="balance" id="balance">$0.00</div>
@@ -17,81 +249,74 @@
     </div>
 
     <div class="main-content">
-        <div class="sort-controls">
-            <label for="search">Search:</label>
-            <input type="text" id="search" class="search-input" placeholder="Search items..." oninput="filterItems()">
+        <div class="menu-grid">
+            <div class="menu-column">
+                <h2 class="column-title">Stores</h2>
+                <button class="menu-button" onclick="openDefaultStore()">Keep Shopping at Current Store</button>
+                <button class="menu-button" onclick="viewAllStores()">Browse Stores</button>
+            </div>
 
-            <label for="sort">Sort by:</label>
-            <select id="sort" onchange="loadItems(this.value)">
-                <option value="default">Default Order</option>
-                <option value="alphabetical">Alphabetical</option>
-                <option value="rating">Rating</option>
-                <option value="price">Price</option>
-            </select>
-        </div>
+            <div class="menu-column">
+                <h2 class="column-title">Items</h2>
+                <button class="menu-button" onclick="viewMyItems()">My Items</button>
+                <button class="menu-button" onclick="viewOrderHistory()">Order History</button>
+                <button class="menu-button" onclick="viewBookmarkedItems()">Bookmarked Items</button>
+                <button class="menu-button" onclick="viewReservedItems()">My Reserved Items</button>
+                <button class="menu-button" onclick="viewShoppingCart()">Shopping Cart</button>
+            </div>
 
-        <div id="itemsContainer"></div>
+            <div class="menu-column">
+                <h2 class="column-title">User Info</h2>
+                <button class="menu-button" onclick="viewAllAccounts()">All Accounts</button>
+                <button class="menu-button" onclick="viewMyAccount()">My Account</button>
 
-        <div class="create-item-container">
-            <button class="create-item-btn" onclick="createNewItem()">+ Create New Item</button>
+            </div>
+
+            <div class="menu-column">
+                <h2 class="column-title">Other</h2>
+                <button class="menu-button" onclick="openAIAssistant()">AI Assistant</button>
+                <button class="menu-button" onclick="autoPushPullData()">Push and Pull Data Settings</button>
+            </div>
         </div>
     </div>
 
-    <style>
-        .create-item-container {
-            margin-top: 30px;
-            padding: 20px;
-            text-align: center;
-            border-top: 2px solid #ddd;
-        }
-
-        .create-item-btn {
-            background-color: #007bff;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .create-item-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .create-item-btn:active {
-            background-color: #004085;
-        }
-    </style>
-
     <script>
-        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
-        let userBookmarkedItems = [];
-        let currentUserId = null;
-        let allItems = [];
+        let userData = null;
 
+        // Reusable function to run user scripts
+        async function runUserScript(params) {
+            await fetch("/run-script", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ params })
+            });
+        }
+
+        // Load user data based on currently logged in user ID
         async function loadUserData() {
             try {
+                // First, get the currently logged in user ID from local data
                 const localDataResponse = await fetch('/json/local/local_data.json');
                 if (!localDataResponse.ok) {
                     throw new Error(`HTTP error! status: ${localDataResponse.status}`);
                 }
                 const localData = await localDataResponse.json();
-                currentUserId = localData.currentlyLoggedInUserID;
+                const currentlyLoggedInUserID = localData.currentlyLoggedInUserID;
 
+                // Then, get all accounts data
                 const accountsResponse = await fetch('/json/accounts.json');
                 if (!accountsResponse.ok) {
                     throw new Error(`HTTP error! status: ${accountsResponse.status}`);
                 }
                 const accounts = await accountsResponse.json();
 
-                const currentUser = accounts.find(account => account.id === currentUserId);
-
+                // Find the account with matching ID
+                const currentUser = accounts.find(account => account.id === currentlyLoggedInUserID);
+                
+                // Display username and balance
                 const usernameElement = document.getElementById('username');
                 const balanceElement = document.getElementById('balance');
-
+                
                 if (currentUser && currentUser.username) {
                     usernameElement.textContent = currentUser.username;
                     const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
@@ -108,367 +333,60 @@
             }
         }
 
-        async function loadItems(order = "default") {
-            const res = await fetch("/api/my-items");
-            const data = await res.json();
-            let items = data.items;
-            userBookmarkedItems = data.bookmarkedItems;
-
-            items.forEach(item => {
-                if (Array.isArray(item.ratings) && item.ratings.length > 0) {
-                    const sum = item.ratings.reduce((acc, r) => acc + r.rating, 0);
-                    item.avgRating = sum / item.ratings.length;
-                } else {
-                    item.avgRating = 0;
-                }
-            });
-
-            if (order === "alphabetical") {
-                items.sort((a, b) => a.name.localeCompare(b.name));
-            } else if (order === "rating") {
-                items.sort((a, b) => b.avgRating - a.avgRating);
-            } else if (order === "price") {
-                items.sort((a, b) => {
-                    const parsePrice = str => parseFloat(str.replace(/[^0-9.]/g, ""));
-                    return parsePrice(b.price) - parsePrice(a.price);
-                });
-            }
-
-            allItems = items;
-            filterItems();
-        }
-
-        function filterItems() {
-            const searchTerm = document.getElementById('search').value.toLowerCase();
-            const filteredItems = allItems.filter(item =>
-                item.name.toLowerCase().includes(searchTerm)
-            );
-            renderItems(filteredItems);
-        }
-
-        async function runUserScript(params) {
-            try {
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-                const text = await response.text();
-                alert(text);
-                window.location.reload();
-            } catch (error) {
-                console.error('Error running script:', error);
-                alert('Error running script');
-                window.location.reload();
+        // Menu button functions
+        async function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                await runUserScript('./helper_scripts/run_user_script.sh', './use_cases/log_out_user/log_out_user.sh');
+                window.location.href = '/login.html';
             }
         }
 
-        async function rateItem(itemId, rating) {
-            if (!rating) {
-                alert('Please select a rating');
-                return;
-            }
-
-            const params = [
-                HELPER_SCRIPT,
-                './use_cases/rate_item/rate_item.sh',
-                itemId.toString(),
-                rating.toString()
-            ];
-
-            await runUserScript(params);
+        function openDefaultStore() {
+            window.location.href = '/html/main_menu_options/items/store_items.html';
         }
 
-        async function setItemPrice(itemId, newPrice) {
-            if (!newPrice || newPrice.trim() === '') {
-                alert('Please enter a new price');
-                return;
-            }
-
-            const params = [
-                HELPER_SCRIPT,
-                './use_cases/set_item_price/set_item_price.sh',
-                itemId.toString(),
-                newPrice.trim()
-            ];
-
-            await runUserScript(params);
+        function viewAllStores() {
+            window.location.href = '/stores/all';
         }
 
-        async function bookmarkItem(itemId) {
-            const params = [
-                HELPER_SCRIPT,
-                './use_cases/bookmark_and_unbookmark_item/bookmark_item.sh',
-                itemId.toString()
-            ];
-
-            await runUserScript(params);
+        function viewMyItems() {
+            window.location.href = '/html/main_menu_options/items/my_items.html';
         }
 
-        async function deleteItemFunction(itemId) {
-            if (!confirm('Are you sure you want to delete this item?')) {
-                return;
-            }
-
-            const params = [
-                HELPER_SCRIPT,
-                './use_cases/delete_item/delete_item.sh',
-                itemId.toString()
-            ];
-
-            await runUserScript(params);
+        function viewOrderHistory() {
+            window.location.href = '/orders/history';
         }
 
-        async function renameItem(itemId, newName) {
-            if (!newName || newName.trim() === '') {
-                alert('Please enter a new name');
-                return;
-            }
-
-            const params = [
-                HELPER_SCRIPT,
-                './use_cases/rename_item/rename_item.sh',
-                itemId.toString(),
-                newName.trim()
-            ];
-
-            await runUserScript(params);
+        function viewBookmarkedItems() {
+            window.location.href = '/items/bookmarked';
         }
 
-        async function createNewItem() {
-            const params = [
-                HELPER_SCRIPT,
-                './use_cases/create_item/main.py'
-            ];
-
-            await runUserScript(params);
+        function viewReservedItems() {
+            window.location.href = '/items/reserved';
         }
 
-        async function addOrReplaceImage(itemId) {
-            const message = "Please drop the desired image (PNG) in the folder _ITEM_IMAGE_DROPBOX located in the repo root, then click OK.";
-
-            if (confirm(message)) {
-                const params = [
-                    HELPER_SCRIPT,
-                    './use_cases/add_item_image/add_item_image.sh',
-                    itemId.toString()
-                ];
-
-                await runUserScript(params);
-            }
+        function viewShoppingCart() {
+            window.location.href = '/html/main_menu_options/items/shopping_cart.html';
         }
 
-        async function removeImage(itemId) {
-            if (confirm("Click OK to confirm you want this image deleted")) {
-                const params = [
-                    HELPER_SCRIPT,
-                    './use_cases/remove_item_image/remove_item_image.sh',
-                    itemId.toString()
-                ];
-
-                await runUserScript(params);
-            }
+        function viewAllAccounts() {
+            window.location.href = '/users/all';
         }
 
-        async function openComments(itemId) {
-            try {
-                const params = [
-                    HELPER_SCRIPT,
-                    './use_cases/select_item_comment/select_item_comment.sh',
-                    itemId.toString()
-                ];
-
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-
-                if (response.ok) {
-                    window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
-                } else {
-                    console.error('Error setting selected item');
-                }
-            } catch (error) {
-                console.error('Error opening comments:', error);
-            }
+        function viewMyAccount() {
+            window.location.href = '/users/my-account';
         }
 
-        function renderItems(items) {
-            const container = document.getElementById("itemsContainer");
-            container.innerHTML = "";
-
-            if (items.length === 0) {
-                container.innerHTML = '<div class="no-items">No items found.</div>';
-                return;
-            }
-
-            items.forEach(item => {
-                const itemBox = document.createElement("div");
-                itemBox.className = "item-box";
-
-                const isBookmarked = userBookmarkedItems.includes(item.id);
-
-                const nameContainer = document.createElement("div");
-                nameContainer.className = "item-name-container";
-
-                const name = document.createElement("h3");
-                name.textContent = item.name;
-                nameContainer.appendChild(name);
-
-                if (isBookmarked) {
-                    const bookmarkEmoji = document.createElement("span");
-                    bookmarkEmoji.className = "bookmark-emoji";
-                    bookmarkEmoji.textContent = "🔖";
-                    nameContainer.appendChild(bookmarkEmoji);
-                }
-
-                const price = document.createElement("p");
-                price.innerHTML = `<strong>Price:</strong> <span class="price-text">${item.price}</span>`;
-
-                const rating = document.createElement("p");
-                const stars = "⭐".repeat(Math.floor(item.avgRating));
-                rating.innerHTML = `<strong>Rating:</strong> <span class="rating-text">${item.avgRating.toFixed(1)} ${stars}</span>`;
-
-                const img = document.createElement("img");
-                img.className = "item-img";
-                img.alt = item.name;
-                img.src = `/images/items/${item.id}.png`;
-
-                const imgButtons = document.createElement("div");
-                imgButtons.className = "img-buttons";
-
-                img.onload = () => {
-                    imgButtons.innerHTML = `
-                        <button onclick="addOrReplaceImage(${item.id})">Replace Image</button>
-                        <button onclick="removeImage(${item.id})">Delete Image</button>
-                    `;
-                };
-                img.onerror = () => {
-                    img.style.display = "none";
-                    imgButtons.innerHTML = `<button onclick="addOrReplaceImage(${item.id})">Add Image</button>`;
-                };
-
-                const actions = document.createElement("div");
-                actions.className = "action-group";
-
-                const renameDiv = document.createElement("div");
-                renameDiv.className = "action-row";
-                const renameInput = document.createElement("input");
-                renameInput.type = "text";
-                renameInput.placeholder = "New Name";
-                renameInput.style.fontSize = "14px";
-                const renameBtn = document.createElement("button");
-                renameBtn.textContent = "Rename";
-                renameBtn.onclick = () => renameItem(item.id, renameInput.value);
-                renameDiv.appendChild(renameInput);
-                renameDiv.appendChild(renameBtn);
-
-                const rateDiv = document.createElement("div");
-                rateDiv.className = "action-row";
-                const rateSelect = document.createElement("select");
-                for (let i = 1; i <= 5; i++) {
-                    const opt = document.createElement("option");
-                    opt.value = i;
-                    opt.textContent = `${i} Star${i > 1 ? 's' : ''}`;
-                    rateSelect.appendChild(opt);
-                }
-                const rateBtn = document.createElement("button");
-                rateBtn.textContent = "Rate";
-                rateBtn.onclick = () => rateItem(item.id, rateSelect.value);
-                rateDiv.appendChild(rateSelect);
-                rateDiv.appendChild(rateBtn);
-
-                const priceDiv = document.createElement("div");
-                priceDiv.className = "action-row";
-                const priceInput = document.createElement("input");
-                priceInput.type = "text";
-                priceInput.placeholder = "New Price";
-                const priceBtn = document.createElement("button");
-                priceBtn.textContent = "Set Price";
-                priceBtn.onclick = () => setItemPrice(item.id, priceInput.value);
-                priceDiv.appendChild(priceInput);
-                priceDiv.appendChild(priceBtn);
-
-                const bookmarkBtn = document.createElement("button");
-                bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
-                bookmarkBtn.onclick = () => bookmarkItem(item.id);
-
-                const deleteBtn = document.createElement("button");
-                deleteBtn.textContent = "🗑️ Delete Item";
-                deleteBtn.style.backgroundColor = "#dc3545";
-                deleteBtn.onclick = () => deleteItemFunction(item.id);
-
-                const sellUserDiv = document.createElement("div");
-                sellUserDiv.className = "action-row";
-                const sellUserSelect = document.createElement("select");
-                sellUserSelect.innerHTML = `<option value="">Select User...</option>`;
-                fetch("/api/accounts")
-                    .then(res => res.json())
-                    .then(accounts => {
-                        accounts.forEach(acc => {
-                            if (acc.id !== currentUserId) {
-                                const opt = document.createElement("option");
-                                opt.value = acc.id;
-                                opt.textContent = acc.username;
-                                sellUserSelect.appendChild(opt);
-                            }
-                        });
-                    });
-                const sellUserBtn = document.createElement("button");
-                sellUserBtn.textContent = "Sell to User";
-                sellUserBtn.onclick = () => runUserScript(sellUserSelect.value);
-                sellUserDiv.appendChild(sellUserSelect);
-                sellUserDiv.appendChild(sellUserBtn);
-
-                const sellStoreDiv = document.createElement("div");
-                sellStoreDiv.className = "action-row";
-                const sellStoreSelect = document.createElement("select");
-                sellStoreSelect.innerHTML = `<option value="">Select Store...</option>`;
-                fetch("/api/locations")
-                    .then(res => res.json())
-                    .then(locations => {
-                        locations.forEach(loc => {
-                            const opt = document.createElement("option");
-                            opt.value = loc.id;
-                            opt.textContent = loc.name;
-                            sellStoreSelect.appendChild(opt);
-                        });
-                    });
-                const sellStoreBtn = document.createElement("button");
-                sellStoreBtn.textContent = "Sell to Store";
-                sellStoreBtn.onclick = () => runUserScript(sellStoreSelect.value);
-                sellStoreDiv.appendChild(sellStoreSelect);
-                sellStoreDiv.appendChild(sellStoreBtn);
-
-                const commentsBtn = document.createElement("button");
-                commentsBtn.textContent = "💬 Comments";
-                commentsBtn.onclick = () => openComments(item.id);
-
-                actions.appendChild(renameDiv);
-                actions.appendChild(rateDiv);
-                actions.appendChild(priceDiv);
-                actions.appendChild(bookmarkBtn);
-                actions.appendChild(deleteBtn);
-                actions.appendChild(sellUserDiv);
-                actions.appendChild(sellStoreDiv);
-                actions.appendChild(commentsBtn);
-
-                itemBox.appendChild(nameContainer);
-                itemBox.appendChild(price);
-                itemBox.appendChild(rating);
-                itemBox.appendChild(img);
-                itemBox.appendChild(imgButtons);
-                itemBox.appendChild(actions);
-
-                container.appendChild(itemBox);
-            });
+        function openAIAssistant() {
+            window.location.href = '/ai/assistant';
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadUserData();
-            loadItems();
-        });
+        function autoPushPullData() {
+            window.location.href = '/data/sync';
+        }
+
+        // Load user data when page loads
+        document.addEventListener('DOMContentLoaded', loadUserData);
     </script>
 </body>
 </html>
