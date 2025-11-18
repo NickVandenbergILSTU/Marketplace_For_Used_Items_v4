@@ -263,18 +263,22 @@
                 <button class="menu-button" onclick="viewBookmarkedItems()">Bookmarked Items</button>
                 <button class="menu-button" onclick="viewReservedItems()">My Reserved Items</button>
                 <button class="menu-button" onclick="viewShoppingCart()">Shopping Cart</button>
+                <button class="menu-button" onclick="viewIncomingSaleRequests()">Incoming Sale Requests</button>
+                <button class="menu-button" onclick="viewOutgoingSaleRequests()">Outgoing Sale Requests</button>
             </div>
 
-            <div class="menu-column">
+            <!-- <div class="menu-column">
                 <h2 class="column-title">User Info</h2>
                 <button class="menu-button" onclick="viewAllAccounts()">All Accounts</button>
                 <button class="menu-button" onclick="viewMyAccount()">My Account</button>
 
-            </div>
+            </div> -->
 
             <div class="menu-column">
                 <h2 class="column-title">Other</h2>
-                <button class="menu-button" onclick="openAIAssistant()">AI Assistant</button>
+                <!-- <button class="menu-button" onclick="openAIAssistant()">AI Assistant</button> -->
+                <button class="menu-button" onclick="viewAllAccounts()">Display All Accounts</button>
+                <button class="menu-button" onclick="viewMyAccount()">My Account</button>
                 <button class="menu-button" onclick="autoPushPullData()">Push and Pull Data Settings</button>
             </div>
         </div>
@@ -403,6 +407,14 @@
 
         function autoPushPullData() {
             window.location.href = '/data/sync';
+        }
+
+        function viewIncomingSaleRequests() {
+            window.location.href = '/html/main_menu_options/items/incoming_sale_requests.html';
+        }
+
+        function viewOutgoingSaleRequests() {
+            window.location.href = '/html/main_menu_options/items/outgoing_sale_requests.html';
         }
 
         // Load user data when page loads
