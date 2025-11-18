@@ -266,8 +266,25 @@
 
                 const cartBtn = document.createElement("button");
                 cartBtn.textContent = "🛒 Remove from Cart";
-                cartBtn.onclick = () => runUserScript("cart");
+                cartBtn.onclick = () => removeFromCart(item.id,currentUserId);
 
+                async function removeFromCart(itemId, userId) {
+                    const params = [HELPER_SCRIPT,'./use_cases/remove_from_cart/remove_from_cart.sh',userId.toString(),itemId.toString()];
+
+                    const response = await fetch("/run-script", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ params })
+                    });
+
+                    if (response.ok) {
+                        alert(`Item ${itemId} removed from cart.`);
+                        await loadItems(); // refresh cart display
+                    } else {
+                        alert("Failed to remove item from cart.");
+                    }
+                }
+                
                 const commentsBtn = document.createElement("button");
                 commentsBtn.textContent = "💬 Comments";
                 commentsBtn.onclick = () => openComments(item.id);
