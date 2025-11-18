@@ -4,3 +4,6 @@ IF YOU HAVEN'T SET EVERYTHING UP YET, SEE /START_HERE.md
 
 TO OPEN THE MARKETPLACE, RUN THIS COMMAND IN A VSCODE BASH TERMINAL, AND FOLLOW THE LOCALHOST LINK:
 ./start.sh
+
+Current State of this branch:
+- almost no buttons work yet, but most scripts do
