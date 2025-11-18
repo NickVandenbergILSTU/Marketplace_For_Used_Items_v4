@@ -1,53 +1,36 @@
 [
   {
     "id": 1,
-    "name": "TV",
-    "price": "$300.00",
+    "name": "tv",
+    "price": "$1.00",
     "ratings": [
       {
         "accountId": 41,
         "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
       }
     ],
-    "itemComments": [
-      {
-        "commentBody": "ab",
-        "commenterId": 42,
-        "commentId": 6
-      }
-    ]
+    "itemComments": []
   },
   {
     "id": 2,
-    "name": "Laptop",
+    "name": "item2",
     "price": "$200.00",
     "ratings": [
       {
         "accountId": 41,
         "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
       }
-    ]
+    ],
+    "itemComments": []
   },
   {
     "id": 3,
-    "name": "Microwave",
-    "price": "$50.00",
+    "name": "a",
+    "price": "$1.67",
     "ratings": [
       {
         "accountId": 41,
         "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
       }
     ],
     "itemComments": []
@@ -60,10 +43,6 @@
       {
         "accountId": 41,
         "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
       }
     ]
   },
@@ -74,10 +53,6 @@
     "ratings": [
       {
         "accountId": 41,
-        "rating": 5
-      },
-      {
-        "accountId": 42,
         "rating": 5
       }
     ]
@@ -90,19 +65,8 @@
       {
         "accountId": 41,
         "rating": 3
-      },
-      {
-        "accountId": 42,
-        "rating": 4
       }
     ]
-  },
-  {
-    "id": 7,
-    "name": "[NEW ITEM]",
-    "price": "$0.00",
-    "ratings": [],
-    "itemComments": []
   },
   {
     "id": 8,
@@ -113,7 +77,7 @@
   },
   {
     "id": 9,
-    "name": "[NEW ITEM]",
+    "name": "a",
     "price": "$0.00",
     "ratings": [],
     "itemComments": []
