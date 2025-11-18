@@ -285,7 +285,7 @@
         function deleteAccount() {
             if (confirm('Are you sure you want to delete your account? This action cannot be undone!')) {
                 if (confirm('Are you REALLY sure? All your data will be permanently deleted!')) {
-                    runUserScript([HELPER_SCRIPT, './use_cases/delete_account.sh', currentUserId]);
+                    runUserScript([HELPER_SCRIPT, './use_cases/delete_account/delete_account.sh']);
                     setTimeout(() => {
                         window.location.href = '/html/login.html';
                     }, 1000);
