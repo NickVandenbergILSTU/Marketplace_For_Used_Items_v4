@@ -7,27 +7,9 @@
       {
         "accountId": 41,
         "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
-      },
-      {
-        "userId": 41,
-        "rating": 5
-      },
-      {
-        "userId": 42,
-        "rating": 3
       }
     ],
-    "itemComments": [
-      {
-        "commentBody": "ab",
-        "commenterId": 42,
-        "commentId": 6
-      }
-    ]
+    "itemComments": []
   },
   {
     "id": 2,
@@ -37,14 +19,6 @@
       {
         "accountId": 41,
         "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
-      },
-      {
-        "userId": 17,
-        "rating": 4
       }
     ],
     "itemComments": []
@@ -57,10 +31,6 @@
       {
         "accountId": 41,
         "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
       }
     ],
     "itemComments": []
@@ -73,10 +43,6 @@
       {
         "accountId": 41,
         "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
       }
     ]
   },
@@ -87,10 +53,6 @@
     "ratings": [
       {
         "accountId": 41,
-        "rating": 5
-      },
-      {
-        "accountId": 42,
         "rating": 5
       }
     ]
@@ -103,10 +65,6 @@
       {
         "accountId": 41,
         "rating": 3
-      },
-      {
-        "accountId": 42,
-        "rating": 4
       }
     ]
   },
