@@ -1,46 +1,87 @@
 #!/bin/bash
 
-# Script to delete account from accounts.json
-# Usage: ./delete_account.sh <account_id>
+LOCAL_DATA_FILE="json/local/local_data.json"
 ACCOUNTS_FILE="json/accounts.json"
 ITEMS_FILE="json/items.json"
-LOCAL_DATA_PATH="json/local/local_data.json"
 
-TOTAL_IN_CART=0
-
-USER_ID=$(jq -r '.currentlyLoggedInUserID' $LOCAL_DATA_PATH)
-
-USER_DATA=$(jq ".[] | select(.id == $USER_ID)" "$ACCOUNTS_FILE")
-
-BALANCE=$(echo "$USER_DATA"| jq -r '.accountBalance // .accountBalance // 0')
-
-CART_ITEMS=$(echo "$USER_DATA"| jq -r '.itemsInCart[]')
-
-if [[ -z "$CART_ITEMS" ]]; then
-  echo "No items in cart."
-  exit 0
+# Check if files exist
+if [ ! -f "$LOCAL_DATA_FILE" ]; then
+    echo "Error: $LOCAL_DATA_FILE not found"
+    exit 1
 fi
 
-while IFS= read -r ITEM_ID; do
-    ITEM_DATA=$(jq ".[] | select(.id == $ITEM_ID)" $ITEMS_FILE)
+if [ ! -f "$ACCOUNTS_FILE" ]; then
+    echo "Error: $ACCOUNTS_FILE not found"
+    exit 1
+fi
 
-    if [[ -z "$ITEM_DATA" ]]; then
-      echo "Item with ID $ITEM_ID not found."
-      continue
-    fi
+if [ ! -f "$ITEMS_FILE" ]; then
+    echo "Error: $ITEMS_FILE not found"
+    exit 1
+fi
 
-    ITEM_PRICE=$(echo "$ITEM_DATA" | jq -r '.price '| sed 's/[$,]//g'| tr -d ' ')
+# Get the currently logged in user ID
+CURRENT_USER_ID=$(jq -r '.currentlyLoggedInUserID' "$LOCAL_DATA_FILE")
 
-    TOTAL_IN_CART=$(echo "$TOTAL_IN_CART + $ITEM_PRICE" | bc)
+if [ -z "$CURRENT_USER_ID" ] || [ "$CURRENT_USER_ID" = "null" ]; then
+    echo "Error: No user currently logged in"
+    exit 1
+fi
 
+# Get user's account balance and items in cart
+USER_DATA=$(jq --argjson userId "$CURRENT_USER_ID" '
+    .[] | select(.id == $userId) | {balance: .accountBalance, cart: .itemsInCart}
+' "$ACCOUNTS_FILE")
 
-    done <<< "$CART_ITEMS"
+ACCOUNT_BALANCE=$(echo "$USER_DATA" | jq -r '.balance')
+CART_ITEMS=$(echo "$USER_DATA" | jq -r '.cart[]')
 
-if (( $(echo "$BALANCE < $TOTAL_IN_CART" | bc -l) )); then
-  echo "Insufficient balance. Your balance is $BALANCE, but the total cost is $TOTAL_IN_CART."
-  exit 1
-else
-    echo "Sufficient balance. Your balance is $BALANCE, and the total cost is $TOTAL_IN_CART."
+if [ -z "$CART_ITEMS" ]; then
+    echo "Cart is empty"
+    echo "Total: $0.00"
+    echo "Account Balance: \$$ACCOUNT_BALANCE"
     exit 0
 fi
 
+# Calculate total price of items in cart
+TOTAL=0
+echo "Items in cart:"
+echo ""
+
+while IFS= read -r ITEM_ID; do
+    ITEM_DATA=$(jq --argjson itemId "$ITEM_ID" '
+        .[] | select(.id == $itemId) | {name: .name, price: .price}
+    ' "$ITEMS_FILE")
+    
+    if [ -z "$ITEM_DATA" ]; then
+        echo "Warning: Item ID $ITEM_ID not found in items.json"
+        continue
+    fi
+    
+    ITEM_NAME=$(echo "$ITEM_DATA" | jq -r '.name')
+    ITEM_PRICE=$(echo "$ITEM_DATA" | jq -r '.price')
+    
+    # Remove $ and convert to numeric value
+    PRICE_NUMERIC=$(echo "$ITEM_PRICE" | sed 's/\$//g')
+    
+    echo "  - $ITEM_NAME: $ITEM_PRICE"
+    
+    # Add to total using bc for floating point arithmetic
+    TOTAL=$(echo "$TOTAL + $PRICE_NUMERIC" | bc)
+done <<< "$CART_ITEMS"
+
+echo ""
+echo "total: $TOTAL"
+echo "account balance: $ACCOUNT_BALANCE"
+echo ""
+
+# Compare total with account balance
+COMPARISON=$(echo "$TOTAL > $ACCOUNT_BALANCE" | bc)
+
+if [ "$COMPARISON" -eq 1 ]; then
+    echo "Error: Cart total exceeds account balance"
+    exit 1
+else
+    echo "Sufficient funds available"
+    exit 0
+fi
