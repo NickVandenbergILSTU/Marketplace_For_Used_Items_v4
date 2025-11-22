@@ -52,7 +52,7 @@ jq --arg uid "$CURRENT_USER_ID" --arg iid "$ITEM_ID" \
 # Remove the item from the source user's outgoingSaleRequests array
 jq --arg suid "$SOURCE_USER_ID" --arg tid "$CURRENT_USER_ID" --arg iid "$ITEM_ID" \
     'map(if .id == ($suid | tonumber) then 
-        .outgoingSaleRequests |= map(select(.targetUserId != ($tid | tonumber) or .itemId != ($iid | tonumber)))
+        .outgoingSaleRequests |= map(select(not (.targetUserId == ($tid | tonumber) and .itemId == ($iid | tonumber))))
     else . end)' \
     "$ACCOUNTS_JSON" > "${ACCOUNTS_JSON}.tmp" && mv "${ACCOUNTS_JSON}.tmp" "$ACCOUNTS_JSON"
 
@@ -80,10 +80,10 @@ if [ "$ACTION" == "accept" ]; then
     fi
     
     # Compare balances using bc for floating point arithmetic
-    if (( $(echo "$BUYER_BALANCE_NUM < $NUMERIC_PRICE" | bc -l) )); then
-        echo "Error: Insufficient funds. You need \$NUMERIC_PRICE but only have \$BUYER_BALANCE_NUM."
-        exit 1
-    fi
+    # if (( $(echo "$BUYER_BALANCE_NUM < $NUMERIC_PRICE" | bc -l) )); then
+    #     echo "Error: Insufficient funds. You need \$NUMERIC_PRICE but only have \$BUYER_BALANCE_NUM."
+    #     exit 1
+    # fi
     
     # Check if user already owns the item
     ALREADY_OWNS=$(jq --arg uid "$CURRENT_USER_ID" --arg iid "$ITEM_ID" \
