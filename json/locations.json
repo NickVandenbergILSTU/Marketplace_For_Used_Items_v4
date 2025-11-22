@@ -31,5 +31,10 @@
     "id": 9,
     "name": "Store 5",
     "storeItems": []
+  },
+  {
+    "id": 10,
+    "name": "my store",
+    "storeItems": []
   }
 ]

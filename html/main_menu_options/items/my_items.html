@@ -147,20 +147,11 @@
         }
 
         async function runUserScript(params) {
-            try {
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-                const text = await response.text();
-                alert(text);
-                window.location.reload();
-            } catch (error) {
-                console.error('Error running script:', error);
-                alert('Error running script');
-                window.location.reload();
-            }
+            await fetch("/run-script", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ params })
+            });
         }
 
         async function rateItem(itemId, rating) {
@@ -176,7 +167,24 @@
                 rating.toString()
             ];
 
-            await runUserScript(params);
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error rating item:', error);
+                alert('Error rating item');
+
+                // Reload page
+                window.location.reload();
+            }
         }
 
         async function setItemPrice(itemId, newPrice) {
@@ -192,7 +200,24 @@
                 newPrice.trim()
             ];
 
-            await runUserScript(params);
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error setting price:', error);
+                alert('Error setting price');
+
+                // Reload page
+                window.location.reload();
+            }
         }
 
         async function bookmarkItem(itemId) {
@@ -202,7 +227,24 @@
                 itemId.toString()
             ];
 
-            await runUserScript(params);
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error bookmarking item:', error);
+                alert('Error bookmarking item');
+
+                // Reload page
+                window.location.reload();
+            }
         }
 
         async function deleteItemFunction(itemId) {
@@ -216,7 +258,24 @@
                 itemId.toString()
             ];
 
-            await runUserScript(params);
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error deleting item:', error);
+                alert('Error deleting item');
+
+                // Reload page
+                window.location.reload();
+            }
         }
 
         async function renameItem(itemId, newName) {
@@ -232,7 +291,24 @@
                 newName.trim()
             ];
 
-            await runUserScript(params);
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Error renaming item:', error);
+                alert('Error renaming item');
+
+                // Reload page
+                window.location.reload();
+            }
         }
 
         async function createNewItem() {
@@ -241,11 +317,25 @@
                 './use_cases/create_item/main.py'
             ];
 
-            await runUserScript(params);
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                alert(text);
+
+                // Reload items after creation
+                await loadItems();
+            } catch (error) {
+                console.error('Error running script:', error);
+                alert('Error creating item');
+            }
         }
 
         async function addOrReplaceImage(itemId) {
-            const message = "Please drop the desired image (PNG) in the folder _ITEM_IMAGE_DROPBOX located in the repo root, then click OK.";
+            const message = "Please drop the desired image (PNG) in the folder _ITEM_IMAGE_DROPBOX, then click OK.";
 
             if (confirm(message)) {
                 const params = [
@@ -254,7 +344,28 @@
                     itemId.toString()
                 ];
 
-                await runUserScript(params);
+                try {
+                    const response = await fetch("/run-script", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ params })
+                    });
+                    const text = await response.text();
+                    alert(text);
+
+                    // Reload items to show new image
+                    await loadItems();
+
+                    // reload page
+                    window.location.reload();
+
+                } catch (error) {
+                    console.error('Error adding/replacing image:', error);
+                    alert('Error adding/replacing image');
+
+                    // reload page
+                    window.location.reload();
+                }
             }
         }
 
@@ -266,12 +377,35 @@
                     itemId.toString()
                 ];
 
-                await runUserScript(params);
+                try {
+                    const response = await fetch("/run-script", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ params })
+                    });
+                    const text = await response.text();
+                    alert(text);
+
+                    // Reload items to reflect removed image
+                    await loadItems();
+
+                    // reload page
+                    window.location.reload();
+                } catch (error) {
+                    console.error('Error removing image:', error);
+                    alert('Error removing image');
+
+                    // reload page
+                    window.location.reload();
+                }
+
+                
             }
         }
 
         async function openComments(itemId) {
             try {
+                // Update selectedItemCommentID in local_data.json
                 const params = [
                     HELPER_SCRIPT,
                     './use_cases/select_item_comment/select_item_comment.sh',
@@ -285,6 +419,7 @@
                 });
 
                 if (response.ok) {
+                    // Navigate to comments page
                     window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
                 } else {
                     console.error('Error setting selected item');

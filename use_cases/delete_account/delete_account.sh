@@ -1,83 +1,48 @@
 #!/bin/bash
 
-# Script to delete your own account from accounts.json
+# File paths
+LOCAL_DATA_PATH="json/local/local_data.json"
+ACCOUNTS_PATH="json/accounts.json"
+ITEMS_PATH="json/items.json"
 
+# Check if jq is installed
+if ! command -v jq &> /dev/null; then
+    echo "Error: jq is required but not installed. Install with: sudo apt-get install jq"
+    exit 1
+fi
 
-JSON_FILE="accounts.json"
+# Check if files exist
+if [[ ! -f "$LOCAL_DATA_PATH" ]]; then
+    echo "Error: $LOCAL_DATA_PATH not found"
+    exit 1
+fi
 
+if [[ ! -f "$ACCOUNTS_PATH" ]]; then
+    echo "Error: $ACCOUNTS_PATH not found"
+    exit 1
+fi
 
-# Temp Login function  
-#if user is not logged in then you will be required to login
-login() {
-    if [ -z "$ACCOUNT_ID" ]; then
-        echo "No account is currently logged in."
-            
-        
+if [[ ! -f "$ITEMS_PATH" ]]; then
+    echo "Error: $ITEMS_PATH not found"
+    exit 1
+fi
 
-        read -p "Username: " USERNAME
-        read -s -p "Password: " PASSWORD
-        echo ""
-        
-        # Verify credentials
-        ACCOUNT=$(jq --arg user "$USERNAME" --arg pass "$PASSWORD" \
-            '.[] | select(.username == $user and .password == $pass)' "$JSON_FILE")
-        
-        if [ -z "$ACCOUNT" ]; then
-            echo "✗ Login failed: Invalid username or password"
-            exit 1
-        fi
-        
-        # Extract account details
-        ACCOUNT_ID=$(echo "$ACCOUNT" | jq -r '.id')
-        ACCOUNT_BALANCE=$(echo "$ACCOUNT" | jq -r '.accountBlanance')
-        else
-            echo "Already logged in with account ID: $ACCOUNT_ID"
-    fi
-    
-    
-}
+# Get the user ID to delete
+USER_ID=$(jq -r '.currentlyLoggedInUserID' "$LOCAL_DATA_PATH")
+echo "Deleting account with ID: $USER_ID"
 
+# Delete the account object from accounts.json
+jq "map(select(.id != $USER_ID))" "$ACCOUNTS_PATH" > "$ACCOUNTS_PATH.tmp" && mv "$ACCOUNTS_PATH.tmp" "$ACCOUNTS_PATH"
 
+# Remove user ID from ratings arrays and item comments in items.json
+jq "
+  map(
+    .ratings |= map(select(.accountId != $USER_ID)) |
+    if .itemComments then .itemComments |= map(select(.commenterId != $USER_ID)) else . end
+  )
+" "$ITEMS_PATH" > "$ITEMS_PATH.tmp" && mv "$ITEMS_PATH.tmp" "$ITEMS_PATH"
 
-# Delete account function
-delete_account() {
+echo "Account deletion complete"
 
-    
-    # Warning messages
-    echo -e " WARNING: Account deletion is permanent!"
-    echo ""
-    
-    # First confirmation
-    read -p "Type your password to confirm: " CONFIRM_PASSWORD
-    
-    if [ "$CONFIRM_PASSWORD" != "$PASSWORD" ]; then
-        exit 0
-    fi
-    
-    # Second confirmation
-    read -p "Are you absolutely sure? Type 'DELETE' in capital letters: " CONFIRM_DELETE
-    
-    if [ "$CONFIRM_DELETE" != "DELETE" ]; then
-        echo -e "Account deletion cancelled"
-        exit 0
-    fi
-    
-    
-    if jq --argjson id "$ACCOUNT_ID" '[.[] | select(.id != $id)]' "$JSON_FILE" > "${JSON_FILE}.tmp"; then
-        mv "${JSON_FILE}.tmp" "$JSON_FILE"
-        echo ""
-        echo -e "Account successfully deleted!"
-        echo ""
-        echo "Your account has been permanently removed."
-    else
-        echo -e "Failed to delete account"
-        rm -f "${JSON_FILE}.tmp"
-        exit 1
-    fi
-}
-
-# Main execution
-clear
-login
-echo ""
-delete_account
+# Log out the user:
+./use_cases/log_out_user/log_out_user.sh

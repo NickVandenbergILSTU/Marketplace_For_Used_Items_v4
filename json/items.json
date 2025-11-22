@@ -7,14 +7,6 @@
       {
         "accountId": 41,
         "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
-      },
-      {
-        "userId": 41,
-        "rating": 5
       }
     ],
     "itemComments": [
@@ -34,10 +26,6 @@
       {
         "accountId": 41,
         "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
       }
     ],
     "reservedBy": 41
@@ -50,10 +38,6 @@
       {
         "accountId": 41,
         "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
       }
     ],
     "itemComments": [],
@@ -67,10 +51,6 @@
       {
         "accountId": 41,
         "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
       }
     ],
     "reservedBy": -1
@@ -82,10 +62,6 @@
     "ratings": [
       {
         "accountId": 41,
-        "rating": 5
-      },
-      {
-        "accountId": 42,
         "rating": 5
       }
     ],
@@ -99,10 +75,6 @@
       {
         "accountId": 41,
         "rating": 3
-      },
-      {
-        "accountId": 42,
-        "rating": 4
       }
     ],
     "reservedBy": -1
