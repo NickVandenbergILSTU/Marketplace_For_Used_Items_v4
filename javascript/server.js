@@ -14,6 +14,7 @@ app.use('/images', express.static(path.join(__dirname, '../images')));
 // Serve static HTML/JSON from the ../html folder
 app.use(express.static(path.join(__dirname, '../html')));
 
+
 const DEFAULT_HTML = path.join(__dirname, '../html/login_create_forgotpass.html');
 const MAIN_MENU_HTML = path.join(__dirname, '../html/main_menu.html');
 const LOCAL_DATA_PATH = path.join(__dirname, '../json/local/local_data.json');
