@@ -6,17 +6,12 @@
     "securityQuestion": "What was the name of your elementary school?",
     "securityAnswer": "stuff",
     "autoPushAndPullData": "false",
-    "accountBalance": 10000.00,
-    "incomingSaleRequests": [
-      {
-        "sourceUserId": 42,
-        "itemId": 2
-      }
-    ],
+    "accountBlanance": 10000.00,
+    "incomingSaleRequests": [],
     "outgoingSaleRequests": [
       {
-        "targetUserId": 41,
-        "itemId": 3
+        "targetUserId": 13,
+        "itemId": 1
       }
     ],
     "myItems": [
@@ -45,34 +40,31 @@
         "name": "TV",
         "price": "$300.00"
       }
-    ]
+    ],
+    "security_q_a": {}
   },
   {
-    "id": 44,
-    "username": "user 2",
-    "password": "PassWORD1",
-    "securityQuestion": "What was the name of your elementary school?",
-    "securityAnswer": "stuff",
+    "id": 42,
+    "username": "john-smith",
+    "password": "password",
     "autoPushAndPullData": "false",
-    "accountBalance": 10.00,
+    "accountBlanance": 10.00,
     "myItems": [
       1,
       2,
       6
     ],
-    "outgoingSaleRequests": [
-      {
-        "targetUserId": 41,
-        "itemId": 3
-      }
-    ],
-    "myItems": [],
     "bookmarkedItems": [
+      1,
+      2
+    ],
+    "reservedItems": [
       3
     ],
-    "reservedItems": [],
     "itemsInCart": [
-      2
+      1,
+      2,
+      3
     ],
     "security_q_a": {},
     "incomingSaleRequests": [],
@@ -83,22 +75,21 @@
     "username": "thaterickid",
     "password": "dontLook5!",
     "autoPushAndPullData": "false",
-    "accountBalance": 100.00,
+    "accountBlanance": 99.99,
     "myItems": [],
     "bookmarkedItems": [],
-    "reservedItems": [
-      17
-    ],
-    "itemsInCart": [
-      3,
-      4,
-      7
-    ],
+    "reservedItems": [],
+    "itemsInCart": [],
     "security_q_a": {
       "1": "Jeff",
       "3": "Good question"
     },
-    "incomingSaleRequests": [],
+    "incomingSaleRequests": [
+      {
+        "sourceUserId": 41,
+        "itemId": 1
+      }
+    ],
     "outgoingSaleRequests": []
   },
   {
@@ -109,11 +100,11 @@
     "securityQuestion": "What is the name of your first pet?",
     "securityAnswer": "Kim",
     "autoPushAndPullData": "false",
-    "accountBalance": 0.00,
+    "accountBlanance": 0.00,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
-    "itemsInCart": [1,2,3],
+    "itemsInCart": [],
     "orderHistory": [],
     "incomingSaleRequests": [],
     "outgoingSaleRequests": []
@@ -126,11 +117,11 @@
     "securityQuestion": "What is the name of your first pet?",
     "securityAnswer": "a",
     "autoPushAndPullData": "false",
-    "accountBalance": 0.00,
+    "accountBlanance": 0.00,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
-    "itemsInCart": [1,2,3],
+    "itemsInCart": [],
     "orderHistory": [],
     "incomingSaleRequests": [],
     "outgoingSaleRequests": []
