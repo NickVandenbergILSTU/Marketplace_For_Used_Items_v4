@@ -6,13 +6,8 @@
     "securityQuestion": "What is your favorite color?",
     "securityAnswer": "blue",
     "autoPushAndPullData": "false",
-    "accountBlanance": 10000.00,
-    "incomingSaleRequests": [
-      {
-        "sourceUserId": 42,
-        "itemId": 2
-      }
-    ],
+    "accountBlanance": 9800,
+    "incomingSaleRequests": [],
     "outgoingSaleRequests": [
       {
         "targetUserId": 42,
@@ -29,7 +24,8 @@
       20,
       21,
       22,
-      23
+      23,
+      2
     ],
     "bookmarkedItems": [
       3
@@ -57,9 +53,8 @@
     "username": "john-smith",
     "password": "password",
     "autoPushAndPullData": "false",
-    "accountBlanance": 10.00,
+    "accountBlanance": 210,
     "myItems": [
-      2,
       6
     ],
     "bookmarkedItems": [
@@ -81,7 +76,12 @@
         "itemId": 1
       }
     ],
-    "outgoingSaleRequests": []
+    "outgoingSaleRequests": [
+      {
+        "sourceUserId": 42,
+        "itemId": 2
+      }
+    ]
   },
   {
     "id": 13,
