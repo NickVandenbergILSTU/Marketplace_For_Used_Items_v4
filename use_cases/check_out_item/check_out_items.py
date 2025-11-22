@@ -1,29 +1,35 @@
-
-#### ASSUMPTIONS
+#### ASSUMPTIONS ###
 ### 1. the user has enough money in their account
 ### 2. the user enters the correct address
 
 ### we need:
 # user (preferably the object)
 # their shopping cart
-# 
+#
+
 import sys
 import json
 from pathlib import Path
 
-#account_id = sys.argv[1]
-account_id = 13
-
 python_script = Path(__file__).resolve()
 script_directory = python_script.parent
+
+# Load account_id from local_data.json
+LOCAL_DATA_PATH = script_directory.parent.parent / 'json' / 'local' / 'local_data.json'
+with open(LOCAL_DATA_PATH, 'r') as local_data_file:
+    local_data = json.load(local_data_file)
+    account_id = local_data.get("currentlyLoggedInUserID")
+
 ITEM_PATH = script_directory.parent.parent /'json'/'items.json'
 ACCOUNT_PATH = script_directory.parent.parent /'json'/'accounts.json'
 STORE_PATH = script_directory.parent.parent / 'json'/'locations.json'
 
 #1. Make sure each item in the shopping cart isn't reserved by someone else
 # if it is, return error with what item is reserved
+
 local_accounts = None
 selected_account = None
+
 with open(ACCOUNT_PATH, 'r') as accounts:
     local_accounts = json.load(accounts)
 
@@ -39,16 +45,14 @@ print(f'Items in your shopping cart: {shopping_cart}')
 local_items = None
 with open(ITEM_PATH, 'r') as items:
     local_items = json.load(items)
-    
-reservedItems = []
 
+reservedItems = []
 for item in local_items:
     for item_in_cart in shopping_cart:
         #print(f'Item in cart: {item_in_cart}')
         #total_cost += item_in_cart
         if item.get("id") == item_in_cart:
-            if not item.get("reservedBy") == account_id:
-            # check if the item is reserved
+            if not item.get("reservedBy") == account_id: # check if the item is reserved
                 reservedItems.append(item.get("id"))
 
 if not len(reservedItems) == 0:
@@ -84,7 +88,6 @@ for store in stores:
     for item in shopping_cart:
         if item in store['storeItems']:
             store['storeItems'].remove(item) # successfully updates the store
-    
     #print(f'Store stock after update: {store['storeItems']}')
 
 for user in local_accounts:
@@ -94,14 +97,7 @@ for user in local_accounts:
             user['myItems'].remove(item)
         if user['id'] == account_id:
             user['myItems'].append(item)
-
     print(f'{user['username']} items after update: {user['myItems']}\n')
 
-
 #finally, update each json file to reflect the new items
-
 ### Accounts ####
-
-
-
-                

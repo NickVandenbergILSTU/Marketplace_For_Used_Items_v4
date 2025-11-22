@@ -115,7 +115,7 @@
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
-    "itemsInCart": [],
+    "itemsInCart": [1,2,3],
     "orderHistory": [],
     "incomingSaleRequests": [],
     "outgoingSaleRequests": []
@@ -132,7 +132,7 @@
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
-    "itemsInCart": [],
+    "itemsInCart": [1,2,3],
     "orderHistory": [],
     "incomingSaleRequests": [],
     "outgoingSaleRequests": []
