@@ -3,7 +3,7 @@ import os
 
 class Account_Handler:
     def __init__(self):
-        pass
+        self.accountArray = []
 
     def createAccount(self):
         # Get absolute path to the shell script

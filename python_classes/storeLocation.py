@@ -3,7 +3,8 @@ import os
 
 class Store_Location:
     def __init__(self):
-        pass
+        self.storeName = None
+        self.storeItems = []
 
     def selectStore(self):
         # Get absolute path to the shell script

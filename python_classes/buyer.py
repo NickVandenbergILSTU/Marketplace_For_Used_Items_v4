@@ -4,7 +4,7 @@ from user.py import User
 
 class Buyer(User):
     def __init__(self):
-        pass
+        self.buyerItem = None
 
     def handleIncomingSaleRequest(self):
         # Get absolute path to the shell script
