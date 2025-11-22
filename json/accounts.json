@@ -6,7 +6,7 @@
     "securityQuestion": "What was the name of your elementary school?",
     "securityAnswer": "stuff",
     "autoPushAndPullData": "false",
-    "accountBlanance": 10300.0,
+    "accountBalance": 10000.00,
     "incomingSaleRequests": [
       {
         "sourceUserId": 42,
@@ -53,12 +53,11 @@
     "securityQuestion": "What was the name of your elementary school?",
     "securityAnswer": "stuff",
     "autoPushAndPullData": "false",
-    "accountBalance": 10002,
-    "incomingSaleRequests": [
-      {
-        "sourceUserId": 42,
-        "itemId": 2
-      }
+    "accountBalance": 10.00,
+    "myItems": [
+      1,
+      2,
+      6
     ],
     "outgoingSaleRequests": [
       {
@@ -70,20 +69,36 @@
     "bookmarkedItems": [
       3
     ],
-    "reservedItems": [
-      2,
-      3
-    ],
+    "reservedItems": [],
     "itemsInCart": [
       2
     ],
-    "orderHistory": [
-      {
-        "id": 1,
-        "name": "TV",
-        "price": "$300.00"
-      }
-    ]
+    "security_q_a": {},
+    "incomingSaleRequests": [],
+    "outgoingSaleRequests": []
+  },
+  {
+    "id": 13,
+    "username": "thaterickid",
+    "password": "dontLook5!",
+    "autoPushAndPullData": "false",
+    "accountBalance": 100.00,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [
+      17
+    ],
+    "itemsInCart": [
+      3,
+      4,
+      7
+    ],
+    "security_q_a": {
+      "1": "Jeff",
+      "3": "Good question"
+    },
+    "incomingSaleRequests": [],
+    "outgoingSaleRequests": []
   },
   {
     "id": 14,
@@ -93,11 +108,30 @@
     "securityQuestion": "What is the name of your first pet?",
     "securityAnswer": "Kim",
     "autoPushAndPullData": "false",
-    "accountBlanance": 0.00,
+    "accountBalance": 0.00,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
-    "itemsInCart": [],
-    "orderHistory": []
+    "itemsInCart": [1,2,3],
+    "orderHistory": [],
+    "incomingSaleRequests": [],
+    "outgoingSaleRequests": []
+  },
+  {
+    "id": 15,
+    "username": "nick",
+    "password": "Password1",
+    "email": "nick@gmail.com",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "a",
+    "autoPushAndPullData": "false",
+    "accountBalance": 0.00,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [1,2,3],
+    "orderHistory": [],
+    "incomingSaleRequests": [],
+    "outgoingSaleRequests": []
   }
 ]
