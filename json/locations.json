@@ -3,21 +3,23 @@
     "id": 5,
     "name": "Nick's Store",
     "storeItems": [
-      2
+      1,
+      2,
+      3
     ]
   },
   {
     "id": 6,
     "name": "Store 2",
     "storeItems": [
-      1
+      
     ]
   },
   {
     "id": 7,
     "name": "Store 3",
     "storeItems": [
-      1
+      
     ]
   },
   {
@@ -28,6 +30,11 @@
   {
     "id": 9,
     "name": "Store 5",
+    "storeItems": []
+  },
+  {
+    "id": 10,
+    "name": "my store",
     "storeItems": []
   }
 ]

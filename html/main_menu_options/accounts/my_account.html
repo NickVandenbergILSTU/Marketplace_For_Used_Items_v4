@@ -1,0 +1,301 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account</title>
+    <link rel="stylesheet" href="/html/css/items.css">
+</head>
+<body>
+    <div class="header-panel">
+        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
+        <div class="header-title">My Account</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div id="accountContainer">
+            <div class="item-box" style="max-width: 800px; margin: 20px auto;">
+                <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Account Information</h2>
+                
+                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+                    <p style="margin: 10px 0;"><strong>Username:</strong> <span id="displayUsername">Loading...</span></p>
+                    <p style="margin: 10px 0;"><strong>Email:</strong> <span id="displayEmail">Loading...</span></p>
+                    <p style="margin: 10px 0;"><strong>Password:</strong> <span id="displayPassword">Loading...</span></p>
+
+                    <p style="margin: 10px 0;"><strong>Account Balance:</strong> <span id="displayBalance">$0.00</span></p>
+                    <p style="margin: 10px 0;"><strong>Security Question:</strong> <span id="displaySecurityQuestion">Loading...</span></p>
+                    <p style="margin: 10px 0;"><strong>Security Answer:</strong> <span id="displaySecurityAnswer">Loading...</span></p>
+                </div>
+
+                <div class="action-group" style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px; color: #555;">Account Actions</h3>
+
+                    <div class="action-row">
+                        <input type="text" id="newUsername" placeholder="New Username" style="flex: 1;">
+                        <button onclick="changeUsername()">Change Username</button>
+                    </div>
+
+                    <div class="action-row">
+                        <input type="text" id="newEmail" placeholder="New Email" style="flex: 1;">
+                        <button onclick="changeEmail()">Change Email</button>
+                    </div>
+
+                    <div class="action-row">
+                        <input type="text" id="newPassword" placeholder="New Password" style="flex: 1;">
+                        <button onclick="changePassword()">Change Password</button>
+                    </div>
+                    
+
+                    <div class="action-row">
+                        <input type="text" id="addFunds" placeholder="Add Funds (e.g., 100.00)" style="flex: 1;">
+                        <button onclick="addFunds()">Add Funds</button>
+                    </div>
+
+                    <div class="action-row">
+                        <div class="security_questions">
+                            <select name="SQ_dropdown" id="SQ_dropdown">
+                                <option value="0" disabled selected>Please select a security question.</option>
+                                <option value="1">What is the name of your first pet?</option>
+                                <option value="2">What university did you study at?</option>
+                                <option value="3">What was the name of your elementary school?</option>
+                            </select>
+                        </div>
+                        <button onclick="changeSecurityQuestion()">Change Security Question</button>
+                    </div>
+
+                    <div class="action-row">
+                        <input type="text" id="newSecurityAnswer" placeholder="New Security Answer" style="flex: 1;">
+                        <button onclick="changeSecurityAnswer()">Change Security Answer</button>
+                    </div>
+
+                    <button onclick="deleteAccount()" style="background-color: #dc3545; width: 100%; margin-top: 20px;">
+                        🗑️ Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
+        let currentUserId = null;
+        let currentUser = null;
+
+        async function loadUserData() {
+            try {
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                if (!localDataResponse.ok) {
+                    throw new Error(`HTTP error! status: ${localDataResponse.status}`);
+                }
+                const localData = await localDataResponse.json();
+                currentUserId = localData.currentlyLoggedInUserID;
+
+                const accountsResponse = await fetch('/json/accounts.json');
+                if (!accountsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${accountsResponse.status}`);
+                }
+                const accounts = await accountsResponse.json();
+
+                currentUser = accounts.find(account => account.id === currentUserId);
+                
+                if (currentUser) {
+                    // Update header
+                    document.getElementById('username').textContent = currentUser.username || 'Guest User';
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    document.getElementById('balance').textContent = `$${balanceNum.toFixed(2)}`;
+
+                    // Update display fields
+                    document.getElementById('displayUsername').textContent = currentUser.username || 'N/A';
+                    document.getElementById('displayPassword').textContent = currentUser.password || 'N/A';
+                    document.getElementById('displayEmail').textContent = currentUser.email || 'N/A';
+                    document.getElementById('displayBalance').textContent = `$${balanceNum.toFixed(2)}`;
+                    document.getElementById('displaySecurityQuestion').textContent = currentUser.securityQuestion || 'N/A';
+                    document.getElementById('displaySecurityAnswer').textContent = currentUser.securityAnswer || 'N/A';
+                } else {
+                    document.getElementById('username').textContent = 'Guest User';
+                    document.getElementById('balance').textContent = '$0.00';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
+            }
+        }
+
+        async function runUserScript(params) {
+            const response = await fetch("/run-script", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ params })
+            });
+            return await response.text(); // return output
+
+        }
+
+        async function changeUsername() {
+            const newUsername = document.getElementById('newUsername').value.trim();
+            if (!newUsername) {
+                alert('Please enter a new username');
+                return;
+            }
+            // Get logged-in user ID
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+            const change_username = "./use_cases/update_account_info/change_username.sh";
+            const params = [HELPER_SCRIPT,change_username,userId,newUsername];
+            
+            const text = await runUserScript(params);  
+            alert(text);
+            if (text.includes("is already taken")) {
+                //alert("That username is already in use. Please choose another.");
+            } else {
+                //alert("Username updated successfully!");
+                document.getElementById('newUsername').value = '';
+                window.location.reload();
+            }
+            
+        }
+
+        async function changeEmail(){
+            const newEmail = document.getElementById('newEmail').value.trim();
+            if (!newEmail) {
+                alert('Please enter a new email');
+                return;
+            }
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+            const change_email = "./use_cases/update_account_info/change_email.sh";
+            const params = [HELPER_SCRIPT,change_email,userId,newEmail];
+
+            const text = await runUserScript(params);  
+            alert(text);
+            if (text.includes("successfully")) {
+                document.getElementById('newEmail').value = '';
+                window.location.reload();
+            }
+        }
+
+
+        async function changePassword() {
+            const newPassword = document.getElementById('newPassword').value.trim();
+            if (!newPassword) {
+                alert('Please enter a new password');
+                return;
+            }
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+            const change_password = "./use_cases/update_account_info/change_password.sh";
+            const params = [HELPER_SCRIPT,change_password,userId,newPassword];
+
+            const text = await runUserScript(params);  
+            alert(text);
+            if (text.includes("successfully!")) {
+                document.getElementById('newPassword').value = '';
+                window.location.reload();
+            }
+            
+        }
+
+        async function addFunds() {
+            const amount = document.getElementById('addFunds').value.trim();
+            if (!amount) {
+                alert("Enter an amount to add.");
+                return;
+            }
+
+            if (isNaN(parseFloat(amount))) {
+                alert("Amount must be a valid number.");
+                return;
+            }
+
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/update_account_info/add_funds.sh',
+                userId.toString(),
+                amount
+            ];
+
+            const responseText = await runUserScript(params);
+
+            if (responseText.includes("Funds added successfully")) {
+                alert("Funds added!");
+                document.getElementById("addFunds").value = "";
+                window.location.reload();
+            } else {
+                alert("Failed to add funds:\n" + responseText);
+            }
+        }
+
+        async function changeSecurityQuestion() {
+            const dropdown = document.getElementById('SQ_dropdown');  // FIXED ID
+            const selectedValue = dropdown.value;
+
+            if (selectedValue === "0") {
+                alert("Please select a security question.");
+                return;
+            }
+
+            // Get logged-in user ID
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/update_account_info/change_security_question.sh',
+                userId.toString(),
+                selectedValue.toString()
+            ];
+
+            const result = await runUserScript(params);
+
+            if (result.includes("Invalid")) {
+                alert("Invalid selection. Try again.");
+            } else {
+                alert("Security question updated!");
+                dropdown.value = "0";
+                window.location.reload();
+            }
+        }
+
+        async function changeSecurityAnswer() {
+            const newAnswer = document.getElementById('newSecurityAnswer').value.trim();
+            if (!newAnswer) {
+                alert('Please enter a new security answer');
+                return;
+            }
+            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+            const userId = localData.currentlyLoggedInUserID;
+            const change_password = "./use_cases/update_account_info/change_security_answer.sh";
+            const params = [HELPER_SCRIPT,change_password,userId,newAnswer];
+
+            await runUserScript(params);
+            alert("Security answer updated successfully!");
+            document.getElementById('newSecurityAnswer').value = '';
+            window.location.reload();
+        }
+
+        function deleteAccount() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone!')) {
+                if (confirm('Are you REALLY sure? All your data will be permanently deleted!')) {
+                    runUserScript([HELPER_SCRIPT, './use_cases/delete_account/delete_account.sh']);
+                    setTimeout(() => {
+                        window.location.href = '/html/login.html';
+                    }, 1000);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+        });
+    </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 const express = require('express');
 const fs = require('fs');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 const path = require('path');
 const app = express();
 
@@ -37,6 +37,8 @@ app.get('/', (req, res) => {
 });
 
 app.post('/run-script', (req, res) => {
+    console.log('Received run-script POST:', req.body);
+    
     let { params } = req.body;
     if (!Array.isArray(params)) params = [];
 
@@ -58,6 +60,28 @@ app.post('/run-script', (req, res) => {
     exec(`bash "${absoluteScriptPath}" ${safeParams}`, (error, stdout, stderr) => {
         if (error) return res.status(500).send(`Error: ${error.message}`);
         if (stderr) console.error(stderr);
+    // Prepare argument array
+    const args = params;
+
+    // Use spawn to avoid shell quoting issues
+    const child = spawn('bash', [absoluteScriptPath, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+
+    let stdout = '';
+    let stderr = '';
+
+    child.stdout.on('data', (data) => {
+        stdout += data;
+    });
+
+    child.stderr.on('data', (data) => {
+        stderr += data;
+    });
+
+    child.on('close', (code) => {
+        if (code !== 0) {
+            console.error(stderr);
+            return res.status(500).send(`Error: ${stderr || 'Script exited with code ' + code}`);
+        }
         res.send(`Script output:\n${stdout}`);
     });
 });

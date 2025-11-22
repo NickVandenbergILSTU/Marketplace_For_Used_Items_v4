@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Accounts</title>
+    <link rel="stylesheet" href="/html/css/items.css">
+</head>
+<body>
+    <div class="header-panel">
+        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
+        <div class="header-title">Display Accounts</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="sort-controls">
+            <label for="search">Search:</label>
+            <input type="text" id="search" class="search-input" placeholder="Search accounts by username" oninput="filterAccounts()">
+
+            <label for="sort">Sort by:</label>
+            <select id="sort" onchange="loadAccounts(this.value)">
+                <option value="default">Default Order</option>
+                <option value="alphabetical">Alphabetical</option>
+                <option value="balance">Balance</option>
+                <option value="id">ID Num</option>
+            </select>
+        </div>
+
+        <div id="accountsContainer" style = "padding: 10px;"></div>
+    </div>
+
+    <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
+        let currentUserId = null;
+        let allAccounts = [];
+
+        async function loadUserData() {
+            try {
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                if (!localDataResponse.ok) {
+                    throw new Error(`HTTP error! status: ${localDataResponse.status}`);
+                }
+                const localData = await localDataResponse.json();
+                currentUserId = localData.currentlyLoggedInUserID;
+
+                const accountsResponse = await fetch('/api/accounts');
+                if (!accountsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${accountsResponse.status}`);
+                }
+                const accounts = await accountsResponse.json();
+
+                const currentUser = accounts.find(account => account.id === currentUserId);
+
+                const usernameElement = document.getElementById('username');
+                const balanceElement = document.getElementById('balance');
+
+                if (currentUser && currentUser.username) {
+                    usernameElement.textContent = currentUser.username;
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    balanceElement.textContent = `$${balanceNum.toFixed(2)}`;
+                } else {
+                    usernameElement.textContent = 'Guest User';
+                    balanceElement.textContent = '$0.00';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
+            }
+        }
+
+        async function loadAccounts(order = "default") {
+            try {
+                const response = await fetch('/api/accounts');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                let accounts = await response.json();
+
+                if (order === "alphabetical") {
+                    accounts.sort((a, b) => a.username.localeCompare(b.username));
+                } else if (order === "balance") {
+                    accounts.sort((a, b) => {
+                        const balanceA = a.accountBalance || a.accountBlanance || 0;
+                        const balanceB = b.accountBalance || b.accountBlanance || 0;
+                        return balanceB - balanceA;
+                    });
+                } else if (order === "id") {
+                    accounts.sort((a, b) => a.id - b.id);
+                }
+
+                allAccounts = accounts;
+                filterAccounts();
+            } catch (error) {
+                console.error('Error loading accounts:', error);
+                document.getElementById('accountsContainer').innerHTML = 
+                    '<div class="no-accounts">Error loading accounts.</div>';
+            }
+        }
+
+        function filterAccounts() {
+            const searchTerm = document.getElementById('search').value.toLowerCase().trim();
+            
+            if (!allAccounts || allAccounts.length === 0) {
+                document.getElementById('accountsContainer').innerHTML = 
+                    '<div class="no-items">Loading accounts...</div>';
+                return;
+            }
+            
+            if (searchTerm === '') {
+                renderAccounts(allAccounts);
+                return;
+            }
+            
+            const filteredAccounts = allAccounts.filter(account => {
+                const username = (account.username || '').toLowerCase();
+                const id = (account.id || '').toString();
+                return username.includes(searchTerm) || id.includes(searchTerm);
+            });
+            
+            renderAccounts(filteredAccounts);
+        }
+
+        function renderAccounts(accounts) {
+            const container = document.getElementById("accountsContainer");
+            container.innerHTML = "";
+
+            if (accounts.length === 0) {
+                container.innerHTML = '<div class="no-items">No accounts found.</div>';
+                return;
+            }
+
+            accounts.forEach(account => {
+                const accountBox = document.createElement("div");
+                accountBox.className = "account-box";
+
+                const isCurrentAccount = account.id === currentUserId;
+
+                const nameContainer = document.createElement("div");
+                nameContainer.className = "account-name-container";
+
+                const name = document.createElement("h3");
+                name.textContent = account.username;
+                nameContainer.appendChild(name);
+
+                if (isCurrentAccount) {
+                    const currentBadge = document.createElement("span");
+                    currentBadge.className = "reserved-badge";
+                    currentBadge.textContent = "YOUR ACCOUNT";
+                    accountBox.appendChild(currentBadge);
+                }
+
+                const accountId = document.createElement("p");
+                accountId.innerHTML = `<strong>Account ID:</strong> ${account.id}`;
+
+                const balance = account.accountBalance || account.accountBlanance || 0;
+                const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                const balanceElement = document.createElement("p");
+                balanceElement.innerHTML = `<strong>Balance:</strong> <span class="price-text">$${balanceNum.toFixed(2)}</span>`;
+
+                accountBox.appendChild(nameContainer);
+                accountBox.appendChild(accountId);
+                accountBox.appendChild(balanceElement);
+
+                container.appendChild(accountBox);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            loadAccounts();
+        });
+    </script>
+</body>
+</html>
