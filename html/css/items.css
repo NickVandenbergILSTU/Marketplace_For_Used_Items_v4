@@ -355,6 +355,35 @@ body {
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
+/*the styling for account is here*/
+ .account-box {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+ }
+
+ #accountsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+ }
+
+ .account-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+.account-name-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #dc2626;
+}
 
 @media (max-width: 768px) {
     .header-panel {
@@ -388,4 +417,6 @@ body {
     #itemsContainer {
         grid-template-columns: 1fr;
     }
+
+   
 }

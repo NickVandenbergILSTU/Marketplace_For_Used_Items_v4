@@ -42,3 +42,5 @@ git remote set-url origin https://{github_pat}@github.com/NickVandenbergILSTU/Ma
 
 6. IF YOU HAVE ISSUES WITH INSTALLS, RUN THIS:
 ./helper_scripts/set_default_local_data_and_installs/run_installs.sh
+
+This is a test
