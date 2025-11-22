@@ -6,6 +6,7 @@
     "securityQuestion": "What was the name of your elementary school?",
     "securityAnswer": "stuff",
     "autoPushAndPullData": "false",
+    "accountBalance": 10000.00,
     "accountBlanance": 10000.00,
     "incomingSaleRequests": [],
     "outgoingSaleRequests": [
@@ -29,6 +30,7 @@
       3
     ],
     "reservedItems": [
+      1,
       2
     ],
     "itemsInCart": [
@@ -47,13 +49,12 @@
     "id": 42,
     "username": "john-smith",
     "password": "password",
+    "email": "email@email.com",
+    "securityQuestion": "None",
+    "securityAnswer": "NA",
     "autoPushAndPullData": "false",
-    "accountBlanance": 10.00,
-    "myItems": [
-      1,
-      2,
-      6
-    ],
+    "accountBalanance": 10.00,
+    "myItems": [],
     "bookmarkedItems": [
       1,
       2
@@ -66,6 +67,7 @@
       2,
       3
     ],
+    "orderHistory": []
     "security_q_a": {},
     "incomingSaleRequests": [],
     "outgoingSaleRequests": []
@@ -74,6 +76,27 @@
     "id": 13,
     "username": "thaterickid",
     "password": "dontLook5!",
+    "email": "eric@email.com",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "Sassy",
+    "autoPushAndPullData": "false",
+    "accountBalance": 99.99,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [
+      6
+    ],
+    "itemsInCart": [
+      3,
+      6
+    ],
+    "security_q_a": {
+      "1": "Jeff",
+      "3": "Good question"
+    }
+    "reservedItems": [],
+    "itemsInCart": [],
+    "orderHistory": []
     "autoPushAndPullData": "false",
     "accountBlanance": 99.99,
     "myItems": [],

@@ -1,3 +1,5 @@
+# exit if the password doesn't meet requirements
+
 #!/bin/bash
 
 # check_password_requirements.sh

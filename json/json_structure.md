@@ -58,3 +58,8 @@ Array of stores. Each store has:
 local_data.json:
 - hasUsedAIAssistant: false by default
 - currentlyLoggedInUserID: -1 by default (-1 means no one logged in)
+
+==========================================
+security_questions.json:
+
+An array of security questions. Each account with have to choose answers to 2.
