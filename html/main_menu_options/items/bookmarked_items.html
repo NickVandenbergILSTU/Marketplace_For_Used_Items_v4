@@ -44,7 +44,21 @@
         let allItems = [];
         let allAccounts = [];
 
-        // Load user data
+        async function sendHttpRequest(params) {
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                return { success: true, text };
+            } catch (error) {
+                console.error('Error sending HTTP request:', error);
+                return { success: false, error };
+            }
+        }
+
         async function loadUserData() {
             try {
                 const localDataResponse = await fetch('/json/local/local_data.json');
@@ -120,48 +134,235 @@
             renderItems(filteredItems);
         }
 
-        async function runUserScript(params) {
-            await fetch("/run-script", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ params })
-            });
+        async function openComments(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/select_item_comment/select_item_comment.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
+            } else {
+                console.error('Error opening comments');
+            }
         }
 
-        async function openComments(itemId) {
-            try {
-                // Update selectedItemCommentID in local_data.json
+        async function renameItem(itemId, newName) {
+            if (!newName || newName.trim() === '') {
+                alert('Please enter a new name');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/rename_item/rename_item.sh',
+                itemId.toString(),
+                newName.trim()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error renaming item');
+            }
+            window.location.reload();
+        }
+
+        async function deleteItem(itemId) {
+            if (!confirm('Are you sure you want to delete this item?')) {
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/delete_item/delete_item.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error deleting item');
+            }
+            window.location.reload();
+        }
+
+        async function rateItem(itemId, rating) {
+            if (!rating) {
+                alert('Please select a rating');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/rate_item/rate_item.sh',
+                itemId.toString(),
+                rating.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error rating item');
+            }
+            window.location.reload();
+        }
+
+        async function setItemPrice(itemId, newPrice) {
+            if (!newPrice || newPrice.trim() === '') {
+                alert('Please enter a new price');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/set_item_price/set_item_price.sh',
+                itemId.toString(),
+                newPrice.trim()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error setting price');
+            }
+            window.location.reload();
+        }
+
+        async function bookmarkItem(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/bookmark_and_unbookmark_item/bookmark_item.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error bookmarking item');
+            }
+            window.location.reload();
+        }
+
+        async function replaceImage(itemId) {
+            const message = "Please drop the desired image (PNG) in the folder _ITEM_IMAGE_DROPBOX, then click OK.";
+
+            if (confirm(message)) {
                 const params = [
                     HELPER_SCRIPT,
-                    './use_cases/select_item_comment/select_item_comment.sh',
+                    './use_cases/add_item_image/add_item_image.sh',
                     itemId.toString()
                 ];
 
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-
-                if (response.ok) {
-                    // Navigate to comments page
-                    window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
+                const result = await sendHttpRequest(params);
+                if (result.success) {
+                    alert(result.text);
                 } else {
-                    console.error('Error setting selected item');
+                    alert('Error replacing image');
                 }
-            } catch (error) {
-                console.error('Error opening comments:', error);
+                window.location.reload();
             }
         }
 
-        function renameItem(itemId, newName) {
-            console.log(`Rename item ${itemId} to: ${newName}`);
+        async function deleteImage(itemId) {
+            if (confirm("Click OK to confirm you want this image deleted")) {
+                const params = [
+                    HELPER_SCRIPT,
+                    './use_cases/remove_item_image/remove_item_image.sh',
+                    itemId.toString()
+                ];
+
+                const result = await sendHttpRequest(params);
+                if (result.success) {
+                    alert(result.text);
+                } else {
+                    alert('Error deleting image');
+                }
+                window.location.reload();
+            }
         }
 
-        function deleteItem(itemId) {
-            if (confirm('Are you sure you want to delete this item?')) {
-                console.log(`Delete item ${itemId}`);
+        async function sellToUser(itemId, userId) {
+            if (!userId) {
+                alert('Please select a user');
+                return;
             }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/sell_to_user/sell_to_user.sh',
+                itemId.toString(),
+                userId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error selling to user');
+            }
+            window.location.reload();
+        }
+
+        async function sellToStore(itemId, storeId) {
+            if (!storeId) {
+                alert('Please select a store');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/sell_to_store/sell_to_store.sh',
+                itemId.toString(),
+                storeId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error selling to store');
+            }
+            window.location.reload();
+        }
+
+        async function reserveItem(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/reserve_item/reserve_item.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error reserving item');
+            }
+            window.location.reload();
+        }
+
+        async function toggleCart(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/toggle_cart/toggle_cart.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error toggling cart');
+            }
+            window.location.reload();
         }
 
         function renderItems(items) {
@@ -235,8 +436,8 @@
                     imgButtons.className = "img-buttons";
                     img.onload = () => {
                         imgButtons.innerHTML = `
-                            <button>Replace Image</button>
-                            <button>Delete Image</button>
+                            <button onclick="replaceImage(${item.id})">Replace Image</button>
+                            <button onclick="deleteImage(${item.id})">Delete Image</button>
                         `;
                     };
 
@@ -262,7 +463,7 @@
                     }
                     const rateBtn = document.createElement("button");
                     rateBtn.textContent = "Rate";
-                    rateBtn.onclick = () => runUserScript(rateSelect.value);
+                    rateBtn.onclick = () => rateItem(item.id, rateSelect.value);
                     rateDiv.appendChild(rateSelect);
                     rateDiv.appendChild(rateBtn);
 
@@ -273,13 +474,13 @@
                     priceInput.placeholder = "New Price";
                     const priceBtn = document.createElement("button");
                     priceBtn.textContent = "Set Price";
-                    priceBtn.onclick = () => runUserScript(priceInput.value);
+                    priceBtn.onclick = () => setItemPrice(item.id, priceInput.value);
                     priceDiv.appendChild(priceInput);
                     priceDiv.appendChild(priceBtn);
 
                     const bookmarkBtn = document.createElement("button");
                     bookmarkBtn.textContent = "Unbookmark";
-                    bookmarkBtn.onclick = () => runUserScript("bookmark");
+                    bookmarkBtn.onclick = () => bookmarkItem(item.id);
 
                     const deleteBtn = document.createElement("button");
                     deleteBtn.textContent = "🗑️ Delete Item";
@@ -299,7 +500,7 @@
                     });
                     const sellUserBtn = document.createElement("button");
                     sellUserBtn.textContent = "Sell to User";
-                    sellUserBtn.onclick = () => runUserScript(sellUserSelect.value);
+                    sellUserBtn.onclick = () => sellToUser(item.id, sellUserSelect.value);
                     sellUserDiv.appendChild(sellUserSelect);
                     sellUserDiv.appendChild(sellUserBtn);
 
@@ -319,7 +520,7 @@
                         });
                     const sellStoreBtn = document.createElement("button");
                     sellStoreBtn.textContent = "Sell to Store";
-                    sellStoreBtn.onclick = () => runUserScript(sellStoreSelect.value);
+                    sellStoreBtn.onclick = () => sellToStore(item.id, sellStoreSelect.value);
                     sellStoreDiv.appendChild(sellStoreSelect);
                     sellStoreDiv.appendChild(sellStoreBtn);
 
@@ -357,24 +558,24 @@
                     }
                     const rateBtn = document.createElement("button");
                     rateBtn.textContent = "Rate";
-                    rateBtn.onclick = () => runUserScript(rateSelect.value);
+                    rateBtn.onclick = () => rateItem(item.id, rateSelect.value);
                     rateDiv.appendChild(rateSelect);
                     rateDiv.appendChild(rateBtn);
 
                     const bookmarkBtn = document.createElement("button");
                     bookmarkBtn.textContent = "Unbookmark";
-                    bookmarkBtn.onclick = () => runUserScript("bookmark");
+                    bookmarkBtn.onclick = () => bookmarkItem(item.id);
 
                     if (!isReservedBySomeone || isReservedByCurrentUser) {
                         const reserveBtn = document.createElement("button");
                         reserveBtn.textContent = isReservedByCurrentUser ? "Unreserve Item" : "Reserve Item";
-                        reserveBtn.onclick = () => runUserScript("reserve");
+                        reserveBtn.onclick = () => reserveItem(item.id);
                         actions.appendChild(reserveBtn);
                     }
 
                     const cartBtn = document.createElement("button");
                     cartBtn.textContent = isInCart ? "🛒 Remove from Cart" : "🛒 Add to Cart";
-                    cartBtn.onclick = () => runUserScript("cart");
+                    cartBtn.onclick = () => toggleCart(item.id);
 
                     const commentsBtn = document.createElement("button");
                     commentsBtn.textContent = "💬 Comments";

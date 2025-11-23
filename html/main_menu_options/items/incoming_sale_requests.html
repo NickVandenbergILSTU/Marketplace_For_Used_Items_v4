@@ -40,6 +40,21 @@
         let allItems = [];
         let accountsData = [];
 
+        async function sendHttpRequest(params) {
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                return { success: true, text };
+            } catch (error) {
+                console.error('Error sending HTTP request:', error);
+                return { success: false, error };
+            }
+        }
+
         async function loadUserData() {
             try {
                 const localDataResponse = await fetch('/json/local/local_data.json');
@@ -152,38 +167,75 @@
             renderItems(filteredItems);
         }
 
-        async function runUserScript(params) {
-            await fetch("/run-script", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ params })
-            });
+        async function openComments(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/select_item_comment/select_item_comment.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
+            } else {
+                console.error('Error opening comments');
+            }
         }
 
-        async function openComments(itemId) {
-            try {
-                // Update selectedItemCommentID in local_data.json
-                const params = [
-                    HELPER_SCRIPT,
-                    './use_cases/select_item_comment/select_item_comment.sh',
-                    itemId.toString()
-                ];
-
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-
-                if (response.ok) {
-                    // Navigate to comments page
-                    window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
-                } else {
-                    console.error('Error setting selected item');
-                }
-            } catch (error) {
-                console.error('Error opening comments:', error);
+        async function acceptSaleRequest(itemId, itemName) {
+            if (!confirm(`Accept sale request for ${itemName}?`)) {
+                return;
             }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/accept_sale_request/accept_sale_request.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error accepting sale request');
+            }
+            window.location.reload();
+        }
+
+        async function rejectSaleRequest(itemId, itemName) {
+            if (!confirm(`Reject sale request for ${itemName}?`)) {
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/reject_sale_request/reject_sale_request.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error rejecting sale request');
+            }
+            window.location.reload();
+        }
+
+        async function bookmarkItem(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/bookmark_and_unbookmark_item/bookmark_item.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error bookmarking item');
+            }
+            window.location.reload();
         }
 
         function renderItems(items) {
@@ -251,24 +303,16 @@
                 const acceptBtn = document.createElement("button");
                 acceptBtn.textContent = "✅ Accept Sale Request";
                 acceptBtn.style.backgroundColor = "#28a745";
-                acceptBtn.onclick = () => {
-                    if (confirm(`Accept sale request for ${item.name}?`)) {
-                        runUserScript([HELPER_SCRIPT, './use_cases/accept_sale_request.py', item.id]);
-                    }
-                };
+                acceptBtn.onclick = () => acceptSaleRequest(item.id, item.name);
 
                 const rejectBtn = document.createElement("button");
                 rejectBtn.textContent = "❌ Reject Sale Request";
                 rejectBtn.style.backgroundColor = "#dc3545";
-                rejectBtn.onclick = () => {
-                    if (confirm(`Reject sale request for ${item.name}?`)) {
-                        runUserScript([HELPER_SCRIPT, './use_cases/reject_sale_request.py', item.id]);
-                    }
-                };
+                rejectBtn.onclick = () => rejectSaleRequest(item.id, item.name);
 
                 const bookmarkBtn = document.createElement("button");
                 bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
-                bookmarkBtn.onclick = () => runUserScript([HELPER_SCRIPT, './use_cases/bookmark.py', item.id]);
+                bookmarkBtn.onclick = () => bookmarkItem(item.id);
 
                 const commentsBtn = document.createElement("button");
                 commentsBtn.textContent = "💬 Comments";

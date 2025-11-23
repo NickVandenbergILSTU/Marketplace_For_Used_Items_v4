@@ -42,6 +42,7 @@
     </div>
 
     <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
         let userBookmarkedItems = [];
         let userReservedItems = [];
         let userCartItems = [];
@@ -49,7 +50,21 @@
         let allReservedItems = {};
         let allItems = [];
 
-        // Load user data and store name
+        async function sendHttpRequest(params) {
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                return { success: true, text };
+            } catch (error) {
+                console.error('Error sending HTTP request:', error);
+                return { success: false, error };
+            }
+        }
+
         async function loadUserData() {
             try {
                 const localDataResponse = await fetch('/json/local/local_data.json');
@@ -140,12 +155,89 @@
             renderItems(filteredItems);
         }
 
-        async function runUserScript(params) {
-            await fetch("/run-script", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ params })
-            });
+        async function rateItem(itemId, rating) {
+            if (!rating) {
+                alert('Please select a rating');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/rate_item/rate_item.sh',
+                itemId.toString(),
+                rating.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error rating item');
+            }
+            window.location.reload();
+        }
+
+        async function bookmarkItem(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/bookmark_and_unbookmark_item/bookmark_item.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error bookmarking item');
+            }
+            window.location.reload();
+        }
+
+        async function reserveItem(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/reserve_item/reserve_item.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error reserving item');
+            }
+            window.location.reload();
+        }
+
+        async function toggleCart(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/toggle_cart/toggle_cart.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error toggling cart');
+            }
+            window.location.reload();
+        }
+
+        async function openComments(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/select_item_comment/select_item_comment.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
+            } else {
+                console.error('Error opening comments');
+            }
         }
 
         function renderItems(items) {
@@ -179,13 +271,6 @@
                     bookmarkEmoji.textContent = "🔖";
                     nameContainer.appendChild(bookmarkEmoji);
                 }
-
-                // if (isReservedBySomeone) {
-                //     const reserveEmoji = document.createElement("span");
-                //     reserveEmoji.className = "reserve-emoji";
-                //     reserveEmoji.textContent = "❗";
-                //     nameContainer.appendChild(reserveEmoji);
-                // }
 
                 const price = document.createElement("p");
                 price.innerHTML = `<strong>Price:</strong> <span class="price-text">${item.price}</span>`;
@@ -221,27 +306,28 @@
                 }
                 const rateBtn = document.createElement("button");
                 rateBtn.textContent = "Rate";
-                rateBtn.onclick = () => runUserScript(rateSelect.value);
+                rateBtn.onclick = () => rateItem(item.id, rateSelect.value);
                 rateDiv.appendChild(rateSelect);
                 rateDiv.appendChild(rateBtn);
 
                 const bookmarkBtn = document.createElement("button");
                 bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
-                bookmarkBtn.onclick = () => runUserScript("bookmark");
+                bookmarkBtn.onclick = () => bookmarkItem(item.id);
 
                 if (!isReservedBySomeone || isReservedByCurrentUser) {
                     const reserveBtn = document.createElement("button");
                     reserveBtn.textContent = isReservedByCurrentUser ? "Unreserve Item" : "Reserve Item";
-                    reserveBtn.onclick = () => runUserScript("reserve");
+                    reserveBtn.onclick = () => reserveItem(item.id);
                     actions.appendChild(reserveBtn);
                 }
 
                 const cartBtn = document.createElement("button");
                 cartBtn.textContent = isInCart ? "🛒 Remove from Cart" : "🛒 Add to Cart";
-                cartBtn.onclick = () => runUserScript("cart");
+                cartBtn.onclick = () => toggleCart(item.id);
 
                 const commentsBtn = document.createElement("button");
                 commentsBtn.textContent = "💬 Comments";
+                commentsBtn.onclick = () => openComments(item.id);
 
                 actions.appendChild(rateDiv);
                 actions.appendChild(bookmarkBtn);

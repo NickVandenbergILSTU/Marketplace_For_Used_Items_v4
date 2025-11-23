@@ -44,7 +44,21 @@
         let allReservedItems = {};
         let allItems = [];
 
-        // Load user data
+        async function sendHttpRequest(params) {
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                return { success: true, text };
+            } catch (error) {
+                console.error('Error sending HTTP request:', error);
+                return { success: false, error };
+            }
+        }
+
         async function loadUserData() {
             try {
                 const localDataResponse = await fetch('/json/local/local_data.json');
@@ -119,38 +133,89 @@
             renderItems(filteredItems);
         }
 
-        async function runUserScript(params) {
-            await fetch("/run-script", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ params })
-            });
+        async function openComments(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/select_item_comment/select_item_comment.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
+            } else {
+                console.error('Error opening comments');
+            }
         }
 
-        async function openComments(itemId) {
-            try {
-                // Update selectedItemCommentID in local_data.json
-                const params = [
-                    HELPER_SCRIPT,
-                    './use_cases/select_item_comment/select_item_comment.sh',
-                    itemId.toString()
-                ];
-
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-
-                if (response.ok) {
-                    // Navigate to comments page
-                    window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
-                } else {
-                    console.error('Error setting selected item');
-                }
-            } catch (error) {
-                console.error('Error opening comments:', error);
+        async function rateItem(itemId, rating) {
+            if (!rating) {
+                alert('Please select a rating');
+                return;
             }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/rate_item/rate_item.sh',
+                itemId.toString(),
+                rating.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error rating item');
+            }
+            window.location.reload();
+        }
+
+        async function bookmarkItem(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/bookmark_and_unbookmark_item/bookmark_item.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error bookmarking item');
+            }
+            window.location.reload();
+        }
+
+        async function unreserveItem(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/reserve_item/reserve_item.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error unreserving item');
+            }
+            window.location.reload();
+        }
+
+        async function toggleCart(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/toggle_cart/toggle_cart.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error toggling cart');
+            }
+            window.location.reload();
         }
 
         function renderItems(items) {
@@ -219,21 +284,21 @@
                 }
                 const rateBtn = document.createElement("button");
                 rateBtn.textContent = "Rate";
-                rateBtn.onclick = () => runUserScript(rateSelect.value);
+                rateBtn.onclick = () => rateItem(item.id, rateSelect.value);
                 rateDiv.appendChild(rateSelect);
                 rateDiv.appendChild(rateBtn);
 
                 const bookmarkBtn = document.createElement("button");
                 bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
-                bookmarkBtn.onclick = () => runUserScript("bookmark");
+                bookmarkBtn.onclick = () => bookmarkItem(item.id);
 
                 const reserveBtn = document.createElement("button");
                 reserveBtn.textContent = "Unreserve Item";
-                reserveBtn.onclick = () => runUserScript("reserve");
+                reserveBtn.onclick = () => unreserveItem(item.id);
 
                 const cartBtn = document.createElement("button");
                 cartBtn.textContent = isInCart ? "🛒 Remove from Cart" : "🛒 Add to Cart";
-                cartBtn.onclick = () => runUserScript("cart");
+                cartBtn.onclick = () => toggleCart(item.id);
 
                 const commentsBtn = document.createElement("button");
                 commentsBtn.textContent = "💬 Comments";

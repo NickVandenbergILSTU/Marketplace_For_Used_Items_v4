@@ -72,6 +72,21 @@
         let currentUserId = null;
         let allItems = [];
 
+        async function sendHttpRequest(params) {
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                return { success: true, text };
+            } catch (error) {
+                console.error('Error sending HTTP request:', error);
+                return { success: false, error };
+            }
+        }
+
         async function loadUserData() {
             try {
                 const localDataResponse = await fetch('/json/local/local_data.json');
@@ -146,14 +161,6 @@
             renderItems(filteredItems);
         }
 
-        async function runUserScript(params) {
-            await fetch("/run-script", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ params })
-            });
-        }
-
         async function rateItem(itemId, rating) {
             if (!rating) {
                 alert('Please select a rating');
@@ -167,24 +174,13 @@
                 rating.toString()
             ];
 
-            try {
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-                const text = await response.text();
-                alert(text);
-
-                // Reload page
-                window.location.reload();
-            } catch (error) {
-                console.error('Error rating item:', error);
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
                 alert('Error rating item');
-
-                // Reload page
-                window.location.reload();
             }
+            window.location.reload();
         }
 
         async function setItemPrice(itemId, newPrice) {
@@ -200,24 +196,13 @@
                 newPrice.trim()
             ];
 
-            try {
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-                const text = await response.text();
-                alert(text);
-
-                // Reload page
-                window.location.reload();
-            } catch (error) {
-                console.error('Error setting price:', error);
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
                 alert('Error setting price');
-
-                // Reload page
-                window.location.reload();
             }
+            window.location.reload();
         }
 
         async function bookmarkItem(itemId) {
@@ -227,24 +212,13 @@
                 itemId.toString()
             ];
 
-            try {
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-                const text = await response.text();
-                alert(text);
-
-                // Reload page
-                window.location.reload();
-            } catch (error) {
-                console.error('Error bookmarking item:', error);
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
                 alert('Error bookmarking item');
-
-                // Reload page
-                window.location.reload();
             }
+            window.location.reload();
         }
 
         async function deleteItemFunction(itemId) {
@@ -258,24 +232,13 @@
                 itemId.toString()
             ];
 
-            try {
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-                const text = await response.text();
-                alert(text);
-
-                // Reload page
-                window.location.reload();
-            } catch (error) {
-                console.error('Error deleting item:', error);
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
                 alert('Error deleting item');
-
-                // Reload page
-                window.location.reload();
             }
+            window.location.reload();
         }
 
         async function renameItem(itemId, newName) {
@@ -291,24 +254,13 @@
                 newName.trim()
             ];
 
-            try {
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-                const text = await response.text();
-                alert(text);
-
-                // Reload page
-                window.location.reload();
-            } catch (error) {
-                console.error('Error renaming item:', error);
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
                 alert('Error renaming item');
-
-                // Reload page
-                window.location.reload();
             }
+            window.location.reload();
         }
 
         async function createNewItem() {
@@ -317,21 +269,13 @@
                 './use_cases/create_item/main.py'
             ];
 
-            try {
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-                const text = await response.text();
-                alert(text);
-
-                // Reload items after creation
-                await loadItems();
-            } catch (error) {
-                console.error('Error running script:', error);
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
                 alert('Error creating item');
             }
+            await loadItems();
         }
 
         async function addOrReplaceImage(itemId) {
@@ -344,28 +288,13 @@
                     itemId.toString()
                 ];
 
-                try {
-                    const response = await fetch("/run-script", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ params })
-                    });
-                    const text = await response.text();
-                    alert(text);
-
-                    // Reload items to show new image
-                    await loadItems();
-
-                    // reload page
-                    window.location.reload();
-
-                } catch (error) {
-                    console.error('Error adding/replacing image:', error);
+                const result = await sendHttpRequest(params);
+                if (result.success) {
+                    alert(result.text);
+                } else {
                     alert('Error adding/replacing image');
-
-                    // reload page
-                    window.location.reload();
                 }
+                window.location.reload();
             }
         }
 
@@ -377,56 +306,73 @@
                     itemId.toString()
                 ];
 
-                try {
-                    const response = await fetch("/run-script", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ params })
-                    });
-                    const text = await response.text();
-                    alert(text);
-
-                    // Reload items to reflect removed image
-                    await loadItems();
-
-                    // reload page
-                    window.location.reload();
-                } catch (error) {
-                    console.error('Error removing image:', error);
+                const result = await sendHttpRequest(params);
+                if (result.success) {
+                    alert(result.text);
+                } else {
                     alert('Error removing image');
-
-                    // reload page
-                    window.location.reload();
                 }
-
-                
+                window.location.reload();
             }
         }
 
         async function openComments(itemId) {
-            try {
-                // Update selectedItemCommentID in local_data.json
-                const params = [
-                    HELPER_SCRIPT,
-                    './use_cases/select_item_comment/select_item_comment.sh',
-                    itemId.toString()
-                ];
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/select_item_comment/select_item_comment.sh',
+                itemId.toString()
+            ];
 
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-
-                if (response.ok) {
-                    // Navigate to comments page
-                    window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
-                } else {
-                    console.error('Error setting selected item');
-                }
-            } catch (error) {
-                console.error('Error opening comments:', error);
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
+            } else {
+                console.error('Error opening comments');
             }
+        }
+
+        async function sellToUser(itemId, userId) {
+            if (!userId) {
+                alert('Please select a user');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/sell_to_user/sell_to_user.sh',
+                itemId.toString(),
+                userId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error selling to user');
+            }
+            window.location.reload();
+        }
+
+        async function sellToStore(itemId, storeId) {
+            if (!storeId) {
+                alert('Please select a store');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/sell_to_store/sell_to_store.sh',
+                itemId.toString(),
+                storeId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error selling to store');
+            }
+            window.location.reload();
         }
 
         function renderItems(items) {
@@ -552,7 +498,7 @@
                     });
                 const sellUserBtn = document.createElement("button");
                 sellUserBtn.textContent = "Sell to User";
-                sellUserBtn.onclick = () => runUserScript(sellUserSelect.value);
+                sellUserBtn.onclick = () => sellToUser(item.id, sellUserSelect.value);
                 sellUserDiv.appendChild(sellUserSelect);
                 sellUserDiv.appendChild(sellUserBtn);
 
@@ -572,7 +518,7 @@
                     });
                 const sellStoreBtn = document.createElement("button");
                 sellStoreBtn.textContent = "Sell to Store";
-                sellStoreBtn.onclick = () => runUserScript(sellStoreSelect.value);
+                sellStoreBtn.onclick = () => sellToStore(item.id, sellStoreSelect.value);
                 sellStoreDiv.appendChild(sellStoreSelect);
                 sellStoreDiv.appendChild(sellStoreBtn);
 

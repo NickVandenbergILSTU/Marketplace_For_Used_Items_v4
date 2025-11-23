@@ -41,6 +41,21 @@
         let allAccounts = [];
         let outgoingSaleRequestsMap = {};
 
+        async function sendHttpRequest(params) {
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                return { success: true, text };
+            } catch (error) {
+                console.error('Error sending HTTP request:', error);
+                return { success: false, error };
+            }
+        }
+
         async function loadUserData() {
             try {
                 const localDataResponse = await fetch('/json/local/local_data.json');
@@ -151,60 +166,222 @@
             renderItems(filteredItems);
         }
 
-        async function runUserScript(params) {
-            await fetch("/run-script", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ params })
-            });
-        }
-
-        function renameItem(itemId, newName) {
-            // TODO: Implement rename item functionality
-            console.log(`Rename item ${itemId} to: ${newName}`);
-        }
-
-        function deleteItem(itemId) {
-            if (confirm('Are you sure you want to delete this item?')) {
-                // TODO: Implement delete item functionality
-                console.log(`Delete item ${itemId}`);
+        async function renameItem(itemId, newName) {
+            if (!newName || newName.trim() === '') {
+                alert('Please enter a new name');
+                return;
             }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/rename_item/rename_item.sh',
+                itemId.toString(),
+                newName.trim()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error renaming item');
+            }
+            window.location.reload();
         }
 
-        function cancelSaleRequest(itemId) {
+        async function deleteItem(itemId) {
+            if (!confirm('Are you sure you want to delete this item?')) {
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/delete_item/delete_item.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error deleting item');
+            }
+            window.location.reload();
+        }
+
+        async function cancelSaleRequest(itemId, buyerName) {
+            if (!confirm(`Cancel sale request to ${buyerName}?`)) {
+                return;
+            }
+
             const buyerUserId = outgoingSaleRequestsMap[itemId];
-            const buyer = allAccounts.find(acc => acc.id === buyerUserId);
-            const buyerName = buyer ? buyer.username : 'Unknown User';
-            
-            if (confirm(`Cancel sale request to ${buyerName}?`)) {
-                // TODO: Implement cancel sale request functionality
-                runUserScript([HELPER_SCRIPT, './use_cases/cancel_sale_request.py', itemId, buyerUserId]);
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/cancel_sale_request/cancel_sale_request.sh',
+                itemId.toString(),
+                buyerUserId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error canceling sale request');
             }
+            window.location.reload();
         }
 
-        async function openComments(itemId) {
-            try {
-                // Update selectedItemCommentID in local_data.json
+        async function rateItem(itemId, rating) {
+            if (!rating) {
+                alert('Please select a rating');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/rate_item/rate_item.sh',
+                itemId.toString(),
+                rating.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error rating item');
+            }
+            window.location.reload();
+        }
+
+        async function setItemPrice(itemId, newPrice) {
+            if (!newPrice || newPrice.trim() === '') {
+                alert('Please enter a new price');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/set_item_price/set_item_price.sh',
+                itemId.toString(),
+                newPrice.trim()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error setting price');
+            }
+            window.location.reload();
+        }
+
+        async function bookmarkItem(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/bookmark_and_unbookmark_item/bookmark_item.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error bookmarking item');
+            }
+            window.location.reload();
+        }
+
+        async function replaceImage(itemId) {
+            const message = "Please drop the desired image (PNG) in the folder _ITEM_IMAGE_DROPBOX, then click OK.";
+
+            if (confirm(message)) {
                 const params = [
                     HELPER_SCRIPT,
-                    './use_cases/select_item_comment/select_item_comment.sh',
+                    './use_cases/add_item_image/add_item_image.sh',
                     itemId.toString()
                 ];
 
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
-
-                if (response.ok) {
-                    // Navigate to comments page
-                    window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
+                const result = await sendHttpRequest(params);
+                if (result.success) {
+                    alert(result.text);
                 } else {
-                    console.error('Error setting selected item');
+                    alert('Error replacing image');
                 }
-            } catch (error) {
-                console.error('Error opening comments:', error);
+                window.location.reload();
+            }
+        }
+
+        async function deleteImage(itemId) {
+            if (confirm("Click OK to confirm you want this image deleted")) {
+                const params = [
+                    HELPER_SCRIPT,
+                    './use_cases/remove_item_image/remove_item_image.sh',
+                    itemId.toString()
+                ];
+
+                const result = await sendHttpRequest(params);
+                if (result.success) {
+                    alert(result.text);
+                } else {
+                    alert('Error deleting image');
+                }
+                window.location.reload();
+            }
+        }
+
+        async function addImage(itemId) {
+            const message = "Please drop the desired image (PNG) in the folder _ITEM_IMAGE_DROPBOX, then click OK.";
+
+            if (confirm(message)) {
+                const params = [
+                    HELPER_SCRIPT,
+                    './use_cases/add_item_image/add_item_image.sh',
+                    itemId.toString()
+                ];
+
+                const result = await sendHttpRequest(params);
+                if (result.success) {
+                    alert(result.text);
+                } else {
+                    alert('Error adding image');
+                }
+                window.location.reload();
+            }
+        }
+
+        async function sellToStore(itemId, storeId) {
+            if (!storeId) {
+                alert('Please select a store');
+                return;
+            }
+
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/sell_to_store/sell_to_store.sh',
+                itemId.toString(),
+                storeId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error selling to store');
+            }
+            window.location.reload();
+        }
+
+        async function openComments(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/select_item_comment/select_item_comment.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
+            } else {
+                console.error('Error opening comments');
             }
         }
 
@@ -262,13 +439,13 @@
 
                 img.onload = () => {
                     imgButtons.innerHTML = `
-                        <button>Replace Image</button>
-                        <button>Delete Image</button>
+                        <button onclick="replaceImage(${item.id})">Replace Image</button>
+                        <button onclick="deleteImage(${item.id})">Delete Image</button>
                     `;
                 };
                 img.onerror = () => {
                     img.style.display = "none";
-                    imgButtons.innerHTML = `<button>Add Image</button>`;
+                    imgButtons.innerHTML = `<button onclick="addImage(${item.id})">Add Image</button>`;
                 };
 
                 const actions = document.createElement("div");
@@ -297,7 +474,7 @@
                 }
                 const rateBtn = document.createElement("button");
                 rateBtn.textContent = "Rate";
-                rateBtn.onclick = () => runUserScript(rateSelect.value);
+                rateBtn.onclick = () => rateItem(item.id, rateSelect.value);
                 rateDiv.appendChild(rateSelect);
                 rateDiv.appendChild(rateBtn);
 
@@ -308,18 +485,18 @@
                 priceInput.placeholder = "New Price";
                 const priceBtn = document.createElement("button");
                 priceBtn.textContent = "Set Price";
-                priceBtn.onclick = () => runUserScript(priceInput.value);
+                priceBtn.onclick = () => setItemPrice(item.id, priceInput.value);
                 priceDiv.appendChild(priceInput);
                 priceDiv.appendChild(priceBtn);
 
                 const bookmarkBtn = document.createElement("button");
                 bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
-                bookmarkBtn.onclick = () => runUserScript("bookmark");
+                bookmarkBtn.onclick = () => bookmarkItem(item.id);
 
                 const cancelSaleBtn = document.createElement("button");
                 cancelSaleBtn.textContent = "🚫 Cancel Sale Request";
                 cancelSaleBtn.style.backgroundColor = "#dc3545";
-                cancelSaleBtn.onclick = () => cancelSaleRequest(item.id);
+                cancelSaleBtn.onclick = () => cancelSaleRequest(item.id, buyerName);
 
                 const deleteBtn = document.createElement("button");
                 deleteBtn.textContent = "🗑️ Delete Item";
@@ -342,7 +519,7 @@
                     });
                 const sellStoreBtn = document.createElement("button");
                 sellStoreBtn.textContent = "Sell to Store";
-                sellStoreBtn.onclick = () => runUserScript(sellStoreSelect.value);
+                sellStoreBtn.onclick = () => sellToStore(item.id, sellStoreSelect.value);
                 sellStoreDiv.appendChild(sellStoreSelect);
                 sellStoreDiv.appendChild(sellStoreBtn);
 

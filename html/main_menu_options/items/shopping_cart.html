@@ -77,7 +77,21 @@
         let allReservedItems = {};
         let allItems = [];
 
-        // Load user data
+        async function sendHttpRequest(params) {
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                return { success: true, text };
+            } catch (error) {
+                console.error('Error sending HTTP request:', error);
+                return { success: false, error };
+            }
+        }
+
         async function loadUserData() {
             try {
                 const localDataResponse = await fetch('/json/local/local_data.json');
@@ -149,37 +163,105 @@
             renderItems(filteredItems);
         }
 
-        async function runUserScript(params) {
-            await fetch("/run-script", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ params })
-            });
+        async function openComments(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/select_item_comment/select_item_comment.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
+            } else {
+                console.error('Error opening comments');
+            }
         }
 
-        async function openComments(itemId) {
-            try {
-                // Update selectedItemCommentID in local_data.json
-                const params = [
-                    HELPER_SCRIPT,
-                    './use_cases/select_item_comment/select_item_comment.sh',
-                    itemId.toString()
-                ];
+        async function rateItem(itemId, rating) {
+            if (!rating) {
+                alert('Please select a rating');
+                return;
+            }
 
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ params })
-                });
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/rate_item/rate_item.sh',
+                itemId.toString(),
+                rating.toString()
+            ];
 
-                if (response.ok) {
-                    // Navigate to comments page
-                    window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
-                } else {
-                    console.error('Error setting selected item');
-                }
-            } catch (error) {
-                console.error('Error opening comments:', error);
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error rating item');
+            }
+            window.location.reload();
+        }
+
+        async function bookmarkItem(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/bookmark_and_unbookmark_item/bookmark_item.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error bookmarking item');
+            }
+            window.location.reload();
+        }
+
+        async function reserveItem(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/reserve_item/reserve_item.sh',
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+            } else {
+                alert('Error reserving item');
+            }
+            window.location.reload();
+        }
+
+        async function removeFromCart(itemId) {
+            const params = [
+                HELPER_SCRIPT,
+                './use_cases/remove_from_cart/remove_from_cart.sh',
+                currentUserId.toString(),
+                itemId.toString()
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+                await loadItems();
+            } else {
+                alert('Error removing item from cart');
+            }
+        }
+
+        async function checkoutCart() {
+            const params = [
+                'use_cases/track_bal/track_bal.sh'
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                alert('Checkout Failed\n\n' + (result.text || 'Unknown error'));
             }
         }
 
@@ -249,42 +331,25 @@
                 }
                 const rateBtn = document.createElement("button");
                 rateBtn.textContent = "Rate";
-                rateBtn.onclick = () => runUserScript(rateSelect.value);
+                rateBtn.onclick = () => rateItem(item.id, rateSelect.value);
                 rateDiv.appendChild(rateSelect);
                 rateDiv.appendChild(rateBtn);
 
                 const bookmarkBtn = document.createElement("button");
                 bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
-                bookmarkBtn.onclick = () => runUserScript("bookmark");
+                bookmarkBtn.onclick = () => bookmarkItem(item.id);
 
                 if (!isReservedBySomeone || isReservedByCurrentUser) {
                     const reserveBtn = document.createElement("button");
                     reserveBtn.textContent = isReservedByCurrentUser ? "Unreserve Item" : "Reserve Item";
-                    reserveBtn.onclick = () => runUserScript("reserve");
+                    reserveBtn.onclick = () => reserveItem(item.id);
                     actions.appendChild(reserveBtn);
                 }
 
                 const cartBtn = document.createElement("button");
                 cartBtn.textContent = "🛒 Remove from Cart";
-                cartBtn.onclick = () => removeFromCart(item.id,currentUserId);
+                cartBtn.onclick = () => removeFromCart(item.id);
 
-                async function removeFromCart(itemId, userId) {
-                    const params = [HELPER_SCRIPT,'./use_cases/remove_from_cart/remove_from_cart.sh',userId.toString(),itemId.toString()];
-
-                    const response = await fetch("/run-script", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ params })
-                    });
-
-                    if (response.ok) {
-                        alert(`Item ${itemId} removed from cart.`);
-                        await loadItems(); // refresh cart display
-                    } else {
-                        alert("Failed to remove item from cart.");
-                    }
-                }
-                
                 const commentsBtn = document.createElement("button");
                 commentsBtn.textContent = "💬 Comments";
                 commentsBtn.onclick = () => openComments(item.id);
@@ -303,45 +368,6 @@
                 container.appendChild(itemBox);
             });
         }
-
-        async function checkoutCart() {
-    
-            const checkoutBtn = document.querySelector('.checkout-btn');
-            
-
-            try {
-                const response = await fetch("/run-script", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ 
-                        params: ["use_cases/track_bal/track_bal.sh"] 
-                    })
-                });
-
-                if (response.ok) {
-                    const resultText = await response.text();
-
-                    alert(resultText);
-                    
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                } else {
-                    const errorText = await response.text();
-        
-                    alert("Checkout Failed\n\n" + errorText);
-                    
-
-                    checkoutBtn.textContent = originalText;
-                   
-                }
-            } catch (error) {
-                
-            }
-
-
-        }
-
 
         document.addEventListener('DOMContentLoaded', async () => {
             await loadUserData();

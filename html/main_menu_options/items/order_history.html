@@ -33,10 +33,25 @@
     </div>
 
     <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
         let currentUserId = null;
         let allOrders = [];
 
-        // Load user data
+        async function sendHttpRequest(params) {
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                return { success: true, text };
+            } catch (error) {
+                console.error('Error sending HTTP request:', error);
+                return { success: false, error };
+            }
+        }
+
         async function loadUserData() {
             try {
                 const localDataResponse = await fetch('/json/local/local_data.json');

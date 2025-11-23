@@ -31,8 +31,8 @@
   },
   {
     "id": 2,
-    "name": "item2",
-    "price": "$200.00",
+    "name": "Item2",
+    "price": "$100.00",
     "ratings": [
       {
         "accountId": 41,
