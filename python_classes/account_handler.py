@@ -34,6 +34,13 @@ class Account_Handler:
         )
         subprocess.run(['bash', script_path], check=True)
 
+    def checkPasswordRequirements(self):
+        # Get absolute path to the shell script
+        script_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'check_password_requirements', 'check_password_requirements.sh')
+        )
+        subprocess.run(['bash', script_path], check=True)
+
     def authenticateUser(self):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
