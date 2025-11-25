@@ -20,9 +20,9 @@ class UserItem(Item):
         )
         subprocess.run(['bash', script_path], check=True)
 
-    def sellItemToStore(self):
+    def sellItemToStore(self, sellerID, itemID, storeID):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
             os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'sell_item_to_store', 'sell_item_to_store.sh')
         )
-        subprocess.run(['bash', script_path], check=True)
+        subprocess.run(['bash', script_path, sellerID, itemID, storeID], check=True)
