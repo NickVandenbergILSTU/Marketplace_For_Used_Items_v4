@@ -25,7 +25,8 @@
       21,
       22,
       23,
-      2
+      2,
+      24
     ],
     "bookmarkedItems": [
       3
@@ -133,5 +134,20 @@
     "orderHistory": [],
     "incomingSaleRequests": [],
     "outgoingSaleRequests": []
+  },
+  {
+    "id": 16,
+    "username": "random_user",
+    "password": "Password2",
+    "email": "email2@gmail.com",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "cat",
+    "autoPushAndPullData": "false",
+    "accountBalance": 0.00,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
+    "orderHistory": []
   }
 ]

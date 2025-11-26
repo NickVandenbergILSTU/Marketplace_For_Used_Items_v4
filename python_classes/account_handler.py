@@ -5,12 +5,12 @@ class Account_Handler:
     def __init__(self):
         self.accountArray = []
 
-    def createAccount(self):
-        # Get absolute path to the shell script
-        script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'create_account', 'create_account.sh')
-        )
-        subprocess.run(['bash', script_path], check=True)
+    def createAccount(self, username, password, password2, email, securityQuestion, securityAnswer):
+    # Get absolute path to the shell script
+    script_path = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'create_account', 'create_account.sh')
+    )
+    subprocess.run(['bash', script_path, username, password, password2, email, securityQuestion, securityAnswer], check=True)
 
 
     def deleteAccount(self):
