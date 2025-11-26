@@ -6,7 +6,7 @@
     "securityQuestion": "What is your favorite color?",
     "securityAnswer": "blue",
     "autoPushAndPullData": "false",
-    "accountBlanance": 9800,
+    "accountBalance": 9800,
     "incomingSaleRequests": [],
     "outgoingSaleRequests": [
       {
@@ -54,7 +54,7 @@
     "username": "john-smith",
     "password": "password",
     "autoPushAndPullData": "false",
-    "accountBlanance": 210,
+    "accountBalance": 210,
     "myItems": [
       6
     ],
@@ -88,12 +88,16 @@
     "id": 13,
     "username": "thaterickid",
     "password": "dontLook5!",
+    "securityQuestion": "What is your favorite color?",
+    "securityAnswer": "blue",
     "autoPushAndPullData": "false",
-    "accountBlance": 99.99,
+    "accountBalance": 99.99,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
-    "itemsInCart": [],
+    "itemsInCart": [
+      4
+    ],
     "security_q_a": {
       "1": "Jeff",
       "3": "Good question"
@@ -109,7 +113,7 @@
     "securityQuestion": "What is the name of your first pet?",
     "securityAnswer": "Kim",
     "autoPushAndPullData": "false",
-    "accountBlanance": 0.00,
+    "accountBalance": 0.00,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
@@ -126,7 +130,7 @@
     "securityQuestion": "What is the name of your first pet?",
     "securityAnswer": "a",
     "autoPushAndPullData": "false",
-    "accountBlanance": 0.00,
+    "accountBalance": 0.00,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
