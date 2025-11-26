@@ -353,7 +353,7 @@
             window.location.reload();
         }
 
-        async function sellToStore(itemId, storeId) {
+        async function sellToStore(sellerId, itemId, storeId) {
             if (!storeId) {
                 alert('Please select a store');
                 return;
@@ -361,7 +361,8 @@
 
             const params = [
                 HELPER_SCRIPT,
-                './use_cases/sell_to_store/sell_to_store.sh',
+                './use_cases/sell_item_to_store/main.py',
+                sellerId.toString(),
                 itemId.toString(),
                 storeId.toString()
             ];
