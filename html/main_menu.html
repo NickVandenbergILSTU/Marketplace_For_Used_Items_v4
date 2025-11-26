@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -285,8 +285,24 @@
     </div>
 
     <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
         let userData = null;
         let currentStoreName = null;
+
+        async function sendHttpRequest(params) {
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                return { success: true, text };
+            } catch (error) {
+                console.error('Error sending HTTP request:', error);
+                return { success: false, error };
+            }
+        }
 
         // Load user data and current store
         async function loadUserData() {
@@ -359,9 +375,20 @@
         }
 
         // Menu button functions
-        function logout() {
+        async function logout() {
             if (confirm('Are you sure you want to log out?')) {
-                window.location.href = '/login.html';
+                const params = [
+                    HELPER_SCRIPT,
+                    './use_cases/log_out_user/log_out_user.sh'
+                ];
+
+                const result = await sendHttpRequest(params);
+                if (result.success) {
+                    window.location.href = '/login.html';
+                } else {
+                    alert('Error logging out');
+                    console.error('Logout error:', result.error);
+                }
             }
         }
 
