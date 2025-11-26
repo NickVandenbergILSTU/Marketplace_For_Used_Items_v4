@@ -13,12 +13,14 @@ class Shopping_Account:
         )
         subprocess.run(['bash', script_path], check=True)
         return itemListing
+    
     def checkoutShoppingCart(self):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'checkout_shopping_cart', 'checkout_shopping_cart.sh')
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'check_out_item', 'check_out_items.py')
         )
-        subprocess.run(['bash', script_path], check=True)
+        subprocess.run(['python', script_path], check=True)
+        return self.user
 
     def verifyMoneyBalanceAboveThreshold(self):
         # Get absolute path to the shell script
