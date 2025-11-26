@@ -41,7 +41,10 @@ for user in local_accounts:
         break
 
 shopping_cart = selected_account['itemsInCart']
-print(f'Items in your shopping cart: {shopping_cart}')
+if len(shopping_cart) == 0:
+    print('Shopping cart is empty')
+    exit(1)
+#print(f'Items in your shopping cart: {shopping_cart}')
 
 local_items = None
 with open(ITEM_PATH, 'r') as items:
@@ -95,6 +98,9 @@ if selected_account.get('accountBalance') < total_cost:
 #update account balance
 selected_account['accountBalance'] = selected_account['accountBalance'] - total_cost
 
+#add item to order history
+selected_account['orderHistory'].append(shopping_cart)
+
 # remove items from each store
 with open(STORE_PATH, 'r') as stores_file:
     stores = json.load(stores_file)
@@ -122,7 +128,9 @@ for user in local_accounts:
             user['myItems'].append(item)
             user['itemsInCart'].remove(item)
             user['reservedItems'].remove(item)
-    print(f'{user['username']} items after update: {user['myItems']}\n')
+    #print(f'{user['username']} items after update: {user['myItems']}\n')
+
+print('Checkout complete')
 
 #finally, update each json file to reflect the new items
 ### Accounts ####
