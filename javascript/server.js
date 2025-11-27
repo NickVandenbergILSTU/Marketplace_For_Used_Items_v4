@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 
 app.post('/run-script', (req, res) => {
     console.log('Received run-script POST:', req.body);
-    
+
     let { params } = req.body;
     if (!Array.isArray(params)) params = [];
 
@@ -50,9 +50,14 @@ app.post('/run-script', (req, res) => {
 
     // Prepare argument array
     const args = params;
-
+    const child = null;
     // Use spawn to avoid shell quoting issues
-    const child = spawn('bash', [absoluteScriptPath, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+    if (absoluteScriptPath.includes(py)) {
+        child = spawn('python', [absoluteScriptPath, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+    } else {
+        child = spawn('bash', [absoluteScriptPath, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+    }
+
 
     let stdout = '';
     let stderr = '';
@@ -315,10 +320,10 @@ app.get('/api/bookmarked-items', (req, res) => {
             let ownership = { type: 'none', name: null, id: null };
 
             // First check if item belongs to a store (highest priority)
-            const ownerStore = locations.find(loc => 
+            const ownerStore = locations.find(loc =>
                 loc.storeItems && loc.storeItems.includes(item.id)
             );
-            
+
             if (ownerStore) {
                 ownership = { type: 'store', name: ownerStore.name, id: ownerStore.id };
             } else if (userItemIds.includes(item.id)) {
@@ -326,10 +331,10 @@ app.get('/api/bookmarked-items', (req, res) => {
                 ownership = { type: 'user', name: userAccount.username, id: currentUserId };
             } else {
                 // Check if item belongs to another user
-                const ownerAccount = accounts.find(acc => 
+                const ownerAccount = accounts.find(acc =>
                     acc.myItems && acc.myItems.includes(item.id)
                 );
-                
+
                 if (ownerAccount) {
                     ownership = { type: 'other_user', name: ownerAccount.username, id: ownerAccount.id };
                 }
@@ -342,7 +347,7 @@ app.get('/api/bookmarked-items', (req, res) => {
         });
 
         // Filter out items that belong to other users
-        const filteredItems = itemsWithOwnership.filter(item => 
+        const filteredItems = itemsWithOwnership.filter(item =>
             item.ownership.type !== 'other_user'
         );
 
