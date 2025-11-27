@@ -50,13 +50,10 @@ app.post('/run-script', (req, res) => {
 
     // Prepare argument array
     const args = params;
-    const child = null;
     // Use spawn to avoid shell quoting issues
-    if (absoluteScriptPath.includes(py)) {
-        child = spawn('python', [absoluteScriptPath, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
-    } else {
-        child = spawn('bash', [absoluteScriptPath, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
-    }
+
+    const child = spawn('python', [absoluteScriptPath, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+
 
 
     let stdout = '';
