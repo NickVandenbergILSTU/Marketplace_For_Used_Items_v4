@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 
 app.post('/run-script', (req, res) => {
     console.log('Received run-script POST:', req.body);
-    
+
     let { params } = req.body;
     if (!Array.isArray(params)) params = [];
 
@@ -60,30 +60,31 @@ app.post('/run-script', (req, res) => {
     exec(`bash "${absoluteScriptPath}" ${safeParams}`, (error, stdout, stderr) => {
         if (error) return res.status(500).send(`Error: ${error.message}`);
         if (stderr) console.error(stderr);
-    // Prepare argument array
-    const args = params;
+        // Prepare argument array
+        const args = params;
 
-    // Use spawn to avoid shell quoting issues
-    const child = spawn('bash', [absoluteScriptPath, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+        // Use spawn to avoid shell quoting issues
+        const child = spawn('bash', [absoluteScriptPath, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
 
-    let stdout = '';
-    let stderr = '';
+        //let stdout = '';
+        //let stderr = '';
 
-    child.stdout.on('data', (data) => {
-        stdout += data;
-    });
+        child.stdout.on('data', (data) => {
+            stdout += data;
+        });
 
-    child.stderr.on('data', (data) => {
-        stderr += data;
-    });
+        child.stderr.on('data', (data) => {
+            stderr += data;
+        });
 
-    child.on('close', (code) => {
-        if (code !== 0) {
-            console.error(stderr);
-            return res.status(500).send(`Error: ${stderr || 'Script exited with code ' + code}`);
-        }
-        res.send(`Script output:\n${stdout}`);
-    });
+        child.on('close', (code) => {
+            if (code !== 0) {
+                console.error(stderr);
+                return res.status(500).send(`Error: ${stderr || 'Script exited with code ' + code}`);
+            }
+            res.send(`Script output:\n${stdout}`);
+        });
+    })
 });
 
 // ------------- Eric Added for forgot_password use-case ----------------
@@ -92,10 +93,13 @@ app.post('/verify-username', (req, res) => {
     // 
     //const pythonLocation = "C:\\Python\\python.exe"
     const spawn = require("child_process").spawn;
+    const scriptPath = "use_cases/forgot_password/verify_username.py"
+
+    const absoluteScriptPath = path.resolve(path.join(__dirname, '../', scriptPath))
 
     const enteredUsername = req.body.username;
 
-    const pythonProcess = spawn('python', ['C:\\Users\\harbo\\Desktop\\Marketplace_For_Used_Items\\Marketplace_For_Used_Items_v4\\html\\forgot_password\\verify_username.py', enteredUsername]);
+    const pythonProcess = spawn('python', [absoluteScriptPath, enteredUsername]);
     try {
 
         pythonProcess.stdout.on('data', (data) => {

@@ -31,5 +31,6 @@ def verify_username(entered_username):
     sys.stdout.flush()
         
 username_to_check = sys.argv[1]
+#username_to_check = 'thaterickid'
 
 verify_username(username_to_check)
