@@ -519,7 +519,7 @@
                     });
                 const sellStoreBtn = document.createElement("button");
                 sellStoreBtn.textContent = "Sell to Store";
-                sellStoreBtn.onclick = () => sellToStore(item.id, sellStoreSelect.value);
+                sellStoreBtn.onclick = () => sellToStore(currentUserId, item.id, sellStoreSelect.value);
                 sellStoreDiv.appendChild(sellStoreSelect);
                 sellStoreDiv.appendChild(sellStoreBtn);
 
