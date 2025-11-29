@@ -1,6 +1,6 @@
 import subprocess
 import os
-from Item import Item
+from python_classes.item import Item
 
 class UserItem(Item):
     def __init__(self):

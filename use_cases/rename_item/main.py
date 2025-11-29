@@ -4,13 +4,8 @@
 # newName="$2"
 
 from python_classes.userItem import UserItem
-from python_classes.user import User
+from python_classes.item import Item
 import sys
-
-# Create an userItem object that takes in an user object
-user = User()
-userItem = UserItem(user)
-
 
 # Get command line arguments (expecting 2 arguments after the script name)
 if len(sys.argv) != 3:
@@ -19,6 +14,9 @@ if len(sys.argv) != 3:
 
 itemID = sys.argv[1]
 newItemName = sys.argv[2]
+
+# Create an userItem object
+userItem = UserItem()
 
 # call the method rename_item
 userItem.renameItem(itemID, newItemName)

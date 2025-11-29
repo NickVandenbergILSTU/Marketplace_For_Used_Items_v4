@@ -251,7 +251,7 @@
                 HELPER_SCRIPT,
                 './use_cases/rename_item/main.py',
                 itemId.toString(),
-                newName.trim()
+                newName.toString()
             ];
 
             const result = await sendHttpRequest(params);
