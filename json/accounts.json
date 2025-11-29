@@ -153,5 +153,20 @@
     "reservedItems": [],
     "itemsInCart": [],
     "orderHistory": []
+  },
+  {
+    "id": 17,
+    "username": "Test",
+    "password": "Password1",
+    "email": "test@test.test",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "test",
+    "autoPushAndPullData": "false",
+    "accountBalance": 0.00,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
+    "orderHistory": []
   }
 ]
