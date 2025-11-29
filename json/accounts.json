@@ -97,17 +97,22 @@
   },
   {
     "id": 14,
-    "username": "Joshua11",
+    "username": "josh",
     "password": "Password1",
-    "email": "student@school.org",
+    "email": "jman@test.com",
     "securityQuestion": "What is the name of your first pet?",
-    "securityAnswer": "Kim",
+    "securityAnswer": "fgfg",
     "autoPushAndPullData": "false",
     "accountBlanance": 0.00,
-    "myItems": [],
+    "myItems": [
+      23
+    ],
     "bookmarkedItems": [],
     "reservedItems": [],
     "itemsInCart": [],
-    "orderHistory": []
+    "orderHistory": [],
+    "accountBalance": 16,
+    "incomingSaleRequests": [],
+    "outgoingSaleRequests": []
   }
 ]

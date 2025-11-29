@@ -1,17 +1,5 @@
 [
   {
-    "id": 1,
-    "name": "tv",
-    "price": "$1.00",
-    "ratings": [
-      {
-        "accountId": 41,
-        "rating": 5
-      }
-    ],
-    "itemComments": []
-  },
-  {
     "id": 2,
     "name": "item2",
     "price": "$200.00",
@@ -168,6 +156,13 @@
   },
   {
     "id": 22,
+    "name": "[NEW ITEM]",
+    "price": "$0.00",
+    "ratings": [],
+    "itemComments": []
+  },
+  {
+    "id": 23,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
