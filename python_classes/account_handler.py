@@ -48,11 +48,11 @@ class Account_Handler:
         )
         subprocess.run(['bash', script_path], check=True)
     
-    def loginUser(self):
+    def loginUser(self, username, password):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
             os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'login_user', 'login_user.sh')
         )
-        subprocess.run(['bash', script_path], check=True)
+        subprocess.run(['bash', script_path, username, password], check=True)
 
     
