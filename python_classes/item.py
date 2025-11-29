@@ -22,7 +22,7 @@ class Item:
         script_path = os.path.abspath(
             os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'bookmark_item', 'bookmark_item.sh')
         )
-        subprocess.run(['bash', script_path], check=True)
+        subprocess.run(['bash', script_path, str(self.itemID)], check=True)
 
     def addRating(self, rating):
         self.ratings.append(rating)
