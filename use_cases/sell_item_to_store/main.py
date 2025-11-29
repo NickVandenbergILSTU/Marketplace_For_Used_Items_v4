@@ -5,7 +5,6 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'python_classes'))
 
 from python_classes.userItem import UserItem
-from python_classes.item import Item
 
 # make it so that the userItem's method for selling an item to the store is called with
 # these params:
@@ -13,9 +12,9 @@ from python_classes.item import Item
 # itemID="$2"
 # storeID="$3"
 
-# Create an item and userItem instance (the method should know which item object to sell)
-item = Item()
-userItem = UserItem(item)
+# Create an userItem instance
+
+userItem = UserItem()
 
 # check arguments
 if len(sys.argv) != 4:

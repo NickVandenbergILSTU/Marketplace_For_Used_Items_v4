@@ -499,7 +499,7 @@
                     });
                 const sellUserBtn = document.createElement("button");
                 sellUserBtn.textContent = "Sell to User";
-                sellUserBtn.onclick = () => sellToUser(item.id, sellUserSelect.value);
+                sellUserBtn.onclick = () => sellToUser(currentUserId, item.id, sellUserSelect.value);
                 sellUserDiv.appendChild(sellUserSelect);
                 sellUserDiv.appendChild(sellUserBtn);
 
