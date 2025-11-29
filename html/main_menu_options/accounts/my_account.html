@@ -137,28 +137,42 @@
 
         }
 
-        async function changeUsername() {
+        // async function changeUsername() {
+        //     const newUsername = document.getElementById('newUsername').value.trim();
+        //     if (!newUsername) {
+        //         alert('Please enter a new username');
+        //         return;
+        //     }
+        //     // Get logged-in user ID
+        //     const localData = await fetch('/json/local/local_data.json').then(r => r.json());
+        //     const userId = localData.currentlyLoggedInUserID;
+        //     const change_username = "./use_cases/update_account_info/change_username_main.py";
+        //     const params = [HELPER_SCRIPT,change_username,userId,newUsername];
+            
+        //     const text = await runUserScript(params);  
+        //     alert(text);
+        //     if (text.includes("is already taken")) {
+        //         //alert("That username is already in use. Please choose another.");
+        //     } else {
+        //         //alert("Username updated successfully!");
+        //         document.getElementById('newUsername').value = '';
+        //         window.location.reload();
+        //     }
+            
+        // }
+        function changeUsername() {
             const newUsername = document.getElementById('newUsername').value.trim();
             if (!newUsername) {
                 alert('Please enter a new username');
                 return;
             }
-            // Get logged-in user ID
-            const localData = await fetch('/json/local/local_data.json').then(r => r.json());
-            const userId = localData.currentlyLoggedInUserID;
-            const change_username = "./use_cases/update_account_info/change_username.sh";
-            const params = [HELPER_SCRIPT,change_username,userId,newUsername];
-            
-            const text = await runUserScript(params);  
-            alert(text);
-            if (text.includes("is already taken")) {
-                //alert("That username is already in use. Please choose another.");
-            } else {
-                //alert("Username updated successfully!");
-                document.getElementById('newUsername').value = '';
-                window.location.reload();
+            if (confirm('Change your username?')) {
+                runUserScript([HELPER_SCRIPT, './use_cases/update_account_info/change_username_main.py',userId, newUsername]);
+                setTimeout(() => {
+                    loadUserData();
+                    document.getElementById('newUsername').value = '';
+                }, 500);
             }
-            
         }
 
         async function changeEmail(){
