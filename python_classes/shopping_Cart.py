@@ -6,13 +6,13 @@ class Shopping_Account:
         self.user = None
         self.itemListing = []
 
-    def removeFromShoppingCart(self, itemListing):
+    def removeFromShoppingCart(self, userID, itemID):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
             os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'remove_from_shopping_cart', 'remove_from_shopping_cart.sh')
         )
         subprocess.run(['bash', script_path], check=True)
-        return itemListing
+        return itemID
     
     def checkoutShoppingCart(self):
         # Get absolute path to the shell script
