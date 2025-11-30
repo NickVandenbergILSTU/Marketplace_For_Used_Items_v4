@@ -58,20 +58,27 @@ class Account_Handler:
     def updateUsername(self, userID, newUsername):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'update_username', 'update_username.sh')
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'change_username', 'change_username.sh')
         )
         subprocess.run(['bash', script_path, userID, newUsername], check=True)
 
     def updatePassword(self, userID, newPassword):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'update_password', 'update_password.sh')
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'change_password', 'change_password.sh')
         )
         subprocess.run(['bash', script_path, userID, newPassword], check=True)
 
     def updateEmail(self, userID, newEmail):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'update_email', 'update_email.sh')
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'change_email', 'change_email.sh')
         )
         subprocess.run(['bash', script_path, userID, newEmail], check=True)
+
+    def addFunds(self, userID, amount):
+        # Get absolute path to the shell script
+        script_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'add_funds', 'add_funds.sh')
+        )
+        subprocess.run(['bash', script_path, userID, amount], check=True)
