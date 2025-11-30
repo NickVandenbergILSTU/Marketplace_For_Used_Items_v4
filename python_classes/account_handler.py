@@ -61,3 +61,17 @@ class Account_Handler:
             os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'update_username', 'update_username.sh')
         )
         subprocess.run(['bash', script_path, userID, newUsername], check=True)
+
+    def updatePassword(self, userID, newPassword):
+        # Get absolute path to the shell script
+        script_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'update_password', 'update_password.sh')
+        )
+        subprocess.run(['bash', script_path, userID, newPassword], check=True)
+
+    def updateEmail(self, userID, newEmail):
+        # Get absolute path to the shell script
+        script_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'update_email', 'update_email.sh')
+        )
+        subprocess.run(['bash', script_path, userID, newEmail], check=True)
