@@ -6,7 +6,7 @@
     "securityQuestion": "What is your favorite color?",
     "securityAnswer": "blue",
     "autoPushAndPullData": "false",
-    "accountBlanance": 9800,
+    "accountBalance": 9800,
     "incomingSaleRequests": [],
     "outgoingSaleRequests": [
       {
@@ -28,9 +28,7 @@
       2,
       24
     ],
-    "bookmarkedItems": [
-      3
-    ],
+    "bookmarkedItems": [],
     "reservedItems": [
       1,
       2,
@@ -54,7 +52,7 @@
     "username": "john-smith",
     "password": "password",
     "autoPushAndPullData": "false",
-    "accountBlanance": 210,
+    "accountBalance": 210,
     "myItems": [
       6
     ],
@@ -87,17 +85,17 @@
   {
     "id": 13,
     "username": "thaterickid",
-    "password": "dontLook5!",
+    "password": "Testtest123",
+    "securityQuestion": "What is the name of your first pet??",
+    "securityAnswer": "Sassy",
     "autoPushAndPullData": "false",
-    "accountBlance": 99.99,
+    "accountBalance": 99.99,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
-    "itemsInCart": [],
-    "security_q_a": {
-      "1": "Jeff",
-      "3": "Good question"
-    },
+    "itemsInCart": [
+      4
+    ],
     "incomingSaleRequests": [],
     "outgoingSaleRequests": []
   },
@@ -109,7 +107,7 @@
     "securityQuestion": "What is the name of your first pet?",
     "securityAnswer": "Kim",
     "autoPushAndPullData": "false",
-    "accountBlanance": 0.00,
+    "accountBalance": 0.0,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
@@ -126,7 +124,7 @@
     "securityQuestion": "What is the name of your first pet?",
     "securityAnswer": "a",
     "autoPushAndPullData": "false",
-    "accountBlanance": 0.00,
+    "accountBalance": 0.0,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
@@ -143,7 +141,7 @@
     "securityQuestion": "What is the name of your first pet?",
     "securityAnswer": "cat",
     "autoPushAndPullData": "false",
-    "accountBalance": 0.00,
+    "accountBalance": 0.0,
     "myItems": [],
     "bookmarkedItems": [],
     "reservedItems": [],
