@@ -89,3 +89,10 @@ class Account_Handler:
             os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'change_security_question', 'change_security_question.sh')
         )
         subprocess.run(['bash', script_path, userID, newSecurityQuestion], check=True)
+
+    def changeSecurityAnswer(self, userID, newSecurityAnswer):
+        # Get absolute path to the shell script
+        script_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'change_security_answer', 'change_security_answer.sh')
+        )
+        subprocess.run(['bash', script_path, userID, newSecurityAnswer], check=True)
