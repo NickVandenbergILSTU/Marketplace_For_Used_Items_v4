@@ -6,8 +6,16 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'python_clas
 
 from seller import Seller
 
+if len(sys.argv) != 3:
+    print("Usage: python main.py <item_id> <user_id>")
+    sys.exit(1)
+
 # Create an Item instance
 seller = Seller()
 
+
+item_id = int(sys.argv[1])
+user_id = int(sys.argv[2])
+
 # Call the method
-seller.sellItemToAnotherUser()
+seller.sellItemToAnotherUser(item_id, user_id)
