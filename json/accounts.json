@@ -5,7 +5,7 @@
     "password": "pass word",
     "securityQuestion": "What is your favorite color?",
     "securityAnswer": "blue",
-    "autoPushAndPullData": "false",
+    "autoPushAndPullData": "true",
     "accountBalance": 9800,
     "incomingSaleRequests": [],
     "outgoingSaleRequests": [
@@ -26,18 +26,18 @@
       22,
       23,
       2,
-      24
+      24,
+      25
     ],
-    "bookmarkedItems": [],
+    "bookmarkedItems": [
+      3
+    ],
     "reservedItems": [
       1,
       2,
       3
     ],
-    "itemsInCart": [
-      1,
-      2
-    ],
+    "itemsInCart": [],
     "orderHistory": [
       {
         "id": 1,
