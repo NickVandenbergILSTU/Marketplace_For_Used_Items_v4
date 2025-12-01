@@ -13,9 +13,9 @@ class Seller(User):
         )
         subprocess.run(['bash', script_path], check=True)
 
-    def sellItemToAnotherUser(self):
+    def sellItemToAnotherUser(self, item_id, user_id):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
             os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'sell_item_to_another_user', 'sell_item_to_another_user.sh')
         )
-        subprocess.run(['bash', script_path], check=True)
+        subprocess.run(['bash', script_path, str(item_id), str(user_id)], check=True)
