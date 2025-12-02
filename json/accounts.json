@@ -5,8 +5,8 @@
     "password": "pass word",
     "securityQuestion": "What is your favorite color?",
     "securityAnswer": "blue",
-    "autoPushAndPullData": "false",
-    "accountBalance": 9800,
+    "autoPushAndPullData": "true",
+    "accountBalance": 9801,
     "incomingSaleRequests": [],
     "outgoingSaleRequests": [
       {
