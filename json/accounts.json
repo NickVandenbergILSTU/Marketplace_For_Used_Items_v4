@@ -1,11 +1,11 @@
 [
   {
     "id": 41,
-    "username": "nickvandy",
-    "password": "pass word",
+    "username": "nickvandenberg",
+    "password": "Password1",
     "securityQuestion": "What is your favorite color?",
     "securityAnswer": "blue",
-    "autoPushAndPullData": "true",
+    "autoPushAndPullData": "false",
     "accountBalance": 9801,
     "incomingSaleRequests": [],
     "outgoingSaleRequests": [
@@ -16,7 +16,6 @@
     ],
     "myItems": [
       1,
-      8,
       9,
       18,
       19,
@@ -28,10 +27,11 @@
       24,
       25
     ],
-    "bookmarkedItems": [],
-    "reservedItems": [
-      1,
+    "bookmarkedItems": [
       2
+    ],
+    "reservedItems": [
+      1
     ],
     "itemsInCart": [],
     "orderHistory": [
@@ -41,11 +41,12 @@
         "price": "$300.00"
       }
     ],
-    "security_q_a": {}
+    "security_q_a": {},
+    "accountBlanance": 0.0
   },
   {
     "id": 42,
-    "username": "john-smith",
+    "username": "nicks_burner",
     "password": "password",
     "autoPushAndPullData": "false",
     "accountBalance": 210,

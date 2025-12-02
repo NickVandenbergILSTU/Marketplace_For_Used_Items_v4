@@ -5,11 +5,11 @@
 # and the store will own the item (look at item id array).
 
 # Get input parameters from command line arguments
-SELLER_ID=$1
-ITEM_ID=$2
-STORE_ID=$3
+ITEM_ID=$1
+STORE_ID=$2
 
 # Path to JSON files in the json directory
+LOCAL_DATA_FILE="json/local/local_data.json"
 LOCATIONS_FILE="json/locations.json"
 ITEMS_FILE="json/items.json"
 ACCOUNTS_FILE="json/accounts.json"
@@ -30,6 +30,11 @@ if ! command -v python &> /dev/null; then
 fi
 
 # Check if required files exist
+if [[ ! -f "$LOCAL_DATA_FILE" ]]; then
+    echo "Error: local_data.json not found at $LOCAL_DATA_FILE"
+    exit 1
+fi
+
 if [[ ! -f "$LOCATIONS_FILE" ]]; then
     echo "Error: locations.json not found at $LOCATIONS_FILE"
     exit 1
@@ -51,12 +56,19 @@ if [[ ! -f "$PYTHON_SCRIPT" ]]; then
 fi
 
 # Check if correct number of arguments provided
-if [[ $# -ne 3 ]]; then
-    echo "Usage: $0 <seller_account_id> <item_id> <store_id>"
-    echo "Example: $0 1 2 1"
+if [[ $# -ne 2 ]]; then
+    echo "Usage: $0 <item_id> <store_id>"
+    echo "Example: $0 2 1"
     exit 1
 fi
 
+# Get currently logged in user ID as the seller
+SELLER_ID=$(jq -r '.currentlyLoggedInUserID' "$LOCAL_DATA_FILE")
+
+if [[ -z "$SELLER_ID" ]] || [[ "$SELLER_ID" == "null" ]]; then
+    echo "Error: Could not read currentlyLoggedInUserID from $LOCAL_DATA_FILE"
+    exit 1
+fi
 
 # Validate inputs
 if [[ ! "$SELLER_ID" =~ ^[0-9]+$ ]] || [[ ! "$ITEM_ID" =~ ^[0-9]+$ ]] || [[ ! "$STORE_ID" =~ ^[0-9]+$ ]]; then
@@ -126,7 +138,6 @@ SELLER_BALANCE_NUM="$SELLER_BALANCE"
 # Calculate new balance using Python script
 NEW_BALANCE=$(python "$PYTHON_SCRIPT" "$SELLER_BALANCE_NUM" "$ITEM_PRICE_NUM")
 
-
 # Remove item from seller's myItems array and update balance
 jq --argjson sellerId "$SELLER_ID" --argjson itemId "$ITEM_ID" --argjson newBalance "$NEW_BALANCE" '
     map(if .id == $sellerId then
@@ -141,3 +152,5 @@ jq --argjson storeId "$STORE_ID" --argjson itemId "$ITEM_ID" '
         .storeItems = ((.storeItems // []) + [$itemId] | unique)
     else . end)
 ' "$LOCATIONS_FILE" > "$LOCATIONS_FILE.tmp" && mv "$LOCATIONS_FILE.tmp" "$LOCATIONS_FILE"
+
+echo "Successfully sold item ID $ITEM_ID to store ID $STORE_ID for $ITEM_PRICE"

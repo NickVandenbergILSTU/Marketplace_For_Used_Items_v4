@@ -42,7 +42,8 @@
         "accountId": 42,
         "rating": 4
       }
-    ]
+    ],
+    "itemComments": []
   },
   {
     "id": 4,
@@ -91,7 +92,7 @@
   },
   {
     "id": 8,
-    "name": "[NEW ITEM]",
+    "name": "Item3",
     "price": "$0.00",
     "ratings": [],
     "itemComments": []
