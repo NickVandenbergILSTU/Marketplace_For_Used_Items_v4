@@ -7,7 +7,12 @@
     "securityAnswer": "blue",
     "autoPushAndPullData": "false",
     "accountBalance": 200,
-    "incomingSaleRequests": [],
+    "incomingSaleRequests": [
+      {
+        "sourceUserId": 16,
+        "itemId": 2
+      }
+    ],
     "outgoingSaleRequests": [
       {
         "targetUserId": 42,
@@ -149,7 +154,12 @@
     "itemsInCart": [],
     "orderHistory": [],
     "incomingSaleRequests": [],
-    "outgoingSaleRequests": []
+    "outgoingSaleRequests": [
+      {
+        "targetUserId": 41,
+        "itemId": 2
+      }
+    ]
   },
   {
     "id": 17,
