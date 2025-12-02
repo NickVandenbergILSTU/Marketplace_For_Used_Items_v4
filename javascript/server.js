@@ -104,10 +104,12 @@ app.post('/verify-username', (req, res) => {
 app.post('/verify-security-answer', (req, res) => {
     const spawn = require("child_process").spawn;
     const scriptPath = "use_cases/forgot_password/verify_security_questions.py"
+
     const absoluteScriptPath = path.resolve(path.join(__dirname, '../', scriptPath))
     const username = req.body.username;
     const sq_question = req.body.selected_sq
     const sq_answer = req.body.sq_answer;
+
     let accumulatedData = '';
 
     const pythonProcess = spawn('python', [absoluteScriptPath, username, sq_question, sq_answer]);
