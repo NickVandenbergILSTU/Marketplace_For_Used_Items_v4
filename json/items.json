@@ -42,21 +42,6 @@
         "accountId": 42,
         "rating": 4
       }
-    ]
-  },
-  {
-    "id": 3,
-    "name": "a",
-    "price": "$1.67",
-    "ratings": [
-      {
-        "accountId": 41,
-        "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
-      }
     ],
     "itemComments": []
   },
@@ -107,9 +92,14 @@
   },
   {
     "id": 8,
-    "name": "[NEW ITEM]",
+    "name": "Item3",
     "price": "$0.00",
-    "ratings": [],
+    "ratings": [
+      {
+        "userId": 41,
+        "rating": 5
+      }
+    ],
     "itemComments": []
   },
   {
@@ -219,6 +209,13 @@
   },
   {
     "id": 24,
+    "name": "[NEW ITEM]",
+    "price": "$0.00",
+    "ratings": [],
+    "itemComments": []
+  },
+  {
+    "id": 25,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],

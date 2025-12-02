@@ -5,22 +5,19 @@
     "storeItems": [
       1,
       2,
-      3
+      3,
+      8
     ]
   },
   {
     "id": 6,
     "name": "Store 2",
-    "storeItems": [
-      
-    ]
+    "storeItems": []
   },
   {
     "id": 7,
     "name": "Store 3",
-    "storeItems": [
-      
-    ]
+    "storeItems": []
   },
   {
     "id": 8,
