@@ -1,26 +1,21 @@
 [
   {
     "id": 5,
-    "name": "Nick's Store",
+    "name": "Store 1",
     "storeItems": [
-      1,
-      2,
-      3
+      9,
+      19
     ]
   },
   {
     "id": 6,
     "name": "Store 2",
-    "storeItems": [
-      
-    ]
+    "storeItems": []
   },
   {
     "id": 7,
     "name": "Store 3",
-    "storeItems": [
-      
-    ]
+    "storeItems": []
   },
   {
     "id": 8,
@@ -30,11 +25,6 @@
   {
     "id": 9,
     "name": "Store 5",
-    "storeItems": []
-  },
-  {
-    "id": 10,
-    "name": "my store",
     "storeItems": []
   }
 ]

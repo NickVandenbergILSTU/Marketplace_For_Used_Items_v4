@@ -31,23 +31,8 @@
   },
   {
     "id": 2,
-    "name": "Item2",
+    "name": "pop tarts",
     "price": "$100.00",
-    "ratings": [
-      {
-        "accountId": 41,
-        "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
-      }
-    ]
-  },
-  {
-    "id": 3,
-    "name": "a",
-    "price": "$1.67",
     "ratings": [
       {
         "accountId": 41,
@@ -107,15 +92,20 @@
   },
   {
     "id": 8,
-    "name": "[NEW ITEM]",
+    "name": "Item3",
     "price": "$0.00",
-    "ratings": [],
+    "ratings": [
+      {
+        "userId": 41,
+        "rating": 5
+      }
+    ],
     "itemComments": []
   },
   {
     "id": 9,
-    "name": "a",
-    "price": "$0.00",
+    "name": "cinnamon toast crunch",
+    "price": "$500.00",
     "ratings": [],
     "itemComments": []
   },
@@ -176,16 +166,9 @@
     "itemComments": []
   },
   {
-    "id": 18,
-    "name": "[NEW ITEM]",
-    "price": "$0.00",
-    "ratings": [],
-    "itemComments": []
-  },
-  {
     "id": 19,
-    "name": "[NEW ITEM]",
-    "price": "$0.00",
+    "name": "egg nog",
+    "price": "$1.00",
     "ratings": [],
     "itemComments": []
   },

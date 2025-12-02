@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Synchronization Settings</title>
+    <link rel="stylesheet" href="/html/css/items.css">
+</head>
+<body>
+    <div class="header-panel">
+        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
+        <div class="header-title">Data Synchronization Settings</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="settings-container">
+            <div class="setting-section">
+                <h2>Data Synchronization</h2>
+                <p class="description">Manage your data synchronization settings between local and remote storage.</p>
+                
+                <div class="button-group">
+                    <button class="action-button" onclick="pullData()">
+                        <span class="button-icon">⬇️</span>
+                        <span class="button-text">Pull Images and JSON</span>
+                    </button>
+                    
+                    <button class="action-button" onclick="pushData()">
+                        <span class="button-icon">⬆️</span>
+                        <span class="button-text">Push Images and JSON</span>
+                    </button>
+                    
+                    <button class="action-button toggle-button" onclick="toggleAutoPushPull()">
+                        <span class="button-icon">🔄</span>
+                        <span class="button-text">Auto Push and Pull for all Scripts</span>
+                        <span class="status-indicator" id="autoStatus">Loading...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .setting-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .setting-section h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .action-button {
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 20px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .action-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+
+        .action-button:active {
+            background-color: #004085;
+            transform: translateY(0);
+        }
+
+        .button-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .button-text {
+            flex-grow: 1;
+        }
+
+        .toggle-button {
+            background-color: #28a745;
+            position: relative;
+        }
+
+        .toggle-button:hover {
+            background-color: #218838;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .toggle-button:active {
+            background-color: #1e7e34;
+        }
+
+        .status-indicator {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .status-enabled {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .status-disabled {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 600px) {
+            .settings-container {
+                margin: 20px auto;
+                padding: 10px;
+            }
+
+            .setting-section {
+                padding: 20px;
+            }
+
+            .action-button {
+                padding: 15px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+
+    <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
+        let currentUserId = null;
+        let autoPushPullEnabled = false;
+
+        async function sendHttpRequest(params) {
+            try {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                return { success: true, text };
+            } catch (error) {
+                console.error('Error sending HTTP request:', error);
+                return { success: false, error };
+            }
+        }
+
+        async function loadUserData() {
+            try {
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                if (!localDataResponse.ok) {
+                    throw new Error(`HTTP error! status: ${localDataResponse.status}`);
+                }
+                const localData = await localDataResponse.json();
+                currentUserId = localData.currentlyLoggedInUserID;
+
+                const accountsResponse = await fetch('/json/accounts.json');
+                if (!accountsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${accountsResponse.status}`);
+                }
+                const accounts = await accountsResponse.json();
+
+                const currentUser = accounts.find(account => account.id === currentUserId);
+
+                const usernameElement = document.getElementById('username');
+                const balanceElement = document.getElementById('balance');
+
+                if (currentUser && currentUser.username) {
+                    usernameElement.textContent = currentUser.username;
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    balanceElement.textContent = `$${balanceNum.toFixed(2)}`;
+
+                    // Load auto push/pull status
+                    autoPushPullEnabled = currentUser.autoPushAndPullData === "true" || currentUser.autoPushAndPullData === true;
+                    updateStatusDisplay();
+                } else {
+                    usernameElement.textContent = 'Guest User';
+                    balanceElement.textContent = '$0.00';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
+                document.getElementById('autoStatus').textContent = 'Error Loading';
+            }
+        }
+
+        function updateStatusDisplay() {
+            const statusElement = document.getElementById('autoStatus');
+            if (autoPushPullEnabled) {
+                statusElement.textContent = 'Enabled';
+                statusElement.className = 'status-indicator status-enabled';
+            } else {
+                statusElement.textContent = 'Disabled';
+                statusElement.className = 'status-indicator status-disabled';
+            }
+        }
+
+        async function pullData() {
+            const params = [
+                './use_cases/auto_push_and_pull_data/pull_data.sh'
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text || 'Pull completed successfully');
+            } else {
+                alert('Error pulling data');
+            }
+        }
+
+        async function pushData() {
+            const params = [
+                './use_cases/auto_push_and_pull_data/push_data.sh'
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                alert(result.text || 'Push completed successfully');
+            } else {
+                alert('Error pushing data');
+            }
+        }
+
+        async function toggleAutoPushPull() {
+            const params = [
+                './use_cases/auto_push_and_pull_data/toggle_auto_on_and_off.sh'
+            ];
+
+            const result = await sendHttpRequest(params);
+            if (result.success) {
+                // Toggle the local state
+                autoPushPullEnabled = !autoPushPullEnabled;
+                updateStatusDisplay();
+                alert(result.text || 'Auto push/pull setting toggled');
+            } else {
+                alert('Error toggling auto push/pull setting');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+        });
+    </script>
+</body>
+</html>

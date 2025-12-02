@@ -1,5 +1,6 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <!-- Use shared stylesheet -->
     <link rel="stylesheet" href="/html/css/items.css">
 </head>
+
 <body>
     <div class="header-panel">
         <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
@@ -22,7 +24,7 @@
         <div class="sort-controls">
             <label for="search">Search:</label>
             <input type="text" id="search" class="search-input" placeholder="Search items..." oninput="filterItems()">
-            
+
             <label for="sort">Sort by:</label>
             <select id="sort" onchange="loadItems(this.value)">
                 <option value="default">Default Order</option>
@@ -157,7 +159,7 @@
 
         function filterItems() {
             const searchTerm = document.getElementById('search').value.toLowerCase();
-            const filteredItems = allItems.filter(item => 
+            const filteredItems = allItems.filter(item =>
                 item.name.toLowerCase().includes(searchTerm)
             );
             renderItems(filteredItems);
@@ -251,7 +253,7 @@
 
         async function checkoutCart() {
             const params = [
-                'use_cases/track_bal/track_bal.sh'
+                'use_cases/check_out_item/check_out_items_main.py'
             ];
 
             const result = await sendHttpRequest(params);
@@ -375,4 +377,5 @@
         });
     </script>
 </body>
+
 </html>

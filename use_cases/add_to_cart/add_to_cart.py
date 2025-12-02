@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 import traceback
 
+print ("Adding item to cart...")
 
 def add_to_cart(item_id):
 
