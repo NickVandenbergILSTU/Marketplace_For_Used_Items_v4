@@ -189,7 +189,8 @@
 
             const params = [
                 HELPER_SCRIPT,
-                './use_cases/accept_sale_request/accept_sale_request.sh',
+                './use_cases/sell_item_to_another_user/handle_incoming_sale_request.sh',
+                'accept',
                 itemId.toString()
             ];
 
@@ -209,7 +210,8 @@
 
             const params = [
                 HELPER_SCRIPT,
-                './use_cases/reject_sale_request/reject_sale_request.sh',
+                './use_cases/sell_item_to_another_user/handle_incoming_sale_request.sh',
+                'reject',
                 itemId.toString()
             ];
 

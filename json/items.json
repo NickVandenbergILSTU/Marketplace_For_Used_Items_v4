@@ -106,7 +106,12 @@
     "id": 9,
     "name": "cinnamon toast crunch",
     "price": "$500.00",
-    "ratings": [],
+    "ratings": [
+      {
+        "userId": 41,
+        "rating": 3
+      }
+    ],
     "itemComments": []
   },
   {
