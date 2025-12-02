@@ -6,7 +6,7 @@
     "securityQuestion": "What is your favorite color?",
     "securityAnswer": "blue",
     "autoPushAndPullData": "false",
-    "accountBalance": 9810,
+    "accountBalance": 100,
     "incomingSaleRequests": [],
     "outgoingSaleRequests": [
       {
