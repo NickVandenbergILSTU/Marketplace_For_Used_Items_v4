@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 
 app.post('/run-script', (req, res) => {
     console.log('Received run-script POST:', req.body);
-    
+
     let { params } = req.body;
     if (!Array.isArray(params)) params = [];
 
@@ -73,6 +73,126 @@ app.post('/run-script', (req, res) => {
         res.send(`Script output:\n${stdout}`);
     });
 });
+
+// ------------- Eric Added for forgot_password use-case ----------------
+app.post('/verify-username', (req, res) => {
+    // exec = spawn : require('child_process)
+    // 
+    //const pythonLocation = "C:\\Python\\python.exe"
+    const spawn = require("child_process").spawn;
+    const scriptPath = "use_cases/forgot_password/verify_username.py"
+
+    const absoluteScriptPath = path.resolve(path.join(__dirname, '../', scriptPath))
+
+    const enteredUsername = req.body.username;
+
+    const pythonProcess = spawn('python', [absoluteScriptPath, enteredUsername]);
+    try {
+
+        pythonProcess.stdout.on('data', (data) => {
+            const mystr = data.toString();
+            const dataObject = JSON.parse(mystr);
+            const responseValue = dataObject.response;
+            res.json({ response: responseValue });
+        })
+
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+app.post('/verify-security-answer', (req, res) => {
+    const spawn = require("child_process").spawn;
+    const scriptPath = "use_cases/forgot_password/verify_security_questions.py"
+    const absoluteScriptPath = path.resolve(path.join(__dirname, '../', scriptPath))
+    const username = req.body.username;
+    const sq_question = req.body.selected_sq
+    const sq_answer = req.body.sq_answer;
+    let accumulatedData = '';
+
+    const pythonProcess = spawn('python', [absoluteScriptPath, username, sq_question, sq_answer]);
+    pythonProcess.stdout.on('data', (data) => {
+        accumulatedData += data.toString();
+    })
+    pythonProcess.on('close', (code) => {
+        if (code != 0) {
+            console.error(`Python script exited with code ${code}`);
+            return res.status(500).json({ response: "Server error: python script failed" });
+        }
+        try {
+            const dataObject = JSON.parse(accumulatedData);
+            const responseValue = dataObject.result;
+            console.log(responseValue); // prints the Success
+            res.json({ result: responseValue });
+        } catch (err) {
+            console.error('Json parsing error:', err.message);
+            res.status(500).json({ response: "Server Error: Invalid data received from source" });
+
+        }
+    })
+})
+
+app.post('/verify-password', (req, res) => {
+    username = req.body.username;
+    password = req.body.password;
+    const checkPasswordScriptPath = "use_cases/check_password_requirements/check_password_requirements.sh"
+    const checkPasswordAbsolutePath = path.resolve(path.join(__dirname, '../', checkPasswordScriptPath))
+
+    const { exec } = require('child_process');
+
+    exec(`bash ${checkPasswordAbsolutePath} ${password}`, (error, stdout, stderr) => {
+        // if (stdout.includes("8 characters")) {
+        //     console.log(stdout);
+        //     res.json({ result: stdout });
+        // }
+        console.log(stdout);
+        const errorMessage1 = "Error: Password parameter is required.";
+        const errorMessage2 = "Error: Password must be at least 8 characters long.";
+        const errorMessage3 = "Error: Password must contain at least 1 uppercase letter.";
+        const errorMessage4 = "Error: Password must contain at least 1 digit.";
+        let errorCode = "Er0";
+
+        switch (true) {
+            case stdout.includes(errorMessage1): errorCode = "Er1"; break;
+            case stdout.includes(errorMessage2): errorCode = "Er2"; break;
+            case stdout.includes(errorMessage3): errorCode = "Er3"; break;
+            case stdout.includes(errorMessage4): errorCode = "Er4"; break;
+            default: break;
+        }
+        if (errorCode !== "Er0") {
+
+            res.send({ response: errorCode });
+        } else {
+            // read the accounts file for our specific account
+
+            const scriptPath = "use_cases/forgot_password/change_password_main.py"
+            const absoluteScriptPath = path.resolve(path.join(__dirname, '../', scriptPath))
+            let accumulatedData = '';
+            const spawn = require("child_process").spawn;
+
+            const pythonProcess = spawn('python', [absoluteScriptPath, username, password], {
+                stdio: ['pipe', 'pipe', 'inherit']
+            });
+
+            pythonProcess.stdout.on('data', (returnedData) => {
+                accumulatedData += returnedData.toString();
+            })
+
+            pythonProcess.stdout.on('close', (code) => {
+                const jsonString = accumulatedData.trim()
+                console.log(`Accumulated Data: ${jsonString}`);
+                const dataObject = JSON.parse(jsonString);
+                const responseValue = dataObject.result;
+                //console.log(`Response value: ${responseValue}`); // prints the Success
+                res.json({ result: responseValue });
+            })
+
+        }
+
+
+    });
+});
+// ------------------- End of Eric's Additions --------------
 
 // API route to get items
 app.get('/api/items', (req, res) => {
@@ -315,10 +435,10 @@ app.get('/api/bookmarked-items', (req, res) => {
             let ownership = { type: 'none', name: null, id: null };
 
             // First check if item belongs to a store (highest priority)
-            const ownerStore = locations.find(loc => 
+            const ownerStore = locations.find(loc =>
                 loc.storeItems && loc.storeItems.includes(item.id)
             );
-            
+
             if (ownerStore) {
                 ownership = { type: 'store', name: ownerStore.name, id: ownerStore.id };
             } else if (userItemIds.includes(item.id)) {
@@ -326,10 +446,10 @@ app.get('/api/bookmarked-items', (req, res) => {
                 ownership = { type: 'user', name: userAccount.username, id: currentUserId };
             } else {
                 // Check if item belongs to another user
-                const ownerAccount = accounts.find(acc => 
+                const ownerAccount = accounts.find(acc =>
                     acc.myItems && acc.myItems.includes(item.id)
                 );
-                
+
                 if (ownerAccount) {
                     ownership = { type: 'other_user', name: ownerAccount.username, id: ownerAccount.id };
                 }
@@ -342,7 +462,7 @@ app.get('/api/bookmarked-items', (req, res) => {
         });
 
         // Filter out items that belong to other users
-        const filteredItems = itemsWithOwnership.filter(item => 
+        const filteredItems = itemsWithOwnership.filter(item =>
             item.ownership.type !== 'other_user'
         );
 
