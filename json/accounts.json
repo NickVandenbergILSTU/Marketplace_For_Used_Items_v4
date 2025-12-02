@@ -17,15 +17,13 @@
     "myItems": [
       1,
       9,
-      18,
       19,
       20,
       21,
       22,
       23,
       2,
-      24,
-      25
+      24
     ],
     "bookmarkedItems": [
       2
@@ -161,6 +159,8 @@
     "bookmarkedItems": [],
     "reservedItems": [],
     "itemsInCart": [],
-    "orderHistory": []
+    "orderHistory": [],
+    "incomingSaleRequests": [],
+    "outgoingSaleRequests": []
   }
 ]

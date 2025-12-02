@@ -31,7 +31,7 @@
   },
   {
     "id": 2,
-    "name": "Item2",
+    "name": "pop tarts",
     "price": "$100.00",
     "ratings": [
       {
@@ -104,7 +104,7 @@
   },
   {
     "id": 9,
-    "name": "a",
+    "name": "cinnamon toast crunch",
     "price": "$0.00",
     "ratings": [],
     "itemComments": []
@@ -166,13 +166,6 @@
     "itemComments": []
   },
   {
-    "id": 18,
-    "name": "[NEW ITEM]",
-    "price": "$0.00",
-    "ratings": [],
-    "itemComments": []
-  },
-  {
     "id": 19,
     "name": "[NEW ITEM]",
     "price": "$0.00",
@@ -209,13 +202,6 @@
   },
   {
     "id": 24,
-    "name": "[NEW ITEM]",
-    "price": "$0.00",
-    "ratings": [],
-    "itemComments": []
-  },
-  {
-    "id": 25,
     "name": "[NEW ITEM]",
     "price": "$0.00",
     "ratings": [],
