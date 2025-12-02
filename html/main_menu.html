@@ -276,7 +276,6 @@
 
             <div class="menu-column">
                 <h2 class="column-title">Other</h2>
-                <!-- <button class="menu-button" onclick="openAIAssistant()">AI Assistant</button> -->
                 <button class="menu-button" onclick="viewAllAccounts()">Display All Accounts</button>
                 <button class="menu-button" onclick="viewMyAccount()">My Account</button>
                 <button class="menu-button" onclick="autoPushPullData()">Push and Pull Data Settings</button>
@@ -421,19 +420,15 @@
         }
 
         function viewAllAccounts() {
-            window.location.href = '/users/all';
+            window.location.href = '/html/display_account.html';
         }
 
         function viewMyAccount() {
             window.location.href = '/html/main_menu_options/accounts/my_account.html';
         }
 
-        function openAIAssistant() {
-            window.location.href = '/ai/assistant';
-        }
-
         function autoPushPullData() {
-            window.location.href = '/data/sync';
+            window.location.href = '/html/main_menu_options/auto_push_and_pull_settings.html';
         }
 
         function viewIncomingSaleRequests() {

@@ -37,24 +37,38 @@ fi
 # The value of the string autoPushAndPullData in ACCOUNS_JSON_PATH:
 auto_push_and_pull_data=$(jq -r --argjson id "$CURRENTLY_LOGGED_IN_USER_ID" '.[] | select(.id==$id) | .autoPushAndPullData' "$ACCOUNTS_JSON_PATH")
 
-# Add scripts that READ DATA ONLY here
-# ...don't add scripts that write data here
-# DON'T include scrips that read data that only exists locally, pulls are not necessry then
-if [ "$auto_push_and_pull_data" == "true" ] && \
-   { [ "$SCRIPT_PATH" == "./use_cases/login_and_create_account/login.sh" ]; \
-   }; then
+
+
+# Following commented out 12/1/25
+# # Add scripts that READ DATA ONLY here
+# # ...don't add scripts that write data here
+# # DON'T include scrips that read data that only exists locally, pulls are not necessry then
+# if [ "$auto_push_and_pull_data" == "true" ] && \
+#    { [ "$SCRIPT_PATH" == "./use_cases/login_and_create_account/login.sh" ]; \
+#    }; then
+#   read_only="true"
+# else
+#   read_only="false"
+# fi
+
+# # Add scripts that READ AND WRITE data to files that EXIST IN REMOTE REPO here:
+# if [ "$auto_push_and_pull_data" == "true" ] && \
+#    { [ "$SCRIPT_PATH" == "./use_cases/login_and_create_account/create_account.sh" ]; \
+#    }; then
+#   read_and_write="true"
+# else
+#   read_and_write="false"
+# fi
+
+# New logic 12/1/25
+if [ "$auto_push_and_pull_data" == "true" ]; then
   read_only="true"
+  read_and_write="true"
+  echo "Auto Push and Pull Data - enabled"
 else
   read_only="false"
-fi
-
-# Add scripts that READ AND WRITE data to files that EXIST IN REMOTE REPO here:
-if [ "$auto_push_and_pull_data" == "true" ] && \
-   { [ "$SCRIPT_PATH" == "./use_cases/login_and_create_account/create_account.sh" ]; \
-   }; then
-  read_and_write="true"
-else
   read_and_write="false"
+  echo "Auto Push and Pull Data - disabled"
 fi
 
 # ==================================================================
@@ -64,6 +78,7 @@ fi
 # If the script involves reading OR writing user data (json, user images, user ai convo history, etc.) > git pull
 if [ "$read_only" == "true" ] || [ "$read_and_write" == "true" ]; then
   git pull
+  echo "Data pulled from remote repository."
 fi
 
 # Run script
@@ -83,4 +98,5 @@ if [ "$read_and_write" == "true" ]; then
   git add json/*.json images/*/*.png
   git commit -m "[AUTOMATED COMMIT, DATA UPDATED]"
   git push
+  echo "Data pushed to remote repository."
 fi
