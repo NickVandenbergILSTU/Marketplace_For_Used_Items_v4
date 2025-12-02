@@ -45,22 +45,6 @@
     ]
   },
   {
-    "id": 3,
-    "name": "a",
-    "price": "$1.67",
-    "ratings": [
-      {
-        "accountId": 41,
-        "rating": 5
-      },
-      {
-        "accountId": 42,
-        "rating": 4
-      }
-    ],
-    "itemComments": []
-  },
-  {
     "id": 4,
     "name": "Apple",
     "price": "$1.50",
