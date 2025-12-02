@@ -147,5 +147,20 @@
     "orderHistory": [],
     "incomingSaleRequests": [],
     "outgoingSaleRequests": []
+  },
+  {
+    "id": 17,
+    "username": "nick_burner_2",
+    "password": "Password1",
+    "email": "emai6l@gmail.com",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "wrigley",
+    "autoPushAndPullData": "false",
+    "accountBalance": 1000,
+    "myItems": [],
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
+    "orderHistory": []
   }
 ]

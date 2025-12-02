@@ -94,7 +94,12 @@
     "id": 8,
     "name": "Item3",
     "price": "$0.00",
-    "ratings": [],
+    "ratings": [
+      {
+        "userId": 41,
+        "rating": 5
+      }
+    ],
     "itemComments": []
   },
   {
