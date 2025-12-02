@@ -36,9 +36,9 @@ def verify_security_response(username, security_question, security_answer):
             sys.stdout.flush()
             return
 
-username = 'thaterickid'#sys.argv[1]
-security_question = 'What is the name of your first pet?'#sys.argv[2]
-security_answer= 'Sassy'#sys.argv[3]
+username = sys.argv[1]
+security_question = sys.argv[2]
+security_answer= sys.argv[3]
 
 
 try:

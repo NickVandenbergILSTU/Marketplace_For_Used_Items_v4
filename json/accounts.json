@@ -77,9 +77,9 @@
     {
         "id": 13,
         "username": "thaterickid",
-        "password": "dontLook5!",
-        "securityQuestion": "What is your favorite color?",
-        "securityAnswer": "blue",
+        "password": "12345678A",
+        "securityQuestion": "What is the name of your first pet?",
+        "securityAnswer": "Dog",
         "autoPushAndPullData": "false",
         "accountBalance": 99.99,
         "myItems": [],
