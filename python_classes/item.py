@@ -17,10 +17,11 @@ class Item:
         )
         subprocess.run(['bash', script_path], check=True)
 
+
     def bookMarkItem(self):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'bookmark_item', 'bookmark_item.sh')
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'bookmark_and_unbookmark_item', 'bookmark_item.sh')
         )
         subprocess.run(['bash', script_path, str(self.itemID)], check=True)
 
