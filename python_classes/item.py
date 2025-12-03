@@ -17,12 +17,12 @@ class Item:
         )
         subprocess.run(['bash', script_path], check=True)
 
-    def bookMarkItem(self, itemID):
+    def bookMarkItem(self):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
             os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'bookmark_and_unbookmark_item', 'bookmark_item.sh')
         )
-        subprocess.run(['bash', script_path, itemID], check=True)
+        subprocess.run(['bash', script_path, str(self.itemID)], check=True)
 
     def addRating(self, rating):
         self.ratings.append(rating)
@@ -30,8 +30,7 @@ class Item:
         script_path = os.path.abspath(
             os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'rate_item', 'rate_item.sh')
         )
-        #subprocess.run(['bash', script_path, str(self.itemID), str(rating)], check=True)
-        subprocess.run(['bash', script_path, self.itemID, rating], check=True)
+        subprocess.run(['bash', script_path, str(self.itemID), str(rating)], check=True)
 
     def addComment(self, comment):
         self.comments.append(comment)

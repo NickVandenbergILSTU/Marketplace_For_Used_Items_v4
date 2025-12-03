@@ -188,7 +188,7 @@
 
             const params = [
                 HELPER_SCRIPT,
-                './use_cases/rate_item/rate_item.sh',
+                './use_cases/rate_item/rate_item_main.py',
                 itemId.toString(),
                 rating.toString()
             ];
@@ -205,7 +205,7 @@
         async function bookmarkItem(itemId) {
             const params = [
                 HELPER_SCRIPT,
-                './use_cases/bookmark_and_unbookmark_item/bookmark_item.sh',
+                './use_cases/bookmark_and_unbookmark_item/main.py',
                 itemId.toString()
             ];
 
@@ -237,7 +237,7 @@
         async function removeFromCart(itemId) {
             const params = [
                 HELPER_SCRIPT,
-                './use_cases/remove_from_cart/remove_from_cart.sh',
+                './use_cases/remove_from_cart/remove_from_cart_main.py',
                 currentUserId.toString(),
                 itemId.toString()
             ];

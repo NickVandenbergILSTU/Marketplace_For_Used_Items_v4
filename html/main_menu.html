@@ -1,5 +1,6 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -238,6 +239,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header-panel">
         <button class="logout-btn" onclick="logout()">Log Out</button>
@@ -324,11 +326,11 @@
 
                 // Find the account with matching ID
                 const currentUser = accounts.find(account => account.id === currentlyLoggedInUserID);
-                
+
                 // Display username and balance
                 const usernameElement = document.getElementById('username');
                 const balanceElement = document.getElementById('balance');
-                
+
                 if (currentUser && currentUser.username) {
                     usernameElement.textContent = currentUser.username;
                     const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
@@ -348,14 +350,14 @@
 
                 // Update the button text or hide it if no store selected
                 const currentStoreBtn = document.getElementById('currentStoreBtn');
-                
+
                 if (currentStoreId === -1) {
                     // Hide the button if currentStore is -1
                     currentStoreBtn.style.display = 'none';
                 } else {
                     // Find the location with matching ID
                     const currentStore = locations.find(location => location.id === currentStoreId);
-                    
+
                     if (currentStore && currentStore.name) {
                         currentStoreBtn.textContent = `Shop at: ${currentStore.name}`;
                         currentStoreName = currentStore.name;
@@ -443,4 +445,5 @@
         document.addEventListener('DOMContentLoaded', loadUserData);
     </script>
 </body>
+
 </html>

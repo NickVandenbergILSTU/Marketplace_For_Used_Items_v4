@@ -113,7 +113,7 @@
       },
       {
         "userId": 13,
-        "rating": 4
+        "rating": 2
       }
     ],
     "itemComments": []
@@ -227,7 +227,12 @@
     "id": 26,
     "name": "Baseball",
     "price": "$20.00",
-    "ratings": [],
+    "ratings": [
+      {
+        "userId": 13,
+        "rating": 3
+      }
+    ],
     "itemComments": []
   }
 ]
