@@ -1,6 +1,6 @@
 import subprocess
 import os
-from user.py import User
+from user import User
 
 class Seller(User):
     def __init__(self):
