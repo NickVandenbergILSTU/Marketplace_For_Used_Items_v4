@@ -6,12 +6,12 @@ class Seller(User):
     def __init__(self):
         self.sellerItem = None
 
-    def handleOutgoingSaleRequest(self):
+    def handleOutgoingSaleRequest(self, itemID, targetUserID):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'handle_outgoing_sale_request', 'handle_outgoing_sale_request.sh')
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'sell_item_to_another_user', 'handle_outgoing_sale_request.sh')
         )
-        subprocess.run(['bash', script_path], check=True)
+        subprocess.run(['bash', script_path, str(itemID), str(targetUserID)], check=True)
 
     def sellItemToAnotherUser(self):
         # Get absolute path to the shell script
