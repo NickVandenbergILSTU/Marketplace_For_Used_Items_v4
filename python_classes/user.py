@@ -23,3 +23,10 @@ class User:
             os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'create_item', 'create_item.sh')
         )
         subprocess.run(['bash', script_path], check=True)
+
+    def deleteItem(self, itemID):
+    # Get absolute path to the shell script
+        script_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'delete_item', 'delete_item.sh')
+        )
+        subprocess.run(['bash', script_path, str(itemID)], check=True)
