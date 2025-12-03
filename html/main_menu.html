@@ -380,7 +380,7 @@
             if (confirm('Are you sure you want to log out?')) {
                 const params = [
                     HELPER_SCRIPT,
-                    './use_cases/log_out_user/log_out_user.sh'
+                    './use_cases/log_out_user/main.py'
                 ];
 
                 const result = await sendHttpRequest(params);

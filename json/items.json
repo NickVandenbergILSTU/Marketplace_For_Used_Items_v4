@@ -120,7 +120,7 @@
   },
   {
     "id": 10,
-    "name": "[NEW ITEM]",
+    "name": "Test",
     "price": "$0.00",
     "ratings": [],
     "itemComments": []
@@ -225,7 +225,7 @@
   },
   {
     "id": 26,
-    "name": "Baseball",
+    "name": "Renamed",
     "price": "$20.00",
     "ratings": [
       {
