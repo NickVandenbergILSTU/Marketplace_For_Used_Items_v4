@@ -7,10 +7,10 @@ class Account_Handler:
 
     def createAccount(self, username, password, password2, email, securityQuestion, securityAnswer):
     # Get absolute path to the shell script
-    script_path = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'create_account', 'create_account.sh')
-    )
-    subprocess.run(['bash', script_path, username, password, password2, email, securityQuestion, securityAnswer], check=True)
+        script_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'create_account', 'create_account.sh')
+        )
+        subprocess.run(['bash', script_path, username, password, password2, email, securityQuestion, securityAnswer], check=True)
 
 
     def deleteAccount(self):
@@ -48,11 +48,11 @@ class Account_Handler:
         )
         subprocess.run(['bash', script_path], check=True)
     
-    def loginUser(self):
+    def loginUser(self, username, password):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'login_user', 'login_user.sh')
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'login_and_create_account', 'login.sh')
         )
-        subprocess.run(['bash', script_path], check=True)
+        subprocess.run(['bash', script_path,username,password], check=True)
 
     

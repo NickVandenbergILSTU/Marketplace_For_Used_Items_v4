@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Login - Marketplace for Used Items</title>
@@ -13,14 +14,16 @@
             min-height: 100vh;
             margin: 0;
         }
+
         .container {
             text-align: center;
             background: #ffffff;
             padding: 40px 60px;
             border-radius: 16px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             position: relative;
         }
+
         .back-btn {
             position: absolute;
             top: 15px;
@@ -32,14 +35,17 @@
             border-radius: 6px;
             cursor: pointer;
         }
+
         .back-btn:hover {
             background: #bbb;
         }
+
         h1 {
             margin-bottom: 30px;
             font-size: 2rem;
             color: #333;
         }
+
         input {
             display: block;
             width: 250px;
@@ -49,6 +55,7 @@
             border: 1px solid #ccc;
             border-radius: 8px;
         }
+
         button.login {
             display: block;
             width: 250px;
@@ -62,14 +69,17 @@
             cursor: pointer;
             transition: background 0.2s;
         }
+
         button.login:hover {
             background: #45a049;
         }
+
         #userStatus {
             margin-top: 20px;
             font-size: 1rem;
             color: #555;
         }
+
         #goMainMenuBtn {
             display: none;
             margin-top: 20px;
@@ -82,11 +92,13 @@
             border-radius: 8px;
             cursor: pointer;
         }
+
         #goMainMenuBtn:hover {
             background: #1976D2;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <button class="back-btn" onclick="window.location.href='login_create_forgotpass.html'">&larr; Back</button>
@@ -105,7 +117,7 @@
     </div>
 
     <script>
-        const login_script = "./use_cases/login_and_create_account/login.sh";
+        const login_script = "./use_cases/login_and_create_account/login_acct_main.py";
         const HELPER_SCRIPT = "./helper_scripts/run_user_script.sh";
 
         async function runScript(params) {
@@ -141,4 +153,5 @@
         });
     </script>
 </body>
+
 </html>
