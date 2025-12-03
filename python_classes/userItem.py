@@ -1,17 +1,17 @@
 import subprocess
 import os
-from Item import Item
+from item import Item 
 
 class UserItem(Item):
     def __init__(self):
         pass
 
-    def postItemPicture(self):
-        # Get absolute path to the shell script
+    def postItemPicture(self, itemID):
+    # Get absolute path to the shell script
         script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'post_item_picture', 'post_item_picture.sh')
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'add_item_image', 'add_item_image.sh')
         )
-        subprocess.run(['bash', script_path], check=True)
+        subprocess.run(['bash', script_path, str(itemID)], check=True)
     
     def deleteItemPicture(self):
         # Get absolute path to the shell script
