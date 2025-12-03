@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Items</title>
     <link rel="stylesheet" href="/html/css/items.css">
 </head>
+
 <body>
     <div class="header-panel">
         <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
@@ -339,7 +341,7 @@
 
             const params = [
                 HELPER_SCRIPT,
-                './use_cases/sell_item_to_another_user/sell_item_to_another_user.sh',
+                './use_cases/sell_item_to_another_user/sell_item_to_another_user_main.py',
                 itemId.toString(),
                 userId.toString()
             ];
@@ -552,4 +554,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <!-- Use shared stylesheet -->
     <link rel="stylesheet" href="/html/css/items.css">
 </head>
+
 <body>
     <div class="header-panel">
         <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
@@ -22,7 +24,7 @@
         <div class="sort-controls">
             <label for="search">Search:</label>
             <input type="text" id="search" class="search-input" placeholder="Search items..." oninput="filterItems()">
-            
+
             <label for="sort">Sort by:</label>
             <select id="sort" onchange="loadItems(this.value)">
                 <option value="default">Default Order</option>
@@ -35,7 +37,8 @@
         <div id="itemsContainer"></div>
 
         <div style="text-align: center; margin: 30px 0; padding-bottom: 20px;">
-            <button class="back-btn" onclick="window.location.href='/html/main_menu_options/items/shopping_cart.html'" style="font-size: 16px; padding: 12px 24px;">
+            <button class="back-btn" onclick="window.location.href='/html/main_menu_options/items/shopping_cart.html'"
+                style="font-size: 16px; padding: 12px 24px;">
                 🛒 Go to Shopping Cart
             </button>
         </div>
@@ -149,7 +152,7 @@
 
         function filterItems() {
             const searchTerm = document.getElementById('search').value.toLowerCase();
-            const filteredItems = allItems.filter(item => 
+            const filteredItems = allItems.filter(item =>
                 item.name.toLowerCase().includes(searchTerm)
             );
             renderItems(filteredItems);
@@ -180,7 +183,7 @@
         async function bookmarkItem(itemId) {
             const params = [
                 HELPER_SCRIPT,
-                './use_cases/bookmark_and_unbookmark_item/bookmark_item.sh',
+                './use_cases/bookmark_and_unbookmark_item/main.py',
                 itemId.toString()
             ];
 
@@ -350,4 +353,5 @@
         });
     </script>
 </body>
+
 </html>

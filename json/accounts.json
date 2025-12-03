@@ -11,6 +11,10 @@
       {
         "sourceUserId": 16,
         "itemId": 2
+      },
+      {
+        "sourceUserId": 13,
+        "itemId": 26
       }
     ],
     "outgoingSaleRequests": [
@@ -90,8 +94,12 @@
     "securityAnswer": "blue",
     "autoPushAndPullData": "false",
     "accountBalance": 99.99,
-    "myItems": [],
-    "bookmarkedItems": [],
+    "myItems": [
+      26
+    ],
+    "bookmarkedItems": [
+      13
+    ],
     "reservedItems": [],
     "itemsInCart": [
       4
@@ -101,7 +109,12 @@
       "3": "Good question"
     },
     "incomingSaleRequests": [],
-    "outgoingSaleRequests": []
+    "outgoingSaleRequests": [
+      {
+        "targetUserId": 41,
+        "itemId": 26
+      }
+    ]
   },
   {
     "id": 14,

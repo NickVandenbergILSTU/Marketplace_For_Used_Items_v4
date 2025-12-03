@@ -110,6 +110,10 @@
       {
         "userId": 41,
         "rating": 3
+      },
+      {
+        "userId": 13,
+        "rating": 4
       }
     ],
     "itemComments": []
@@ -216,6 +220,13 @@
     "id": 25,
     "name": "basketball",
     "price": "$0.00",
+    "ratings": [],
+    "itemComments": []
+  },
+  {
+    "id": 26,
+    "name": "Baseball",
+    "price": "$20.00",
     "ratings": [],
     "itemComments": []
   }
