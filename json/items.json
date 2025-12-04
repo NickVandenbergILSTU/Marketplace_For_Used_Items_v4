@@ -218,5 +218,17 @@
     "price": "$0.00",
     "ratings": [],
     "itemComments": []
+  },
+  {
+    "id": 26,
+    "name": "[NEW ITEM]",
+    "price": "$5.00",
+    "ratings": [
+      {
+        "userId": 41,
+        "rating": 5
+      }
+    ],
+    "itemComments": []
   }
 ]
