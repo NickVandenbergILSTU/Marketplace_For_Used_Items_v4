@@ -81,34 +81,30 @@
     "id": 13,
     "username": "thaterickid",
     "password": "dontLook5!",
-    "securityQuestion": "What is your favorite color?",
-    "securityAnswer": "blue",
+    "securityQuestion": "What is the name of your first pet?",
+    "securityAnswer": "Dog",
     "autoPushAndPullData": "false",
-    "accountBalance": 9995100.0,
-    "myItems": [],
-    "bookmarkedItems": [],
-    "reservedItems": [],
-    "itemsInCart": [
+    "accountBalance": 9986300.0,
+    "myItems": [
       5,
       6
     ],
-    "security_q_a": {
-      "1": "Jeff",
-      "3": "Good question"
-    },
+    "bookmarkedItems": [],
+    "reservedItems": [],
+    "itemsInCart": [],
     "incomingSaleRequests": [],
     "outgoingSaleRequests": [],
     "orderHistory": [
-      [
-        5
-      ],
-      [
-        6
-      ],
-      [
-        5,
-        6
-      ]
+      {
+        "id": 5,
+        "name": "Car",
+        "price": "$500.00"
+      },
+      {
+        "id": 6,
+        "name": "Truck",
+        "price": "$600.00"
+      }
     ]
   },
   {
