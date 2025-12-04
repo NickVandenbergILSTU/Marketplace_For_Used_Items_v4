@@ -12,8 +12,14 @@ import json
 from pathlib import Path
 import traceback
 import copy
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'python_classes'))
+
+from item import Item
 
 def run():
+    
     python_script = Path(__file__).resolve()
     script_directory = python_script.parent
 
@@ -87,9 +93,30 @@ def run():
 
     #add item to order history
     #print(shopping_cart)
-    selected_account['orderHistory'].append(shopping_cart)
     
-    updated_order_history = copy.deepcopy(selected_account['orderHistory'])
+    
+    
+
+    itemArray = []
+    # create item objects
+    for item in shopping_cart:
+        #print(item)
+        for itemsDB in local_items:
+            #rint(itemsDB)
+            if item == itemsDB['id']:
+                item_id = itemsDB['id']
+                item_name = itemsDB['name']
+                item_price = itemsDB['price']
+                #Create item
+                myItem = Item()
+                myItem.id = item_id
+                myItem.name = item_name
+                myItem.price = item_price
+                #add to dictionary
+                itemArray.append(myItem)
+                break
+
+    #print(itemArray)
 
     # remove items from each store
     with open(STORE_PATH, 'r') as stores_file:
@@ -119,9 +146,12 @@ def run():
                 if item in user['reservedItems']:
                     user['reservedItems'].remove(item)
         
+        
+
         if user['id'] == account_id:
-            user['orderHistory'] = updated_order_history
-            user['myItems'] = []
+            for item in itemArray:
+                user['orderHistory'].append({"id": item.id, "name" : item.name, "price" : item.price})
+            user['itemsInCart'] = []
 
     
 
