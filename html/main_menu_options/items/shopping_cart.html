@@ -81,7 +81,7 @@
 
         async function sendHttpRequest(params) {
             try {
-                const response = await fetch("/run-script", {
+                const response = await fetch("/run-script-checkout", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ params })
@@ -253,7 +253,6 @@
 
         async function checkoutCart() {
             const params = [
-                HELPER_SCRIPT,
                 'use_cases/check_out_item/check_out_items_main.py'
             ];
 

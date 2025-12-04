@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 
 app.post('/run-script', (req, res) => {
     console.log('Received run-script POST:', req.body);
-    
+
     let { params } = req.body;
     if (!Array.isArray(params)) params = [];
 
@@ -53,6 +53,46 @@ app.post('/run-script', (req, res) => {
 
     // Use spawn to avoid shell quoting issues
     const child = spawn('bash', [absoluteScriptPath, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+
+    let stdout = '';
+    let stderr = '';
+
+    child.stdout.on('data', (data) => {
+        stdout += data;
+    });
+
+    child.stderr.on('data', (data) => {
+        stderr += data;
+    });
+
+    child.on('close', (code) => {
+        if (code !== 0) {
+            console.error(stderr);
+            return res.status(500).send(`Error: ${stderr || 'Script exited with code ' + code}`);
+        }
+        res.send(`Script output:\n${stdout}`);
+    });
+});
+
+app.post('/run-script-checkout', (req, res) => {
+    console.log('Received run-script POST:', req.body);
+
+    let { params } = req.body;
+    if (!Array.isArray(params)) params = [];
+
+    // Assume first param is script path, others are real params
+    const scriptPath = params.shift();
+    if (!scriptPath) return res.status(400).send('Missing script path');
+
+    const absoluteScriptPath = path.resolve(path.join(__dirname, '../', scriptPath));
+
+    // Prepare argument array
+    const args = params;
+    // Use spawn to avoid shell quoting issues
+
+    const child = spawn('python', [absoluteScriptPath, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+
+
 
     let stdout = '';
     let stderr = '';
@@ -315,10 +355,10 @@ app.get('/api/bookmarked-items', (req, res) => {
             let ownership = { type: 'none', name: null, id: null };
 
             // First check if item belongs to a store (highest priority)
-            const ownerStore = locations.find(loc => 
+            const ownerStore = locations.find(loc =>
                 loc.storeItems && loc.storeItems.includes(item.id)
             );
-            
+
             if (ownerStore) {
                 ownership = { type: 'store', name: ownerStore.name, id: ownerStore.id };
             } else if (userItemIds.includes(item.id)) {
@@ -326,10 +366,10 @@ app.get('/api/bookmarked-items', (req, res) => {
                 ownership = { type: 'user', name: userAccount.username, id: currentUserId };
             } else {
                 // Check if item belongs to another user
-                const ownerAccount = accounts.find(acc => 
+                const ownerAccount = accounts.find(acc =>
                     acc.myItems && acc.myItems.includes(item.id)
                 );
-                
+
                 if (ownerAccount) {
                     ownership = { type: 'other_user', name: ownerAccount.username, id: ownerAccount.id };
                 }
@@ -342,7 +382,7 @@ app.get('/api/bookmarked-items', (req, res) => {
         });
 
         // Filter out items that belong to other users
-        const filteredItems = itemsWithOwnership.filter(item => 
+        const filteredItems = itemsWithOwnership.filter(item =>
             item.ownership.type !== 'other_user'
         );
 
