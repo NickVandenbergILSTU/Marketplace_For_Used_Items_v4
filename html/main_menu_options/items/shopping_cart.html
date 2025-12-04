@@ -81,7 +81,21 @@
 
         async function sendHttpRequest(params) {
             try {
-                const response = await fetch("/run-script-checkout", {
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+                const text = await response.text();
+                return { success: true, text };
+            } catch (error) {
+                console.error('Error sending HTTP request:', error);
+                return { success: false, error };
+            }
+        }
+        async function checkoutCartRequest(params) {
+            try {
+                const response = await fetch("/checkout-cart", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ params })
@@ -256,7 +270,7 @@
                 'use_cases/check_out_item/check_out_items_main.py'
             ];
 
-            const result = await sendHttpRequest(params);
+            const result = await checkoutCartRequest(params);
             if (result.success) {
                 alert(result.text);
                 setTimeout(() => {

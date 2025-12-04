@@ -74,7 +74,7 @@ app.post('/run-script', (req, res) => {
     });
 });
 
-app.post('/run-script-checkout', (req, res) => {
+app.post('/checkout-cart', (req, res) => {
     console.log('Received run-script POST:', req.body);
 
     let { params } = req.body;
