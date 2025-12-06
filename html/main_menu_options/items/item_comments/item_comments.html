@@ -1,5 +1,6 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -82,7 +83,7 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             padding: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .comment-header {
@@ -142,6 +143,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header-panel">
         <button class="back-btn" onclick="history.back()">← Back</button>
@@ -191,10 +193,10 @@
                 allAccounts = await accountsResponse.json();
 
                 const currentUser = allAccounts.find(account => account.id === currentUserId);
-                
+
                 const usernameElement = document.getElementById('username');
                 const balanceElement = document.getElementById('balance');
-                
+
                 if (currentUser && currentUser.username) {
                     usernameElement.textContent = currentUser.username;
                     const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
@@ -214,7 +216,7 @@
         async function loadItemAndComments() {
             try {
                 if (selectedItemId === -1 || selectedItemId === null) {
-                    document.getElementById('commentsList').innerHTML = 
+                    document.getElementById('commentsList').innerHTML =
                         '<div class="error-message">No item selected. Please select an item to view comments.</div>';
                     return;
                 }
@@ -228,7 +230,7 @@
                 currentItem = items.find(item => item.id === selectedItemId);
 
                 if (!currentItem) {
-                    document.getElementById('commentsList').innerHTML = 
+                    document.getElementById('commentsList').innerHTML =
                         '<div class="error-message">Item not found.</div>';
                     return;
                 }
@@ -241,7 +243,7 @@
                 renderComments();
             } catch (error) {
                 console.error('Error loading item and comments:', error);
-                document.getElementById('commentsList').innerHTML = 
+                document.getElementById('commentsList').innerHTML =
                     '<div class="error-message">Error loading comments.</div>';
             }
         }
@@ -310,7 +312,7 @@
             try {
                 const params = [
                     HELPER_SCRIPT,
-                    './use_cases/add_item_comment/add_item_comment.sh',
+                    './use_cases/add_item_comment/main.py',
                     selectedItemId.toString(),
                     commentText
                 ];
@@ -379,4 +381,5 @@
         });
     </script>
 </body>
+
 </html>

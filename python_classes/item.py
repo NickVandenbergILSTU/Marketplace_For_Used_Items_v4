@@ -36,9 +36,10 @@ class Item:
         self.comments.append(comment)
         # Get absolute path to the shell script
         script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'add_comment', 'add_comment.sh')
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'add_item_comment', 'add_item_comment.sh')
         )
-        subprocess.run(['bash', script_path, str(self.itemID), comment], check=True)
+        result = subprocess.run(['bash', script_path, str(self.itemID), comment],capture_output=True,text=True, check=True)
+        return result.stdout.strip()
 
     def removeComment(self):
         # Get absolute path to the shell script
