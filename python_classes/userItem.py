@@ -7,12 +7,13 @@ from item import Item
 
 class UserItem(Item):
     def __init__(self):
+        UserItem.id = None
         pass
 
     def postItemPicture(self):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'post_item_picture', 'post_item_picture.sh')
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'add_item_image', 'add_item_image.sh')
         )
         subprocess.run(['bash', script_path], check=True)
 
@@ -36,3 +37,10 @@ class UserItem(Item):
             os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'sell_item_to_store', 'sell_item_to_store.sh')
         )
         subprocess.run(['bash', script_path], check=True)
+
+    def deleteItem(self):
+        # Get absolute path to the shell script
+        script_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'delete_item', 'delete_item.sh')
+        )
+        subprocess.run(['bash', script_path, str(self.id)], check=True)
