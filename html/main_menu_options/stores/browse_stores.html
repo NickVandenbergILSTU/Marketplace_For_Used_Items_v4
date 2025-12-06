@@ -1,11 +1,13 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Stores</title>
     <link rel="stylesheet" href="/html/css/items.css">
 </head>
+
 <body>
     <div class="header-panel">
         <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
@@ -20,7 +22,7 @@
         <div class="sort-controls">
             <label for="search">Search:</label>
             <input type="text" id="search" class="search-input" placeholder="Search stores..." oninput="filterStores()">
-            
+
             <label for="sort">Sort by:</label>
             <select id="sort" onchange="loadStores(this.value)">
                 <option value="default">Default Order</option>
@@ -178,7 +180,7 @@
 
         function filterStores() {
             const searchTerm = document.getElementById('search').value.toLowerCase();
-            const filteredStores = allStores.filter(store => 
+            const filteredStores = allStores.filter(store =>
                 store.name.toLowerCase().includes(searchTerm)
             );
             renderStores(filteredStores);
@@ -186,14 +188,14 @@
 
         async function visitStore(storeId, storeName) {
             console.log(`Visiting store ${storeId}: ${storeName}`);
-            
+
             // Call run-script endpoint with store ID
             const params = [
                 HELPER_SCRIPT,
                 './use_cases/set_current_store/set_current_store.sh',
                 storeId.toString()
             ];
-            
+
             try {
                 const response = await fetch("/run-script", {
                     method: "POST",
@@ -218,14 +220,14 @@
                 alert('Please enter a store name');
                 return;
             }
-            
+
             // Call run-script endpoint to create new store
             const params = [
                 HELPER_SCRIPT,
-                './use_cases/add_location/add_location.sh',
+                './use_cases/add_location/main.py',
                 storeName
             ];
-            
+
             try {
                 const response = await fetch("/run-script", {
                     method: "POST",
@@ -234,7 +236,7 @@
                 });
                 const text = await response.text();
                 alert(text);
-                
+
                 // Clear input and reload stores after creation
                 document.getElementById('newStoreName').value = '';
                 await loadStores();
@@ -269,4 +271,5 @@
         });
     </script>
 </body>
+
 </html>
