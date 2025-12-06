@@ -1,11 +1,13 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account</title>
     <link rel="stylesheet" href="/html/css/items.css">
 </head>
+
 <body>
     <div class="header-panel">
         <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
@@ -20,15 +22,20 @@
         <div id="accountContainer">
             <div class="item-box" style="max-width: 800px; margin: 20px auto;">
                 <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Account Information</h2>
-                
-                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
-                    <p style="margin: 10px 0;"><strong>Username:</strong> <span id="displayUsername">Loading...</span></p>
-                    <p style="margin: 10px 0;"><strong>Email:</strong> <span id="displayEmail">Loading...</span></p>
-                    <p style="margin: 10px 0;"><strong>Password:</strong> <span id="displayPassword">Loading...</span></p>
 
-                    <p style="margin: 10px 0;"><strong>Account Balance:</strong> <span id="displayBalance">$0.00</span></p>
-                    <p style="margin: 10px 0;"><strong>Security Question:</strong> <span id="displaySecurityQuestion">Loading...</span></p>
-                    <p style="margin: 10px 0;"><strong>Security Answer:</strong> <span id="displaySecurityAnswer">Loading...</span></p>
+                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+                    <p style="margin: 10px 0;"><strong>Username:</strong> <span id="displayUsername">Loading...</span>
+                    </p>
+                    <p style="margin: 10px 0;"><strong>Email:</strong> <span id="displayEmail">Loading...</span></p>
+                    <p style="margin: 10px 0;"><strong>Password:</strong> <span id="displayPassword">Loading...</span>
+                    </p>
+
+                    <p style="margin: 10px 0;"><strong>Account Balance:</strong> <span id="displayBalance">$0.00</span>
+                    </p>
+                    <p style="margin: 10px 0;"><strong>Security Question:</strong> <span
+                            id="displaySecurityQuestion">Loading...</span></p>
+                    <p style="margin: 10px 0;"><strong>Security Answer:</strong> <span
+                            id="displaySecurityAnswer">Loading...</span></p>
                 </div>
 
                 <div class="action-group" style="margin-top: 30px;">
@@ -48,7 +55,7 @@
                         <input type="text" id="newPassword" placeholder="New Password" style="flex: 1;">
                         <button onclick="changePassword()">Change Password</button>
                     </div>
-                    
+
 
                     <div class="action-row">
                         <input type="text" id="addFunds" placeholder="Add Funds (e.g., 100.00)" style="flex: 1;">
@@ -101,7 +108,7 @@
                 const accounts = await accountsResponse.json();
 
                 currentUser = accounts.find(account => account.id === currentUserId);
-                
+
                 if (currentUser) {
                     // Update header
                     document.getElementById('username').textContent = currentUser.username || 'Guest User';
@@ -147,9 +154,9 @@
             const localData = await fetch('/json/local/local_data.json').then(r => r.json());
             const userId = localData.currentlyLoggedInUserID;
             const change_username = "./use_cases/update_account_info/change_username.sh";
-            const params = [HELPER_SCRIPT,change_username,userId,newUsername];
-            
-            const text = await runUserScript(params);  
+            const params = [HELPER_SCRIPT, change_username, userId, newUsername];
+
+            const text = await runUserScript(params);
             alert(text);
             if (text.includes("is already taken")) {
                 //alert("That username is already in use. Please choose another.");
@@ -158,10 +165,10 @@
                 document.getElementById('newUsername').value = '';
                 window.location.reload();
             }
-            
+
         }
 
-        async function changeEmail(){
+        async function changeEmail() {
             const newEmail = document.getElementById('newEmail').value.trim();
             if (!newEmail) {
                 alert('Please enter a new email');
@@ -170,9 +177,9 @@
             const localData = await fetch('/json/local/local_data.json').then(r => r.json());
             const userId = localData.currentlyLoggedInUserID;
             const change_email = "./use_cases/update_account_info/change_email.sh";
-            const params = [HELPER_SCRIPT,change_email,userId,newEmail];
+            const params = [HELPER_SCRIPT, change_email, userId, newEmail];
 
-            const text = await runUserScript(params);  
+            const text = await runUserScript(params);
             alert(text);
             if (text.includes("successfully")) {
                 document.getElementById('newEmail').value = '';
@@ -190,15 +197,15 @@
             const localData = await fetch('/json/local/local_data.json').then(r => r.json());
             const userId = localData.currentlyLoggedInUserID;
             const change_password = "./use_cases/update_account_info/change_password.sh";
-            const params = [HELPER_SCRIPT,change_password,userId,newPassword];
+            const params = [HELPER_SCRIPT, change_password, userId, newPassword];
 
-            const text = await runUserScript(params);  
+            const text = await runUserScript(params);
             alert(text);
             if (text.includes("successfully!")) {
                 document.getElementById('newPassword').value = '';
                 window.location.reload();
             }
-            
+
         }
 
         async function addFunds() {
@@ -274,7 +281,7 @@
             const localData = await fetch('/json/local/local_data.json').then(r => r.json());
             const userId = localData.currentlyLoggedInUserID;
             const change_password = "./use_cases/update_account_info/change_security_answer.sh";
-            const params = [HELPER_SCRIPT,change_password,userId,newAnswer];
+            const params = [HELPER_SCRIPT, change_password, userId, newAnswer];
 
             await runUserScript(params);
             alert("Security answer updated successfully!");
@@ -285,7 +292,7 @@
         function deleteAccount() {
             if (confirm('Are you sure you want to delete your account? This action cannot be undone!')) {
                 if (confirm('Are you REALLY sure? All your data will be permanently deleted!')) {
-                    runUserScript([HELPER_SCRIPT, './use_cases/delete_account/delete_account.sh']);
+                    runUserScript([HELPER_SCRIPT, './use_cases/delete_account/main.py']);
                     setTimeout(() => {
                         window.location.href = '/html/login.html';
                     }, 1000);
@@ -298,4 +305,5 @@
         });
     </script>
 </body>
+
 </html>
