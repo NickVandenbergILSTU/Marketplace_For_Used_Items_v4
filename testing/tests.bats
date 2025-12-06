@@ -14,7 +14,7 @@
 }
 
 @test "8 Character Minimum Test #2" {
-        run ../use_cases/check_password_requirements/check_password_requirements.sh 8476
+        run ../use_cases/check_password_requirements/check_password_requirements.sh aibh187
         [ "$status" -eq 1 ]
         [[ "$output" == *"8 characters"* ]]
 }
