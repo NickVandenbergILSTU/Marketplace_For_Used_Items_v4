@@ -216,7 +216,7 @@
             const buyerUserId = outgoingSaleRequestsMap[itemId];
             const params = [
                 HELPER_SCRIPT,
-                './use_cases/cancel_sale_request/cancel_sale_request.sh',
+                './use_cases/sell_item_to_another_user/handle_outgoing_sale_request.sh',
                 itemId.toString(),
                 buyerUserId.toString()
             ];

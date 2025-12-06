@@ -31,7 +31,7 @@
   },
   {
     "id": 2,
-    "name": "Item2",
+    "name": "pop tarts",
     "price": "$100.00",
     "ratings": [
       {
@@ -104,9 +104,14 @@
   },
   {
     "id": 9,
-    "name": "a",
-    "price": "$0.00",
-    "ratings": [],
+    "name": "cinnamon toast crunch",
+    "price": "$500.00",
+    "ratings": [
+      {
+        "userId": 41,
+        "rating": 3
+      }
+    ],
     "itemComments": []
   },
   {
@@ -166,16 +171,9 @@
     "itemComments": []
   },
   {
-    "id": 18,
-    "name": "[NEW ITEM]",
-    "price": "$0.00",
-    "ratings": [],
-    "itemComments": []
-  },
-  {
     "id": 19,
-    "name": "[NEW ITEM]",
-    "price": "$0.00",
+    "name": "egg nog",
+    "price": "$1.00",
     "ratings": [],
     "itemComments": []
   },
@@ -216,9 +214,21 @@
   },
   {
     "id": 25,
-    "name": "[NEW ITEM]",
+    "name": "basketball",
     "price": "$0.00",
     "ratings": [],
+    "itemComments": []
+  },
+  {
+    "id": 26,
+    "name": "[NEW ITEM]",
+    "price": "$5.00",
+    "ratings": [
+      {
+        "userId": 41,
+        "rating": 5
+      }
+    ],
     "itemComments": []
   }
 ]
