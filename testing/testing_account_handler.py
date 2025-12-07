@@ -113,6 +113,9 @@ def test_delete_account(mock_run):
 
 @mock.patch('subprocess.run')
 def test_delete_account_error_is_propagated(mock_run):
+    """
+    Tests that if the external script fails, the exception is passed up.
+    """
     handler = Account_Handler()
     mock_run.side_effect = subprocess.CalledProcessError(returncode=1, cmd='delete_account')
     with pytest.raises(subprocess.CalledProcessError):
@@ -128,6 +131,9 @@ def test_recover_password(mock_run):
 
 @mock.patch('subprocess.run')
 def test_recover_password_error_is_propagated(mock_run):
+    """
+    Tests that if the external script fails, the exception is passed up.
+    """
     handler = Account_Handler()
     mock_run.side_effect = subprocess.CalledProcessError(returncode=1, cmd='recover_password')
     with pytest.raises(subprocess.CalledProcessError):
@@ -143,6 +149,9 @@ def test_confirm_password(mock_run):
 
 @mock.patch('subprocess.run')
 def test_confirm_password_error_is_propagated(mock_run):
+    """
+    Tests that if the external script fails, the exception is passed up.
+    """
     handler = Account_Handler()
     mock_run.side_effect = subprocess.CalledProcessError(returncode=1, cmd='confirm_password')
     with pytest.raises(subprocess.CalledProcessError):
@@ -158,11 +167,14 @@ def test_authenticate_user(mock_run):
 
 @mock.patch('subprocess.run')
 def test_authenticate_user_error_is_propagated(mock_run):
+    """
+    Tests that if the external script fails, the exception is passed up.
+    """
     handler = Account_Handler()
     mock_run.side_effect = subprocess.CalledProcessError(returncode=1, cmd='authenticate_user')
     with pytest.raises(subprocess.CalledProcessError):
         handler.authenticateUser()
-        
+
 @mock.patch('subprocess.run')
 def test_logout_user(mock_run):
     account_handler = Account_Handler()
@@ -173,13 +185,16 @@ def test_logout_user(mock_run):
 
 @mock.patch('subprocess.run')
 def test_logout_user_error_is_propagated(mock_run):
+    """
+    Tests that if the external script fails, the exception is passed up.
+    """
     handler = Account_Handler()
     mock_run.side_effect = subprocess.CalledProcessError(returncode=1, cmd='log_out_user')
     with pytest.raises(subprocess.CalledProcessError):
         handler.logoutUser()
 
 
+#tests if all the tests pass
 
-##used to test it to make sure all pass
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
