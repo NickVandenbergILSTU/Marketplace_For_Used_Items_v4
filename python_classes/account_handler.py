@@ -44,7 +44,7 @@ class Account_Handler:
     def logoutUser(self):
         # Get absolute path to the shell script
         script_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'logout_user', 'logout_user.sh')
+            os.path.join(os.path.dirname(__file__), '..', 'use_cases', 'logout_user', 'log_out_user.sh')
         )
         subprocess.run(['bash', script_path], check=True)
     
