@@ -1,0 +1,138 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+    <link rel="stylesheet" href="/html/css/items.css">
+</head>
+<body>
+    <div class="header-panel">
+        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
+        <div class="header-title">Order History</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="sort-controls">
+            <label for="search">Search:</label>
+            <input type="text" id="search" class="search-input" placeholder="Search items..." oninput="filterItems()">
+            
+            <label for="sort">Sort by:</label>
+            <select id="sort" onchange="loadItems(this.value)">
+                <option value="default">Default Order</option>
+                <option value="alphabetical">Alphabetical</option>
+                <option value="price">Price</option>
+            </select>
+        </div>
+
+        <div id="itemsContainer"></div>
+    </div>
+
+    <script>
+        let currentUserId = null;
+        let allOrders = [];
+
+        // Load user data
+        async function loadUserData() {
+            try {
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                if (!localDataResponse.ok) throw new Error(`HTTP error! status: ${localDataResponse.status}`);
+                const localData = await localDataResponse.json();
+                currentUserId = localData.currentlyLoggedInUserID;
+
+                const accountsResponse = await fetch('/json/accounts.json');
+                if (!accountsResponse.ok) throw new Error(`HTTP error! status: ${accountsResponse.status}`);
+                const accounts = await accountsResponse.json();
+
+                const currentUser = accounts.find(account => account.id === currentUserId);
+                const usernameElement = document.getElementById('username');
+                const balanceElement = document.getElementById('balance');
+
+                if (currentUser && currentUser.username) {
+                    usernameElement.textContent = currentUser.username;
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    balanceElement.textContent = `$${balanceNum.toFixed(2)}`;
+                } else {
+                    usernameElement.textContent = 'Guest User';
+                    balanceElement.textContent = '$0.00';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
+            }
+        }
+
+        async function loadItems(order = "default") {
+            const res = await fetch("/api/order-history");
+            const data = await res.json();
+            let orders = data.orders;
+
+            // Sort orders based on selected order
+            if (order === "alphabetical") {
+                orders.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (order === "price") {
+                const parsePrice = str => parseFloat(str.replace(/[^0-9.]/g, ""));
+                orders.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+            }
+
+            allOrders = orders;
+            filterItems();
+        }
+
+        function filterItems() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filteredOrders = allOrders.filter(order => 
+                order.name.toLowerCase().includes(searchTerm)
+            );
+            renderItems(filteredOrders);
+        }
+
+        function renderItems(orders) {
+            const container = document.getElementById("itemsContainer");
+            container.innerHTML = "";
+
+            if (orders.length === 0) {
+                container.innerHTML = '<div class="no-items">You have no order history.</div>';
+                return;
+            }
+
+            orders.forEach(order => {
+                const itemBox = document.createElement("div");
+                itemBox.className = "item-box";
+
+                const nameContainer = document.createElement("div");
+                nameContainer.className = "item-name-container";
+                const name = document.createElement("h3");
+                name.textContent = order.name;
+                nameContainer.appendChild(name);
+
+                const price = document.createElement("p");
+                price.innerHTML = `<strong>Price:</strong> <span class="price-text">${order.price}</span>`;
+
+                const img = document.createElement("img");
+                img.className = "item-img";
+                img.alt = order.name;
+                img.src = `/images/items/${order.id}.png`;
+                img.onerror = () => (img.style.display = "none");
+
+                itemBox.appendChild(nameContainer);
+                itemBox.appendChild(price);
+                itemBox.appendChild(img);
+
+                container.appendChild(itemBox);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUserData();
+            await loadItems();
+        });
+    </script>
+</body>
+</html>

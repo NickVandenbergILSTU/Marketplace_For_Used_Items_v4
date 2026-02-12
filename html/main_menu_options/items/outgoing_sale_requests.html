@@ -1,0 +1,380 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outgoing Sale Requests</title>
+    <link rel="stylesheet" href="/html/css/items.css">
+</head>
+<body>
+    <div class="header-panel">
+        <button class="back-btn" onclick="window.location.href='/html/main_menu.html'">← Main Menu</button>
+        <div class="header-title">Outgoing Sale Requests</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="sort-controls">
+            <label for="search">Search:</label>
+            <input type="text" id="search" class="search-input" placeholder="Search items..." oninput="filterItems()">
+            
+            <label for="sort">Sort by:</label>
+            <select id="sort" onchange="loadItems(this.value)">
+                <option value="default">Default Order</option>
+                <option value="alphabetical">Alphabetical</option>
+                <option value="rating">Rating</option>
+                <option value="price">Price</option>
+            </select>
+        </div>
+
+        <div id="itemsContainer"></div>
+    </div>
+
+    <script>
+        const HELPER_SCRIPT = './helper_scripts/run_user_script.sh';
+        let userBookmarkedItems = [];
+        let currentUserId = null;
+        let allItems = [];
+        let allAccounts = [];
+        let outgoingSaleRequestsMap = {};
+
+        async function loadUserData() {
+            try {
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                if (!localDataResponse.ok) {
+                    throw new Error(`HTTP error! status: ${localDataResponse.status}`);
+                }
+                const localData = await localDataResponse.json();
+                currentUserId = localData.currentlyLoggedInUserID;
+
+                const accountsResponse = await fetch('/json/accounts.json');
+                if (!accountsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${accountsResponse.status}`);
+                }
+                const accounts = await accountsResponse.json();
+
+                const currentUser = accounts.find(account => account.id === currentUserId);
+                
+                const usernameElement = document.getElementById('username');
+                const balanceElement = document.getElementById('balance');
+                
+                if (currentUser && currentUser.username) {
+                    usernameElement.textContent = currentUser.username;
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    balanceElement.textContent = `$${balanceNum.toFixed(2)}`;
+                } else {
+                    usernameElement.textContent = 'Guest User';
+                    balanceElement.textContent = '$0.00';
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
+            }
+        }
+
+        async function loadItems(order = "default") {
+            try {
+                // Get local data
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                const localData = await localDataResponse.json();
+                currentUserId = localData.currentlyLoggedInUserID;
+
+                // Get accounts
+                const accountsResponse = await fetch('/json/accounts.json');
+                allAccounts = await accountsResponse.json();
+                const currentUser = allAccounts.find(account => account.id === currentUserId);
+
+                if (!currentUser) {
+                    console.error('Current user not found');
+                    return;
+                }
+
+                // Get outgoing sale requests
+                const outgoingSaleRequests = currentUser.outgoingSaleRequests || [];
+                userBookmarkedItems = currentUser.bookmarkedItems || [];
+
+                // Create a map of itemId -> userId for quick lookup
+                outgoingSaleRequestsMap = {};
+                outgoingSaleRequests.forEach(request => {
+                    outgoingSaleRequestsMap[request.itemId] = request.userId;
+                });
+
+                // Get item IDs from outgoing sale requests
+                const outgoingItemIds = outgoingSaleRequests.map(request => request.itemId);
+
+                // Get all items
+                const itemsResponse = await fetch('/json/items.json');
+                const allItemsData = await itemsResponse.json();
+
+                // Filter items to only those in outgoing sale requests
+                let items = allItemsData.filter(item => outgoingItemIds.includes(item.id));
+
+                // Calculate average ratings
+                items.forEach(item => {
+                    if (Array.isArray(item.ratings) && item.ratings.length > 0) {
+                        const sum = item.ratings.reduce((acc, r) => acc + r.rating, 0);
+                        item.avgRating = sum / item.ratings.length;
+                    } else {
+                        item.avgRating = 0;
+                    }
+                });
+
+                // Sort items
+                if (order === "alphabetical") {
+                    items.sort((a, b) => a.name.localeCompare(b.name));
+                } else if (order === "rating") {
+                    items.sort((a, b) => b.avgRating - a.avgRating);
+                } else if (order === "price") {
+                    items.sort((a, b) => {
+                        const parsePrice = str => parseFloat(str.replace(/[^0-9.]/g, ""));
+                        return parsePrice(b.price) - parsePrice(a.price);
+                    });
+                }
+
+                allItems = items;
+                filterItems();
+            } catch (error) {
+                console.error('Error loading items:', error);
+            }
+        }
+
+        function filterItems() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filteredItems = allItems.filter(item => 
+                item.name.toLowerCase().includes(searchTerm)
+            );
+            renderItems(filteredItems);
+        }
+
+        async function runUserScript(params) {
+            await fetch("/run-script", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ params })
+            });
+        }
+
+        function renameItem(itemId, newName) {
+            // TODO: Implement rename item functionality
+            console.log(`Rename item ${itemId} to: ${newName}`);
+        }
+
+        function deleteItem(itemId) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                // TODO: Implement delete item functionality
+                console.log(`Delete item ${itemId}`);
+            }
+        }
+
+        function cancelSaleRequest(itemId) {
+            const buyerUserId = outgoingSaleRequestsMap[itemId];
+            const buyer = allAccounts.find(acc => acc.id === buyerUserId);
+            const buyerName = buyer ? buyer.username : 'Unknown User';
+            
+            if (confirm(`Cancel sale request to ${buyerName}?`)) {
+                // TODO: Implement cancel sale request functionality
+                runUserScript([HELPER_SCRIPT, './use_cases/cancel_sale_request.py', itemId, buyerUserId]);
+            }
+        }
+
+        async function openComments(itemId) {
+            try {
+                // Update selectedItemCommentID in local_data.json
+                const params = [
+                    HELPER_SCRIPT,
+                    './use_cases/select_item_comment/select_item_comment.sh',
+                    itemId.toString()
+                ];
+
+                const response = await fetch("/run-script", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ params })
+                });
+
+                if (response.ok) {
+                    // Navigate to comments page
+                    window.location.href = '/html/main_menu_options/items/item_comments/item_comments.html';
+                } else {
+                    console.error('Error setting selected item');
+                }
+            } catch (error) {
+                console.error('Error opening comments:', error);
+            }
+        }
+
+        function renderItems(items) {
+            const container = document.getElementById("itemsContainer");
+            container.innerHTML = "";
+
+            if (items.length === 0) {
+                container.innerHTML = '<div class="no-items">No outgoing sale requests found.</div>';
+                return;
+            }
+
+            items.forEach(item => {
+                const itemBox = document.createElement("div");
+                itemBox.className = "item-box";
+
+                const isBookmarked = userBookmarkedItems.includes(item.id);
+
+                const nameContainer = document.createElement("div");
+                nameContainer.className = "item-name-container";
+                
+                const name = document.createElement("h3");
+                name.textContent = item.name;
+                nameContainer.appendChild(name);
+                
+                if (isBookmarked) {
+                    const bookmarkEmoji = document.createElement("span");
+                    bookmarkEmoji.className = "bookmark-emoji";
+                    bookmarkEmoji.textContent = "🔖";
+                    nameContainer.appendChild(bookmarkEmoji);
+                }
+
+                const price = document.createElement("p");
+                price.innerHTML = `<strong>Price:</strong> <span class="price-text">${item.price}</span>`;
+
+                const rating = document.createElement("p");
+                const stars = "⭐".repeat(Math.floor(item.avgRating));
+                rating.innerHTML = `<strong>Rating:</strong> <span class="rating-text">${item.avgRating.toFixed(1)} ${stars}</span>`;
+
+                // Get buyer information
+                const buyerUserId = outgoingSaleRequestsMap[item.id];
+                const buyer = allAccounts.find(acc => acc.id === buyerUserId);
+                const buyerName = buyer ? buyer.username : 'Unknown User';
+
+                const proposedTo = document.createElement("p");
+                proposedTo.innerHTML = `<strong>Proposed Sale To:</strong> <span style="color: #007bff; font-weight: bold;">${buyerName}</span>`;
+
+                const img = document.createElement("img");
+                img.className = "item-img";
+                img.alt = item.name;
+                img.src = `/images/items/${item.id}.png`;
+
+                const imgButtons = document.createElement("div");
+                imgButtons.className = "img-buttons";
+
+                img.onload = () => {
+                    imgButtons.innerHTML = `
+                        <button>Replace Image</button>
+                        <button>Delete Image</button>
+                    `;
+                };
+                img.onerror = () => {
+                    img.style.display = "none";
+                    imgButtons.innerHTML = `<button>Add Image</button>`;
+                };
+
+                const actions = document.createElement("div");
+                actions.className = "action-group";
+
+                const renameDiv = document.createElement("div");
+                renameDiv.className = "action-row";
+                const renameInput = document.createElement("input");
+                renameInput.type = "text";
+                renameInput.placeholder = "New Name";
+                renameInput.style.fontSize = "14px";
+                const renameBtn = document.createElement("button");
+                renameBtn.textContent = "Rename";
+                renameBtn.onclick = () => renameItem(item.id, renameInput.value);
+                renameDiv.appendChild(renameInput);
+                renameDiv.appendChild(renameBtn);
+
+                const rateDiv = document.createElement("div");
+                rateDiv.className = "action-row";
+                const rateSelect = document.createElement("select");
+                for (let i = 1; i <= 5; i++) {
+                    const opt = document.createElement("option");
+                    opt.value = i;
+                    opt.textContent = `${i} Star${i > 1 ? 's' : ''}`;
+                    rateSelect.appendChild(opt);
+                }
+                const rateBtn = document.createElement("button");
+                rateBtn.textContent = "Rate";
+                rateBtn.onclick = () => runUserScript(rateSelect.value);
+                rateDiv.appendChild(rateSelect);
+                rateDiv.appendChild(rateBtn);
+
+                const priceDiv = document.createElement("div");
+                priceDiv.className = "action-row";
+                const priceInput = document.createElement("input");
+                priceInput.type = "text";
+                priceInput.placeholder = "New Price";
+                const priceBtn = document.createElement("button");
+                priceBtn.textContent = "Set Price";
+                priceBtn.onclick = () => runUserScript(priceInput.value);
+                priceDiv.appendChild(priceInput);
+                priceDiv.appendChild(priceBtn);
+
+                const bookmarkBtn = document.createElement("button");
+                bookmarkBtn.textContent = isBookmarked ? "Unbookmark" : "Bookmark";
+                bookmarkBtn.onclick = () => runUserScript("bookmark");
+
+                const cancelSaleBtn = document.createElement("button");
+                cancelSaleBtn.textContent = "🚫 Cancel Sale Request";
+                cancelSaleBtn.style.backgroundColor = "#dc3545";
+                cancelSaleBtn.onclick = () => cancelSaleRequest(item.id);
+
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "🗑️ Delete Item";
+                deleteBtn.style.backgroundColor = "#6c757d";
+                deleteBtn.onclick = () => deleteItem(item.id);
+
+                const sellStoreDiv = document.createElement("div");
+                sellStoreDiv.className = "action-row";
+                const sellStoreSelect = document.createElement("select");
+                sellStoreSelect.innerHTML = `<option value="">Select Store...</option>`;
+                fetch("/api/locations")
+                    .then(res => res.json())
+                    .then(locations => {
+                        locations.forEach(loc => {
+                            const opt = document.createElement("option");
+                            opt.value = loc.id;
+                            opt.textContent = loc.name;
+                            sellStoreSelect.appendChild(opt);
+                        });
+                    });
+                const sellStoreBtn = document.createElement("button");
+                sellStoreBtn.textContent = "Sell to Store";
+                sellStoreBtn.onclick = () => runUserScript(sellStoreSelect.value);
+                sellStoreDiv.appendChild(sellStoreSelect);
+                sellStoreDiv.appendChild(sellStoreBtn);
+
+                const commentsBtn = document.createElement("button");
+                commentsBtn.textContent = "💬 Comments";
+                commentsBtn.onclick = () => openComments(item.id);
+
+                actions.appendChild(renameDiv);
+                actions.appendChild(rateDiv);
+                actions.appendChild(priceDiv);
+                actions.appendChild(bookmarkBtn);
+                actions.appendChild(cancelSaleBtn);
+                actions.appendChild(deleteBtn);
+                actions.appendChild(sellStoreDiv);
+                actions.appendChild(commentsBtn);
+
+                itemBox.appendChild(nameContainer);
+                itemBox.appendChild(price);
+                itemBox.appendChild(rating);
+                itemBox.appendChild(proposedTo);
+                itemBox.appendChild(img);
+                itemBox.appendChild(imgButtons);
+                itemBox.appendChild(actions);
+
+                container.appendChild(itemBox);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            loadItems();
+        });
+    </script>
+</body>
+</html>
