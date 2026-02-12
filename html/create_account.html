@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Account - Marketplace for Used Items</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: #ffffff;
+            padding: 40px 60px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ccc;
+            color: #333;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .back-btn:hover {
+            background: #bbb;
+        }
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: #333;
+        }
+        input {
+            display: block;
+            width: 250px;
+            margin: 15px auto;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        button.create {
+            display: block;
+            width: 250px;
+            margin: 25px auto 0;
+            padding: 12px;
+            font-size: 1rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button.create:hover {
+            background: #45a049;
+        }
+        #userStatus {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #555;
+        }
+        #goMainMenuBtn {
+            display: none;
+            margin-top: 20px;
+            width: 250px;
+            padding: 12px;
+            font-size: 1rem;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        #goMainMenuBtn:hover {
+            background: #1976D2;
+        }
+        .security_questions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px; /* spacing between dropdown and answer box */
+            margin: 15px auto;
+            width: 520px; /* matches the combined width of both inputs */
+        }
+
+        #SQ_dropdown, #sq_answer {
+            flex: 1;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: white;
+            appearance: none; /* makes the select box match input boxes visually */
+        }
+        #sq_answer {
+            width: 250px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="window.location.href='login_create_forgotpass.html'">&larr; Back</button>
+        <h1>Create Account</h1>
+
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <input type="password" id="password2" placeholder="Confirm Password">
+        <input type="email" id="email" placeholder="Email">
+        <div class="security_questions">
+            <select name="SQ_dropdown" id="SQ_dropdown"
+                placeholder="Please select a security question.">
+                <option value="0" disabled selected>Please select a security question.</option>
+                <option value="1">What is the name of your first pet?</option>
+                <option value="2">What university did you study at?</option>
+                <option value="3">What was the name of your elementary school?</option>
+            </select>
+            <input type="text" id="sq_answer" name="sq_answer"
+                placeholder="Please enter your answer here.">
+        </div>
+        <button class="create" id="createBtn">Create Account</button>
+
+        
+
+        <!-- Display the user ID -->
+        <p id="userStatus"></p>
+
+        <!-- Button that appears if user is logged in -->
+        <button id="goMainMenuBtn" onclick="window.location.href='main_menu.html'">Go to Main Menu</button>
+    </div>
+
+    <script>
+        const create_script = "./use_cases/login_and_create_account/create_acct.sh";
+        const HELPER_SCRIPT = "./helper_scripts/run_user_script.sh";
+
+        async function runScript(params) {
+            const response = await fetch('/run-script', {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ params })
+            });
+            return response.text();
+        }
+
+        document.getElementById('createBtn').addEventListener('click', async () => {
+            const user = document.getElementById('username').value || "";
+            const pass = document.getElementById('password').value || "";
+            const pass2 = document.getElementById('password2').value || "";
+            const email = document.getElementById('email').value || "";
+            const sq_dropdown = document.getElementById('SQ_dropdown');
+            const sq_answer = document.getElementById('sq_answer').value || "";
+
+            const params = [HELPER_SCRIPT, create_script, user, pass, pass2, email, sq_dropdown.value, sq_answer];
+            const text = await runScript(params);
+            alert(text);
+
+            // After script finishes, check login status and redirect if logged in
+            try {
+                const res = await fetch('../json/local/local_data.json');
+
+                const data = await res.json();
+                if (data.currentlyLoggedInUserID !== -1) {
+                    window.location.href = "main_menu.html";
+                } else {
+                    location.reload();
+                }
+            } catch (err) {
+                // fallback: reload if error
+                location.reload();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Menu - Marketplace for Used Items</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .header-panel {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+            position: relative;
+        }
+
+        .header-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            pointer-events: none;
+        }
+
+        .header-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .username {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .balance {
+            font-size: 16px;
+            font-weight: normal;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-content {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .menu-column {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-column:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .column-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 25px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #dc2626;
+            position: relative;
+        }
+
+        .column-title::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            border-radius: 2px;
+        }
+
+        .menu-button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid #e5e7eb;
+            color: #374151;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .menu-button:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border-color: #dc2626;
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .menu-button:hover::before {
+            left: 100%;
+        }
+
+        .menu-button:last-child {
+            margin-bottom: 0;
+        }
+
+        .menu-button:active {
+            transform: translateX(3px) scale(0.98);
+        }
+
+        /* Special styling for the untitled column */
+        .untitled-column .column-title {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
+        }
+
+        .untitled-column .column-title::after {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+        }
+
+        .untitled-column .menu-button:hover {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            border-color: #6366f1;
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header-panel {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-title {
+                position: static;
+                transform: none;
+                font-size: 2em;
+            }
+
+            .user-info {
+                align-items: center;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .menu-column {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-panel">
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+        <div class="header-title">Main Menu</div>
+        <div class="user-info">
+            <div class="username" id="username">Loading...</div>
+            <div class="balance" id="balance">$0.00</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="menu-grid">
+            <div class="menu-column">
+                <h2 class="column-title">Stores</h2>
+                <button class="menu-button" id="currentStoreBtn" onclick="openDefaultStore()">Loading...</button>
+                <button class="menu-button" onclick="viewAllStores()">Browse Stores</button>
+            </div>
+
+            <div class="menu-column">
+                <h2 class="column-title">Items</h2>
+                <button class="menu-button" onclick="viewMyItems()">My Items</button>
+                <button class="menu-button" onclick="viewOrderHistory()">Order History</button>
+                <button class="menu-button" onclick="viewBookmarkedItems()">Bookmarked Items</button>
+                <button class="menu-button" onclick="viewReservedItems()">My Reserved Items</button>
+                <button class="menu-button" onclick="viewShoppingCart()">Shopping Cart</button>
+                <button class="menu-button" onclick="viewIncomingSaleRequests()">Incoming Sale Requests</button>
+                <button class="menu-button" onclick="viewOutgoingSaleRequests()">Outgoing Sale Requests</button>
+            </div>
+
+            <!-- <div class="menu-column">
+                <h2 class="column-title">User Info</h2>
+                <button class="menu-button" onclick="viewAllAccounts()">All Accounts</button>
+                <button class="menu-button" onclick="viewMyAccount()">My Account</button>
+
+            </div> -->
+
+            <div class="menu-column">
+                <h2 class="column-title">Other</h2>
+                <!-- <button class="menu-button" onclick="openAIAssistant()">AI Assistant</button> -->
+                <button class="menu-button" onclick="viewAllAccounts()">Display All Accounts</button>
+                <button class="menu-button" onclick="viewMyAccount()">My Account</button>
+                <button class="menu-button" onclick="autoPushPullData()">Push and Pull Data Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userData = null;
+        let currentStoreName = null;
+
+        // Load user data and current store
+        async function loadUserData() {
+            try {
+                // First, get the currently logged in user ID and current store from local data
+                const localDataResponse = await fetch('/json/local/local_data.json');
+                if (!localDataResponse.ok) {
+                    throw new Error(`HTTP error! status: ${localDataResponse.status}`);
+                }
+                const localData = await localDataResponse.json();
+                const currentlyLoggedInUserID = localData.currentlyLoggedInUserID;
+                const currentStoreId = localData.currentStore;
+
+                // Get all accounts data
+                const accountsResponse = await fetch('/json/accounts.json');
+                if (!accountsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${accountsResponse.status}`);
+                }
+                const accounts = await accountsResponse.json();
+
+                // Find the account with matching ID
+                const currentUser = accounts.find(account => account.id === currentlyLoggedInUserID);
+                
+                // Display username and balance
+                const usernameElement = document.getElementById('username');
+                const balanceElement = document.getElementById('balance');
+                
+                if (currentUser && currentUser.username) {
+                    usernameElement.textContent = currentUser.username;
+                    const balance = currentUser.accountBalance || currentUser.accountBlanance || 0;
+                    const balanceNum = typeof balance === 'number' ? balance : parseFloat(balance);
+                    balanceElement.textContent = `$${balanceNum.toFixed(2)}`;
+                } else {
+                    usernameElement.textContent = 'Guest User';
+                    balanceElement.textContent = '$0.00';
+                }
+
+                // Get locations data to find current store name
+                const locationsResponse = await fetch('/json/locations.json');
+                if (!locationsResponse.ok) {
+                    throw new Error(`HTTP error! status: ${locationsResponse.status}`);
+                }
+                const locations = await locationsResponse.json();
+
+                // Update the button text or hide it if no store selected
+                const currentStoreBtn = document.getElementById('currentStoreBtn');
+                
+                if (currentStoreId === -1) {
+                    // Hide the button if currentStore is -1
+                    currentStoreBtn.style.display = 'none';
+                } else {
+                    // Find the location with matching ID
+                    const currentStore = locations.find(location => location.id === currentStoreId);
+                    
+                    if (currentStore && currentStore.name) {
+                        currentStoreBtn.textContent = `Shop at: ${currentStore.name}`;
+                        currentStoreName = currentStore.name;
+                        currentStoreBtn.style.display = 'block';
+                    } else {
+                        currentStoreBtn.textContent = 'Shop at Current Store';
+                        currentStoreBtn.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('username').textContent = 'Guest User';
+                document.getElementById('balance').textContent = '$0.00';
+                document.getElementById('currentStoreBtn').textContent = 'Shop at Current Store';
+            }
+        }
+
+        // Menu button functions
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                window.location.href = '/login.html';
+            }
+        }
+
+        function openDefaultStore() {
+            window.location.href = '/html/main_menu_options/items/store_items.html';
+        }
+
+        function viewAllStores() {
+            window.location.href = '/html/main_menu_options/stores/browse_stores.html';
+        }
+
+        function viewMyItems() {
+            window.location.href = '/html/main_menu_options/items/my_items.html';
+        }
+
+        function viewOrderHistory() {
+            window.location.href = '/html/main_menu_options/items/order_history.html';
+        }
+
+        function viewBookmarkedItems() {
+            window.location.href = '/html/main_menu_options/items/bookmarked_items.html';
+        }
+
+        function viewReservedItems() {
+            window.location.href = '/html/main_menu_options/items/my_reserved_items.html';
+        }
+
+        function viewShoppingCart() {
+            window.location.href = '/html/main_menu_options/items/shopping_cart.html';
+        }
+
+        function viewAllAccounts() {
+            window.location.href = '/users/all';
+        }
+
+        function viewMyAccount() {
+            window.location.href = '/html/main_menu_options/accounts/my_account.html';
+        }
+
+        function openAIAssistant() {
+            window.location.href = '/ai/assistant';
+        }
+
+        function autoPushPullData() {
+            window.location.href = '/data/sync';
+        }
+
+        function viewIncomingSaleRequests() {
+            window.location.href = '/html/main_menu_options/items/incoming_sale_requests.html';
+        }
+
+        function viewOutgoingSaleRequests() {
+            window.location.href = '/html/main_menu_options/items/outgoing_sale_requests.html';
+        }
+
+        // Load user data when page loads
+        document.addEventListener('DOMContentLoaded', loadUserData);
+    </script>
+</body>
+</html>

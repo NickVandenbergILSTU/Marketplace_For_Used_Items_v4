@@ -1,0 +1,52 @@
+[
+  {
+    "id": 41,
+    "username": "nickvandy",
+    "password": "pass word",
+    "autoPushAndPullData": "false",
+    "accountBlanance": 600.00,
+    "myItems": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "bookmarkedItems": [
+      1,
+      2
+    ],
+    "reservedItems": [
+      1
+    ],
+    "itemsInCart": [
+      1,
+      2
+    ]
+  },
+  {
+    "id": 42,
+    "username": "john-smith",
+    "password": "password",
+    "autoPushAndPullData": "false",
+    "accountBlanance": 500.00,
+    "myItems": [
+      1,
+      2,
+      3,
+      5,
+      6
+    ],
+    "bookmarkedItems": [
+      1,
+      2
+    ],
+    "reservedItems": [
+      3
+    ],
+    "itemsInCart": [
+      1,
+      2,
+      3
+    ]
+  }
+]
